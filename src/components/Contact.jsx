@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import emailjs from "@emailjs/browser";
 
@@ -6,6 +6,7 @@ import { styles } from "../styles";
 import { EarthCanvas } from "./canvas";
 import { SectionWrapper } from "../hoc";
 import { slideIn } from "../utils/motion";
+import initEmailJS from "../utils/emailjs-init";
 
 const Contact = () => {
   const formRef = useRef();
@@ -16,6 +17,10 @@ const Contact = () => {
   });
 
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    initEmailJS(); 
+  }, []);
 
   const handleChange = (e) => {
     const { target } = e;
