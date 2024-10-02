@@ -44,6 +44,9 @@ This website can be used as a template for personal portfolios. You can modify t
 
 
 ## Screenshots
+![Screenshot (136)](https://github.com/user-attachments/assets
+![Screenshot (137)](https://github.com/user-attachments/assets/1cca5569-cc5d-4118-97bd-0c38a6154533)
+/4581cc71-39cb-4123-84b4-42ef9e688af9)
+![Screenshot (135)](https://github.com/user-attachments/assets/337b4115-5dde-43f3-89d8-339f2071d784)
 
-![App Screenshot](https://via.placeholder.com/468x300?text=App+Screenshot+Here)
 
