@@ -47,4 +47,3 @@ This website can be used as a template for personal portfolios. You can modify t
 
 ![Screenshot (136)](https://github.com/user-attachments/assets/3ebafb32-bc31-40e3-9717-d26a9400a644)
 
-

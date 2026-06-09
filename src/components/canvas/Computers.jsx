@@ -1,35 +1,46 @@
-import React, { Suspense, useEffect, useRef } from "react";
-import { Canvas, useFrame } from "@react-three/fiber";
+import React, { Suspense, useEffect } from "react";
+import { Canvas } from "@react-three/fiber";
 import { OrbitControls, Preload, useGLTF } from "@react-three/drei";
 
 import CanvasLoader from "../Loader";
 
 const Computers = ({ isMobile }) => {
   const computer = useGLTF("./desktop_pc/scene.gltf");
-  const meshRef = useRef();
 
-  useEffect(() => {
-    if (meshRef.current && computer.scene) {
-      computer.scene.traverse((child) => {
-        if (child.isMesh && child.geometry) {
-          child.geometry.computeBoundingSphere();
-          
-          // Check for NaN values in position attribute
-          const positions = child.geometry.attributes.position.array;
-          for (let i = 0; i < positions.length; i++) {
-            if (isNaN(positions[i])) {
-              console.warn(`Found NaN at index ${i} in geometry of ${child.name}`);
-              positions[i] = 0; 
+  // Fix NaNs in geometry synchronously right after loading (before rendering)
+  // This prevents Preload or other components from running into NaN values
+  if (computer && computer.scene) {
+    computer.scene.traverse((child) => {
+      if (child.isMesh && child.geometry) {
+        try {
+          if (child.geometry.attributes.position) {
+            const positions = child.geometry.attributes.position.array;
+            let hasNaN = false;
+            for (let i = 0; i < positions.length; i++) {
+              if (isNaN(positions[i])) {
+                hasNaN = true;
+                positions[i] = 0;
+              }
+            }
+            if (hasNaN) {
+              child.geometry.attributes.position.needsUpdate = true;
+              try {
+                child.geometry.computeBoundingSphere();
+                child.geometry.computeBoundingBox();
+              } catch (err) {
+                console.warn(`Error re-computing bounds for ${child.name}:`, err);
+              }
             }
           }
-          child.geometry.attributes.position.needsUpdate = true;
+        } catch (error) {
+          console.error(`Error processing geometry for ${child.name}:`, error);
         }
-      });
-    }
-  }, [computer]);
+      }
+    });
+  }
 
   return (
-    <mesh ref={meshRef}>
+    <mesh>
       <hemisphereLight intensity={0.15} groundColor='black' />
       <spotLight
         position={[-20, 50, 10]}
@@ -54,7 +65,8 @@ const ComputersCanvas = () => {
   const [isMobile, setIsMobile] = React.useState(false);
 
   useEffect(() => {
-    const mediaQuery = window.matchMedia("(max-width: 500px)");
+    // Use 768px as standard mobile breakpoint to protect mobile devices from heavy 3D rendering
+    const mediaQuery = window.matchMedia("(max-width: 768px)");
     setIsMobile(mediaQuery.matches);
 
     const handleMediaQueryChange = (event) => {
@@ -68,19 +80,34 @@ const ComputersCanvas = () => {
     };
   }, []);
 
+  // Return null on mobile devices to prevent downloading/rendering the heavy 14MB 3D model
+  if (isMobile) {
+    return null;
+  }
+
   return (
     <Canvas
       frameloop='demand'
       shadows
       dpr={[1, 2]}
       camera={{ position: [20, 3, 5], fov: 25 }}
-      gl={{ preserveDrawingBuffer: true }}
+      gl={{ 
+        preserveDrawingBuffer: true,
+        antialias: true,
+        alpha: true,
+        powerPreference: "high-performance"
+      }}
+      onCreated={({ gl }) => {
+        gl.setClearColor(0x000000, 0);
+      }}
     >
       <Suspense fallback={<CanvasLoader />}>
         <OrbitControls
           enableZoom={false}
           maxPolarAngle={Math.PI / 2}
           minPolarAngle={Math.PI / 2}
+          enableDamping
+          dampingFactor={0.25}
         />
         <Computers isMobile={isMobile} />
       </Suspense>
