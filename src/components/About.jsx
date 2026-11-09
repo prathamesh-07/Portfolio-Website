@@ -1,5 +1,5 @@
 import React from "react";
-import Tilt from "react-parallax-tilt";;
+import Tilt from "react-parallax-tilt";
 import { motion } from "framer-motion";
 
 import { styles } from "../styles";
@@ -7,27 +7,30 @@ import { services } from "../constants";
 import { SectionWrapper } from "../hoc";
 import { fadeIn, textVariant } from "../utils/motion";
 
-const ServiceCard = ({ index, title, icon }) => (
+const ServiceCard = ({ index, title, icon, track }) => (
   <Tilt className='xs:w-[250px] w-full'>
     <motion.div
       variants={fadeIn("right", "spring", index * 0.5, 0.75)}
       className='w-full green-pink-gradient p-[1px] rounded-[20px] shadow-card'
     >
       <div
-        options={{
-          max: 45,
-          scale: 1,
-          speed: 450,
-        }}
-        className='bg-tertiary rounded-[20px] py-5 px-12 min-h-[280px] flex justify-evenly items-center flex-col'
+        className='bg-tertiary rounded-[20px] py-5 px-6 min-h-[280px] flex justify-evenly items-center flex-col'
       >
+        <span className={`text-[11px] font-semibold tracking-wider uppercase px-2.5 py-1 rounded-full ${
+          track === "Web Development"
+            ? "bg-[#6366f1]/20 text-[#a5b4fc] border border-[#6366f1]/30"
+            : "bg-[#8b5cf6]/20 text-[#c4b5fd] border border-[#8b5cf6]/30"
+        }`}>
+          {track}
+        </span>
+
         <img
           src={icon}
-          alt='web-development'
+          alt={title}
           className='w-16 h-16 object-contain'
         />
 
-        <h3 className='text-white text-[20px] font-bold text-center'>
+        <h3 className='text-white text-[19px] font-bold text-center leading-snug'>
           {title}
         </h3>
       </div>
@@ -47,10 +50,10 @@ const About = () => {
         variants={fadeIn("", "", 0.1, 1)}
         className='mt-4 text-secondary text-[17px] max-w-3xl leading-[30px]'
       >
-       I am an aspiring Cybersecurity professional with a strong foundation in network security, cryptography, and web application security. With hands-on experience using industry-standard tools like Wireshark, Nessus, and Burp Suite, I specialize in vulnerability assessments and penetration testing. In addition to my cybersecurity expertise, I also develop solutions using JavaScript, Python, and frameworks such as React and Node.js. I am passionate about solving real-world security challenges and creating secure, scalable systems.
+        I am a Computer Science student specializing in Cyber Security and Forensics at MIT-WPU, Pune, and a full-stack developer with hands-on experience building and deploying production web applications end-to-end. My technical focus bridges secure web architectures (React, Next.js, Node.js, AWS) with hands-on penetration testing, vulnerability assessment (Wireshark, Nessus, Burp Suite), and published IEEE research on AI-generated audio threats.
       </motion.p>
 
-      <div className='mt-20 flex flex-wrap gap-10'>
+      <div className='mt-20 flex flex-wrap gap-10 justify-center'>
         {services.map((service, index) => (
           <ServiceCard key={service.title} index={index} {...service} />
         ))}

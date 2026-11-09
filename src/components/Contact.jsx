@@ -10,6 +10,7 @@ import initEmailJS from "../utils/emailjs-init";
 
 const Contact = () => {
   const formRef = useRef();
+  const honeypotRef = useRef();
   const [form, setForm] = useState({
     name: "",
     email: "",
@@ -17,9 +18,11 @@ const Contact = () => {
   });
 
   const [loading, setLoading] = useState(false);
+  const [status, setStatus] = useState(null); // null | "success" | "error"
+  const [errorMessage, setErrorMessage] = useState("");
 
   useEffect(() => {
-    initEmailJS(); 
+    initEmailJS();
   }, []);
 
   const handleChange = (e) => {
@@ -30,11 +33,32 @@ const Contact = () => {
       ...form,
       [name]: value,
     });
+    if (status) setStatus(null);
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
+
+    // Honeypot check for spam bots
+    if (honeypotRef.current && honeypotRef.current.value) {
+      return;
+    }
+
+    if (!form.name.trim() || !form.email.trim() || !form.message.trim()) {
+      setStatus("error");
+      setErrorMessage("Please fill in all required fields.");
+      return;
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(form.email)) {
+      setStatus("error");
+      setErrorMessage("Please enter a valid email address.");
+      return;
+    }
+
     setLoading(true);
+    setStatus(null);
 
     emailjs
       .send(
@@ -44,7 +68,7 @@ const Contact = () => {
           from_name: form.name,
           to_name: "Prathamesh",
           from_email: form.email,
-          to_email: "sujata@jsmastery.pro",
+          to_email: "prathameshchiddarwar42@gmail.com",
           message: form.message,
         },
         import.meta.env.VITE_APP_EMAILJS_PUBLIC_KEY
@@ -52,8 +76,7 @@ const Contact = () => {
       .then(
         () => {
           setLoading(false);
-          alert("Thank you. I will get back to you as soon as possible.");
-
+          setStatus("success");
           setForm({
             name: "",
             email: "",
@@ -62,9 +85,9 @@ const Contact = () => {
         },
         (error) => {
           setLoading(false);
-          console.error(error);
-
-          alert("Ahh, something went wrong. Please try again.");
+          setStatus("error");
+          setErrorMessage("Failed to send message via EmailJS. Please email directly at prathameshchiddarwar42@gmail.com.");
+          console.error("EmailJS submission error:", error);
         }
       );
   };
@@ -84,46 +107,74 @@ const Contact = () => {
           ref={formRef}
           onSubmit={handleSubmit}
           className='mt-12 flex flex-col gap-8'
+          noValidate
         >
+          {/* Honeypot spam trap */}
+          <div style={{ display: "none" }} aria-hidden="true">
+            <input
+              ref={honeypotRef}
+              type="text"
+              name="honeypot_field"
+              tabIndex={-1}
+              autoComplete="off"
+            />
+          </div>
+
           <label className='flex flex-col'>
-            <span className='text-white font-medium mb-4'>Your Name</span>
+            <span className='text-white font-medium mb-4'>Your Name *</span>
             <input
               type='text'
               name='name'
+              required
               value={form.name}
               onChange={handleChange}
-              placeholder="What's your good name?"
-              className='bg-tertiary py-4 px-6 placeholder:text-secondary text-white rounded-lg outline-none border-none font-medium'
+              placeholder="What's your name?"
+              className='bg-tertiary py-4 px-6 placeholder:text-secondary text-white rounded-lg outline-none border border-transparent focus:border-[#6366f1] font-medium transition-colors'
             />
           </label>
           <label className='flex flex-col'>
-            <span className='text-white font-medium mb-4'>Your email</span>
+            <span className='text-white font-medium mb-4'>Your email *</span>
             <input
               type='email'
               name='email'
+              required
               value={form.email}
               onChange={handleChange}
-              placeholder="What's your web address?"
-              className='bg-tertiary py-4 px-6 placeholder:text-secondary text-white rounded-lg outline-none border-none font-medium'
+              placeholder="What's your email address?"
+              className='bg-tertiary py-4 px-6 placeholder:text-secondary text-white rounded-lg outline-none border border-transparent focus:border-[#6366f1] font-medium transition-colors'
             />
           </label>
           <label className='flex flex-col'>
-            <span className='text-white font-medium mb-4'>Your Message</span>
+            <span className='text-white font-medium mb-4'>Your Message *</span>
             <textarea
               rows={7}
               name='message'
+              required
               value={form.message}
               onChange={handleChange}
-              placeholder='What you want to say?'
-              className='bg-tertiary py-4 px-6 placeholder:text-secondary text-white rounded-lg outline-none border-none font-medium'
+              placeholder='What would you like to discuss?'
+              className='bg-tertiary py-4 px-6 placeholder:text-secondary text-white rounded-lg outline-none border border-transparent focus:border-[#6366f1] font-medium resize-y transition-colors'
             />
           </label>
 
+          {status === "success" && (
+            <div role="status" className="p-4 rounded-lg bg-green-900/30 border border-green-500 text-green-300 text-sm">
+              Thank you! Your message has been sent successfully. I will get back to you shortly.
+            </div>
+          )}
+
+          {status === "error" && (
+            <div role="alert" className="p-4 rounded-lg bg-red-900/30 border border-red-500 text-red-300 text-sm">
+              {errorMessage}
+            </div>
+          )}
+
           <button
             type='submit'
-            className='bg-tertiary py-3 px-8 rounded-xl outline-none w-fit text-white font-bold shadow-md shadow-primary'
+            disabled={loading}
+            className='bg-tertiary py-3 px-8 rounded-xl outline-none w-fit text-white font-bold shadow-md shadow-primary hover:bg-[#1d1836] transition-colors border border-white/10 disabled:opacity-50'
           >
-            {loading ? "Sending..." : "Send"}
+            {loading ? "Sending..." : "Send Message"}
           </button>
         </form>
       </motion.div>

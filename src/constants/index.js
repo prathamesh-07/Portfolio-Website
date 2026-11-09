@@ -17,57 +17,59 @@ import {
   docker,
   meta,
   starbucks,
-  tesla,
   shopify,
   carrent,
   jobit,
   tripguide,
-  threejs,
 } from "../assets";
 
 export const navLinks = [
   {
-    id: "about",
-    title: "About",
+    id: "",
+    title: "Home",
+    path: "/",
   },
   {
-    id: "work",
-    title: "Work",
+    id: "about",
+    title: "About",
+    path: "/about",
+  },
+  {
+    id: "projects",
+    title: "Projects",
+    path: "/projects",
   },
   {
     id: "contact",
     title: "Contact",
+    path: "/contact",
   },
 ];
 
 const services = [
   {
-    title: "Cybersecurity Analyst",
-    icon: web,
-  },
-  {
-    title: "Web Security Enthusiast",
-    icon: mobile,
-  },
-  {
-    title: "Web Developer",
+    title: "Full-Stack Web Developer",
+    track: "Web Development",
     icon: backend,
   },
   {
-    title: "Frontend Developer",
+    title: "Cybersecurity Analyst",
+    track: "Cybersecurity",
+    icon: web,
+  },
+  {
+    title: "Frontend & Cloud Engineer",
+    track: "Web Development",
     icon: creator,
+  },
+  {
+    title: "Security & Penetration Testing",
+    track: "Cybersecurity",
+    icon: mobile,
   },
 ];
 
 const technologies = [
-  {
-    name: "HTML 5",
-    icon: html,
-  },
-  {
-    name: "CSS 3",
-    icon: css,
-  },
   {
     name: "JavaScript",
     icon: javascript,
@@ -79,10 +81,6 @@ const technologies = [
   {
     name: "React JS",
     icon: reactjs,
-  },
-  {
-    name: "Redux Toolkit",
-    icon: redux,
   },
   {
     name: "Tailwind CSS",
@@ -97,8 +95,16 @@ const technologies = [
     icon: mongodb,
   },
   {
-    name: "Three JS",
-    icon: threejs,
+    name: "Redux",
+    icon: redux,
+  },
+  {
+    name: "HTML 5",
+    icon: html,
+  },
+  {
+    name: "CSS 3",
+    icon: css,
   },
   {
     name: "git",
@@ -116,49 +122,52 @@ const technologies = [
 
 const experiences = [
   {
-    title: "Cybersecurity Projects and Experience",
-    company_name: "MIT World Peace University",
-    icon: starbucks,
-    iconBg: "black",
-    date: "2023 - 2024",
+    title: "Full Stack Developer Intern",
+    company_name: "DelPat LLP (Remote)",
+    track: "Web Development",
+    icon: backend,
+    iconBg: "#1d1836",
+    date: "Jun 2025 – Dec 2025",
     points: [
-      "Conducted vulnerability assessments using tools like Nessus, Wireshark, and Nmap on simulated network environments.",
-      "Gained hands-on experience with web application security by exploiting and mitigating vulnerabilities from the OWASP Top 10 using Burp Suite and OWASP ZAP.",
-      "Developed skills in password cracking, cryptography, and incident response through academic coursework and labs.",
+      "Engineered and deployed 6+ production web applications end-to-end across client and internal projects, covering full-stack architecture, deployment, and maintenance.",
+      "Architected a role-based CMS backend with JWT authentication, image processing, and full CRUD APIs; led a full WordPress-to-React migration for a client site.",
+      "Built a reusable component library adopted across multiple projects, cutting redundant development time and enforcing consistent design standards.",
+      "Kickstarted a cross-platform React Native app from PRD and ER-diagram design through navigation and UI-library integration.",
+      "Provisioned AWS EC2 cloud infrastructure and managed multi-environment deployments via Vercel and Firebase Hosting, independently resolving CI/build and backend-integration issues.",
     ],
   },
   {
-    title: "Cyber Security Pre-Graduation Program",
-    company_name: "Pregrad",
-    icon: tesla,
-    iconBg: "black",
-    date: "Dec 2022 - Feb 2023",
+    title: "Researcher (Published IEEE Xplore)",
+    company_name: "ICTBIG 2024 (DOI: 10.1109/ICTBIG57409.2024.10911062)",
+    track: "Cybersecurity",
+    icon: web,
+    iconBg: "#151030",
+    date: "Nov 2024 – Mar 2025",
     points: [
-      "Successfully completed a Cyber Security Pre-Graduation program, enhancing practical knowledge in cyber defense techniques and information security.",
-      "Developed a strong foundation in cybersecurity principles through hands-on learning.",
-      "Participating in code reviews and providing constructive feedback to other developers.",
+      "Authored and published 'Real-Time Detection of AI-Generated Deepfake Audio: A Novel Approach' in IEEE Xplore for the AI-security research community.",
+      "Researched and implemented a CNN-based signal-processing pipeline for real-time deepfake audio detection using spectral feature analysis.",
     ],
   },
   {
-    title: "Goldman Sachs Software Engineering Job Simulation",
-    company_name: "Forage",
-    icon: shopify,
-    iconBg: "black",
-    date: "Sep 2024",
+    title: "HackMIT 2025 (CTF) – 5th Rank",
+    company_name: "MIT CTF Competition",
+    track: "Cybersecurity",
+    icon: mobile,
+    iconBg: "#1d1836",
+    date: "2025",
     points: [
-      "Completed tasks focusing on password cracking and securing leaked password databases.",
-      "Demonstrated practical skills in security risk mitigation through industry-relevant job simulations.",
-      "Gained hands-on experience in tackling real-world software engineering problems related to cybersecurity.",
+      "Secured 5th place by solving 15+ challenges across web security, reverse engineering, cryptography, and logical vulnerability analysis.",
     ],
   },
   {
-    title: "Entrepreneurship Awareness Drive - Local Startups Meet 2023",
-    company_name: "IIT Kharagpur (E-Cell)",
-    icon: meta,
-    iconBg: "black",
-    date: "Aug 2023",
+    title: "Blockchain Evolution Certification",
+    company_name: "GIAN Program, NIT Goa",
+    track: "Web Development",
+    icon: creator,
+    iconBg: "#151030",
+    date: "2025",
     points: [
-      "Engaged with entrepreneurs and startup founders, gaining insights into business models and startup ecosystems.",
+      "Completed rigorous GIAN certification on Decentralized Systems and distributed ledger architecture at NIT Goa.",
     ],
   },
 ];
@@ -166,84 +175,99 @@ const experiences = [
 const testimonials = [
   {
     testimonial:
-      "MIT World Peace University, Pune",
-    name: "B.Tech in Computer Science, Specialization in Cyber Security and Forensics",
+      "B.Tech in Computer Science (Cyber Security and Forensics) — CGPA 7.47 / 10",
+    name: "MIT World Peace University, Pune",
+    designation: "2022 – 2026",
+    company: "Pune, India",
+    image: null,
   },
   {
     testimonial:
-      "Hislop Junior College, Nagpur",
-    name: "Class 12th",
+      "HSC (MSBSHSE) — 70.67%",
+    name: "Hislop Junior College, Nagpur",
+    designation: "2022",
+    company: "Nagpur, India",
+    image: null,
   },
   {
     testimonial:
-      "Jet Kids International School, Pusad",
-    name: "Class 10th",
+      "SSC (CBSE) — 87.6%",
+    name: "Jet Kids International School, Pusad",
+    designation: "2020",
+    company: "Pusad, India",
+    image: null,
   },
 ];
 
 const projects = [
   {
-    name: "InvestInsight",
+    name: "Email Security Analyst",
+    subtitle: "Phishing Detection Platform",
+    track: "Cybersecurity",
     description:
-      "A web-based platform for stock price prediction, portfolio management, and performance analysis. Built with Streamlit, using yFinance for data, Prophet and LSTM models for forecasting, and tools like Pandas, Plotly, and Keras for deep learning and data visualization.",
+      "Flask web application that analyzes email content and classifies phishing attempts using TF-IDF feature extraction and Logistic Regression. Implements sender authentication checks (SPF, DKIM, DMARC), URL analysis, and attachment scanning to generate a composite threat score and security report.",
     tags: [
       {
-        name: "Streamlit",
+        name: "Python",
         color: "blue-text-gradient",
       },
       {
-        name: "Prophet",
+        name: "Flask",
         color: "green-text-gradient",
       },
       {
-        name: "LSTM",
-        color: "pink-text-gradient",
-      },
-    ],
-    image: carrent,
-    source_code_link: "https://github.com/prathamesh-07/-Stock-Prediction-Webapp.git",
-  },
-  {
-    name: "Cyber Security Projects",
-    description:
-      "A cybersecurity toolkit demonstrating ethical hacking and information security skills. Features keylogging, text and image encryption/decryption, and local file transfer capabilities. Showcases practical applications of core cybersecurity concepts and techniques.",
-    tags: [
-      {
-        name: "CyberSecurity",
-        color: "blue-text-gradient",
-      },
-      {
-        name: "Encryption",
-        color: "green-text-gradient",
-      },
-      {
-        name: "InfoSec",
+        name: "Scikit-learn",
         color: "pink-text-gradient",
       },
     ],
     image: jobit,
-    source_code_link: "https://github.com/prathamesh-07/CyberSecurityProjects.git",
+    source_code_link: "https://github.com/prathamesh-07",
   },
   {
-    name: "AI Resume Builder",
+    name: "CloudMigrate",
+    subtitle: "Multi-Cloud Data Orchestration",
+    track: "Both Tracks",
     description:
-      "An AI-powered resume builder web application which features intelligent content suggestions, customizable templates, and ATS-optimization tools. Demonstrates practical applications of full-stack development, API integration, and user experience design principles.",
+      "Multi-cloud data orchestration platform with a Next.js interface and Python transfer pipeline to securely transfer files from AWS S3 to Google Cloud Storage. Implements MD5 and SHA-256 cryptographic hashing to verify file integrity and detect corruption during transit.",
+    tags: [
+      {
+        name: "Next.js",
+        color: "blue-text-gradient",
+      },
+      {
+        name: "Python",
+        color: "green-text-gradient",
+      },
+      {
+        name: "AWS S3 / GCP",
+        color: "pink-text-gradient",
+      },
+    ],
+    image: carrent,
+    source_code_link: "https://github.com/prathamesh-07",
+  },
+  {
+    name: "ATMS",
+    subtitle: "Enterprise Asset Management",
+    track: "Both Tracks",
+    description:
+      "Full-stack asset management system built with React and MongoDB that tracks organizational hardware and software assets across their lifecycle. Implements strict Role-Based Access Control (RBAC) to provide secure, permission-based access by user role.",
     tags: [
       {
         name: "React",
         color: "blue-text-gradient",
       },
       {
-        name: "Express",
+        name: "MongoDB",
         color: "green-text-gradient",
       },
       {
-        name: "MongoDB",
+        name: "RBAC",
         color: "pink-text-gradient",
       },
     ],
     image: tripguide,
-    source_code_link: "https://github.com/",
+    source_code_link: "https://github.com/prathamesh-07",
   },
 ];
 

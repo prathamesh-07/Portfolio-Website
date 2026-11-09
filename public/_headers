@@ -1,0 +1,14 @@
+/*
+  GitHub Pages _headers file (also works with Netlify).
+  For GitHub Pages: these headers are not automatically applied.
+  You'll need a CDN or Netlify to enforce security headers.
+  For Netlify: rename this to netlify.toml and use the [[headers]] syntax.
+*/
+
+/*
+  X-Content-Type-Options: nosniff
+  X-Frame-Options: SAMEORIGIN
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: camera=(), microphone=(), geolocation=()
+*/
+

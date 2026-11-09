@@ -1,49 +1,94 @@
+# Prathamesh Chiddarwar — Personal Portfolio
 
-# Portfolio Website
+Portfolio website for Prathamesh Chiddarwar — Computer Science student specializing in Cyber Security and Forensics at MIT World Peace University, Pune, and Full-Stack Developer.
 
-Welcome to the repository for my personal portfolio website! This project serves as an online presence where I showcase my skills, projects, and professional background as an aspiring cybersecurity professional.
+**Live URL:** https://prathamesh-07.github.io/
 
+---
 
-## Installation
+## Architecture & Disciplines
 
-Install my-project with npm
+The portfolio is structured around two equal technical disciplines:
+1. **Web Development Track:** Full-stack systems, React/Next.js/Node/Express, CMS backends with JWT authentication, component design systems, and AWS/Vercel/Firebase cloud infrastructure.
+2. **Cybersecurity Track:** Penetration testing, vulnerability assessments (Wireshark, Nmap, Nessus, Burp Suite, Metasploit), ISO 27001 compliance, CTF competitions (HackMIT 5th Rank), and published IEEE Xplore research into real-time AI deepfake audio detection.
+
+---
+
+## Route Map (Exactly 4 Core Pages)
+
+| Route | View | Description |
+|---|---|---|
+| `/` | **Home** | **Frozen homepage** with original 3D canvases (Computers, Earth, Balls, Stars), tilt cards, and updated factual resume data. |
+| `/about` | **About** | 12-column Bento Grid: Bio, Equal Tracks split, DelPat & IEEE timeline, Education, and Skills grouped by track. |
+| `/projects` | **Projects** | Filterable Bento Grid (`?track=all\|web\|cybersecurity`), featured IEEE Xplore paper tile, project cards, and accessible in-place modal case studies. |
+| `/contact` | **Contact** | 12-column Bento Grid: EmailJS contact form (with honeypot & validation), direct links, verified Pune location, and copy email button. |
+| `/404` | **404** | Minimal branded fallback with instant navigation back to verified routes. |
+
+*Note: Legacy routes (`/experience`, `/skills`, `/research`, `/projects/:id`) automatically redirect to `/about` and `/projects`.*
+
+---
+
+## Setup & Local Development
+
+### 1. Prerequisites
+- Node.js v18+ (tested on Node v22)
+- npm or pnpm
+
+### 2. Environment Variables
+Create a `.env` file at the root of the project (copy from `.env.example`):
 
 ```bash
-  git clone https://github.com/prathamesh-07/Portfolio-Website.git
-  cd Portfolio-Website
-  npm install
-  npm run dev
+cp .env.example .env
 ```
-    
-## Features
 
-- **Responsive Design**: The website is fully responsive, ensuring it works seamlessly across devices (desktops, tablets, and smartphones).
-- **Projects Section**: A dedicated section to showcase my top projects with descriptions and links.
-- **Interactive UI**: Smooth scrolling and a clean, modern interface for better user experience.
-- **Contact Form**: A functional contact form to allow visitors to reach out to me easily.
-- **Fast Loading Times**: Optimized for performance to ensure quick load times.
+Set your EmailJS credentials:
+```env
+VITE_APP_EMAILJS_SERVICE_ID=your_service_id
+VITE_APP_EMAILJS_TEMPLATE_ID=your_template_id
+VITE_APP_EMAILJS_PUBLIC_KEY=your_public_key
+```
 
+### 3. Install & Run
 
+```bash
+# Install dependencies
+npm install
 
-## Tech Stack
+# Start Vite dev server
+npm run dev
 
-- **HTML5**: For structuring the content.
-- **CSS3**: For styling the website, including custom animations and responsive layouts.
-- **JavaScript**: For interactivity and enhancing user experience.
-- **Three.js**: For responsive grid system and components
+# Build for production
+npm run build
 
+# Preview production build locally
+npm run preview
+```
 
-## Usage
+### 4. Deploying to GitHub Pages
 
-This website can be used as a template for personal portfolios. You can modify the following sections to suit your needs:
+```bash
+npm run deploy
+```
+*The build automatically emits `public/404.html` to guarantee clean client-side routing on GitHub Pages.*
 
-- About Me: Customize the text to reflect your own bio.
-- Skills: Add your skills related to your expertise, such as cybersecurity tools, programming languages, etc.
-- Projects: List your notable projects, providing descriptions, technologies used, and links to repositories or live demos.
-- Contact Information: Update your contact details for the form or any other preferred method of communication.
+---
 
+## Content Management (Single Source of Truth)
 
-## Screenshots
+All textual data and project metadata live in two synchronized locations:
+- `src/constants/index.js` (powers the frozen homepage components)
+- `src/constants/data.js` (powers the inner pages and metadata)
 
-![Screenshot (136)](https://github.com/user-attachments/assets/3ebafb32-bc31-40e3-9717-d26a9400a644)
+To edit or add project links:
+1. Open `src/constants/index.js` or `src/constants/data.js`.
+2. Update the `projects` or `experiences` arrays.
+3. Save and run `npm run build`.
 
+---
+
+## Verification & Deliverables Summary
+
+- **EmailJS Verification:** Handled via `@emailjs/browser` preserving exact service, template, and public key environment variable contracts. Includes client-side validation, invisible honeypot field, and in-form status alerts (no intrusive alerts).
+- **Session Loader:** Displayed strictly on the first visit of a session via `sessionStorage`, respects `prefers-reduced-motion`, branded with "PC" monogram and progress indicator, hard cap ≤ 1.2s.
+- **Two-Track Equal Weighting:** Both Web Development (`#6366f1`) and Cybersecurity (`#8b5cf6`) receive equal visual prominence, badge markers, and equal representation across all pages.
+- **Responsive Layout:** Verified across 375px (mobile), 768px (tablet), 1024px (laptop), and 1440px+ (desktop).

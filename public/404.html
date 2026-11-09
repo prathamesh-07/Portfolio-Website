@@ -1,0 +1,21 @@
+# GitHub Pages SPA redirect — place this file in the /public folder.
+# When GitHub Pages serves a 404 for a deep URL, it hits /404.html
+# The script below redirects back to index.html preserving the path.
+# This file is auto-deployed alongside index.html by Vite build.
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Prathamesh Chiddarwar</title>
+<script>
+  // GitHub Pages SPA fallback
+  // Saves the current path in sessionStorage before redirecting to /
+  var l = window.location;
+  sessionStorage.redirect = l.pathname + l.search + l.hash;
+  l.replace(l.protocol + '//' + l.hostname + (l.port ? ':' + l.port : '') + '/');
+</script>
+</head>
+<body></body>
+</html>
+

@@ -22,7 +22,7 @@ const Hero = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.2 }}
-            className="font-black text-white lg:text-[80px] sm:text-[60px] xs:text-[50px] text-[40px] lg:leading-[98px] mt-2 tracking-tight"
+            className="font-black text-white lg:text-[76px] sm:text-[58px] xs:text-[46px] text-[36px] lg:leading-[94px] mt-2 tracking-tight"
           >
             Hi, I'm <span className="gradient-text">Prathamesh</span>
           </motion.h1>
@@ -30,9 +30,9 @@ const Hero = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.4 }}
-            className="text-[#dfd9ff] font-medium lg:text-[30px] sm:text-[26px] xs:text-[20px] text-[16px] lg:leading-[40px] tracking-wide max-w-2xl"
+            className="text-[#dfd9ff] font-medium lg:text-[24px] sm:text-[20px] xs:text-[18px] text-[15px] lg:leading-[36px] tracking-wide max-w-2xl"
           >
-            Aspiring Cybersecurity Professional focused on Security and Forensics
+            Full-Stack Developer & Cyber Security Student. I build production web applications and research AI-driven security threats.
             <br className="sm:block hidden" />
           </motion.p>
         </div>
@@ -57,7 +57,7 @@ const Hero = () => {
         transition={{ duration: 0.5, delay: 0.8 }}
         className="absolute xs:bottom-10 bottom-32 w-full flex justify-center items-center"
       >
-        <a href="#about">
+        <a href="#about" aria-label="Scroll to about section">
           <div className="w-[35px] h-[64px] rounded-3xl border-4 border-[#6366f1] flex justify-center items-start p-2">
             <motion.div
               animate={{

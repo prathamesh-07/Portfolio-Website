@@ -1,27 +1,32 @@
-import { BrowserRouter } from "react-router-dom";
+import React from "react";
+import { Routes, Route, Navigate } from "react-router-dom";
 
-import { About, Contact, Experience, Feedbacks, Hero, Navbar, Tech, Works, StarsCanvas } from "./components";
+import HomePage from "./pages/HomePage";
+import AboutPage from "./pages/AboutPage";
+import ProjectsPage from "./pages/ProjectsPage";
+import ContactPage from "./pages/ContactPage";
+import NotFoundPage from "./pages/NotFoundPage";
 
 const App = () => {
   return (
-    <BrowserRouter>
-      <div className='relative z-0 bg-primary'>
-        <div className='bg-hero-pattern bg-cover bg-no-repeat bg-center'>
-          <Navbar />
-          <Hero />
-        </div>
-        <About />
-        <Experience />
-        <Tech />
-        <Works />
-        <Feedbacks />
-        <div className='relative z-0'>
-          <Contact />
-          <StarsCanvas />
-        </div>
-      </div>
-    </BrowserRouter>
+    <Routes>
+      {/* 4 Core Pages */}
+      <Route path="/" element={<HomePage />} />
+      <Route path="/about" element={<AboutPage />} />
+      <Route path="/projects" element={<ProjectsPage />} />
+      <Route path="/contact" element={<ContactPage />} />
+
+      {/* Redirects from dropped routes per Revision Section 3 */}
+      <Route path="/experience" element={<Navigate to="/about" replace />} />
+      <Route path="/skills" element={<Navigate to="/about" replace />} />
+      <Route path="/research" element={<Navigate to="/projects?track=cybersecurity" replace />} />
+      <Route path="/projects/:id" element={<Navigate to="/projects" replace />} />
+
+      {/* Fallback 404 */}
+      <Route path="/404" element={<NotFoundPage />} />
+      <Route path="*" element={<NotFoundPage />} />
+    </Routes>
   );
-}
+};
 
 export default App;

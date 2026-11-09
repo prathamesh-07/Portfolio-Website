@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Disallow: /assets/Prathamesh_Chiddarwar_Resume.pdf
+
+Sitemap: https://prathamesh-07.github.io/sitemap.xml
+

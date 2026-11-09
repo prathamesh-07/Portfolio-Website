@@ -13,7 +13,7 @@ const Computers = ({ isMobile }) => {
     computer.scene.traverse((child) => {
       if (child.isMesh && child.geometry) {
         try {
-          if (child.geometry.attributes.position) {
+          if (child.geometry.attributes && child.geometry.attributes.position) {
             const positions = child.geometry.attributes.position.array;
             let hasNaN = false;
             for (let i = 0; i < positions.length; i++) {
@@ -25,15 +25,15 @@ const Computers = ({ isMobile }) => {
             if (hasNaN) {
               child.geometry.attributes.position.needsUpdate = true;
               try {
-                child.geometry.computeBoundingSphere();
                 child.geometry.computeBoundingBox();
+                child.geometry.computeBoundingSphere();
               } catch (err) {
-                console.warn(`Error re-computing bounds for ${child.name}:`, err);
+                // Silently bypass recomputation failure
               }
             }
           }
         } catch (error) {
-          console.error(`Error processing geometry for ${child.name}:`, error);
+          // Bypass geometry traversal error
         }
       }
     });
@@ -65,7 +65,7 @@ const ComputersCanvas = () => {
   const [isMobile, setIsMobile] = React.useState(false);
 
   useEffect(() => {
-    // Use 768px as standard mobile breakpoint to protect mobile devices from heavy 3D rendering
+    // 768px breakpoint protects mobile devices from heavy WebGL crashes
     const mediaQuery = window.matchMedia("(max-width: 768px)");
     setIsMobile(mediaQuery.matches);
 
@@ -80,7 +80,6 @@ const ComputersCanvas = () => {
     };
   }, []);
 
-  // Return null on mobile devices to prevent downloading/rendering the heavy 14MB 3D model
   if (isMobile) {
     return null;
   }
@@ -89,16 +88,23 @@ const ComputersCanvas = () => {
     <Canvas
       frameloop='demand'
       shadows
-      dpr={[1, 2]}
+      dpr={[1, 1.5]}
       camera={{ position: [20, 3, 5], fov: 25 }}
       gl={{ 
-        preserveDrawingBuffer: true,
+        preserveDrawingBuffer: false,
         antialias: true,
         alpha: true,
         powerPreference: "high-performance"
       }}
       onCreated={({ gl }) => {
         gl.setClearColor(0x000000, 0);
+        gl.domElement.addEventListener(
+          "webglcontextlost",
+          (e) => {
+            e.preventDefault();
+          },
+          false
+        );
       }}
     >
       <Suspense fallback={<CanvasLoader />}>

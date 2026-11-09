@@ -2,11 +2,69 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/logo.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Prathamesh | My Portfolio</title>
+
+    <!-- Primary Meta -->
+    <title>Prathamesh Chiddarwar — Full-Stack Developer & Cyber Security Student</title>
+    <meta name="description" content="Portfolio of Prathamesh Chiddarwar — CS student specializing in Cyber Security & Forensics, full-stack developer (React, Next.js, Node.js, AWS), and published IEEE Xplore researcher." />
+    <meta name="author" content="Prathamesh Chiddarwar" />
+    <link rel="canonical" href="https://prathamesh-07.github.io/" />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://prathamesh-07.github.io/" />
+    <meta property="og:title" content="Prathamesh Chiddarwar — Full-Stack Developer & Cyber Security Student" />
+    <meta property="og:description" content="Full-stack developer and cybersecurity student. Building production web applications and researching AI-driven security threats." />
+    <meta property="og:image" content="/assets/og-image.png" />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Prathamesh Chiddarwar — Full-Stack Developer & Cyber Security Student" />
+    <meta name="twitter:description" content="Full-stack developer and cybersecurity student. Building production web applications and researching AI-driven security threats." />
+    <meta name="twitter:image" content="/assets/og-image.png" />
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="/logo.svg" />
+    <link rel="apple-touch-icon" href="/logo.svg" />
+
+    <!-- GitHub Pages SPA redirect receiver -->
+    <script>
+      (function(){
+        var redirect = sessionStorage.redirect;
+        delete sessionStorage.redirect;
+        if (redirect && redirect !== location.href) {
+          history.replaceState(null, null, redirect);
+        }
+      })();
+    </script>
+
+    <!-- JSON-LD Person Schema -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Person",
+      "name": "Prathamesh Chiddarwar",
+      "url": "https://prathamesh-07.github.io/",
+      "email": "prathameshchiddarwar42@gmail.com",
+      "sameAs": [
+        "https://linkedin.com/in/prathamesh-chiddarwar",
+        "https://github.com/prathamesh-07"
+      ],
+      "jobTitle": "Full-Stack Developer & Cyber Security Researcher",
+      "alumniOf": {
+        "@type": "CollegeOrUniversity",
+        "name": "MIT World Peace University"
+      }
+    }
+    </script>
+    <noscript>
+      <style>
+        .loader-wrapper { display: none !important; }
+      </style>
+    </noscript>
   </head>
   <body>
+    <a href="#main-content" class="skip-link">Skip to main content</a>
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
   </body>

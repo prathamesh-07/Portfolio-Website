@@ -33,9 +33,18 @@ const ExperienceCard = ({ experience }) => {
       }
     >
       <div>
-        <h3 className='text-white text-[24px] font-bold'>{experience.title}</h3>
+        <div className='flex items-center gap-2 mb-2'>
+          <span className={`text-[10px] font-bold tracking-wider uppercase px-2 py-0.5 rounded ${
+            experience.track === "Web Development"
+              ? "bg-[#6366f1]/20 text-[#a5b4fc] border border-[#6366f1]/30"
+              : "bg-[#8b5cf6]/20 text-[#c4b5fd] border border-[#8b5cf6]/30"
+          }`}>
+            {experience.track}
+          </span>
+        </div>
+        <h3 className='text-white text-[22px] font-bold'>{experience.title}</h3>
         <p
-          className='text-secondary text-[16px] font-semibold'
+          className='text-secondary text-[15px] font-semibold'
           style={{ margin: 0 }}
         >
           {experience.company_name}
