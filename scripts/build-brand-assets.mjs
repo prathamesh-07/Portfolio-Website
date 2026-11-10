@@ -106,9 +106,13 @@ async function buildAll() {
     .toBuffer();
 
   console.log('--- Step 2: Generating Web Derivatives in src/assets/brand/ ---');
-  // Icon full-color: 48, 96, 192 px
-  console.log('Generating logo-icon:');
+  // Icon full-color (disc): 48, 96, 192 px
+  console.log('Generating logo-icon (solid disc):');
   await generateDerivativeSet(iconColorMaster, 'logo-icon', [48, 96, 192]);
+
+  // Transparent PC Logo Mark (open gradient ring, transparent background): 48, 96, 192 px
+  console.log('Generating logo-mark (transparent background):');
+  await generateDerivativeSet(faviconMarkMaster, 'logo-mark', [48, 96, 192]);
 
   // Horizontal full-color: 240, 320, 480, 640 px
   console.log('Generating logo-horizontal:');
@@ -135,53 +139,27 @@ async function buildAll() {
   await generateDerivativeSet(monoBlackIconMaster, 'logo-mono-black-icon', [48, 96, 192]);
 
   console.log('--- Step 3: Generating Favicons and Public Assets in public/ ---');
-  // Favicons on dark navy #050816 rounded-square background
+  // Favicons with transparent background (simplified PC mark with open ring)
   // 16x16, 32x32, 48x48
-  async function createFaviconBadge(size) {
-    const bgSize = size;
-    const markSize = Math.round(size * 0.82); // 82% scale inside badge
-    const markResized = await sharp(faviconMarkMaster)
-      .resize(markSize, markSize, { fit: 'contain', background: { r: 0, g: 0, b: 0, alpha: 0 } })
-      .toBuffer();
-
-    const cornerRadius = Math.max(2, Math.round(size * 0.22)); // subtle rounded rect
-    const maskSvg = `<svg width="${bgSize}" height="${bgSize}"><rect x="0" y="0" width="${bgSize}" height="${bgSize}" rx="${cornerRadius}" ry="${cornerRadius}" fill="#fff"/></svg>`;
-
-    const navyBg = await sharp({
-      create: {
-        width: bgSize,
-        height: bgSize,
-        channels: 4,
-        background: { r: 5, g: 8, b: 22, alpha: 1 } // #050816
-      }
-    })
-      .composite([
-        {
-          input: markResized,
-          top: Math.round((bgSize - markSize) / 2),
-          left: Math.round((bgSize - markSize) / 2)
-        }
-      ])
-      .png()
-      .toBuffer();
-
-    return sharp(navyBg)
-      .composite([{ input: Buffer.from(maskSvg), blend: 'dest-in' }])
+  async function createTransparentFavicon(size) {
+    return sharp(faviconMarkMaster)
+      .resize(size, size, { fit: 'contain', background: { r: 0, g: 0, b: 0, alpha: 0 } })
       .png()
       .toBuffer();
   }
 
-  const fav16 = await createFaviconBadge(16);
-  const fav32 = await createFaviconBadge(32);
-  const fav48 = await createFaviconBadge(48);
+  const fav16 = await createTransparentFavicon(16);
+  const fav32 = await createTransparentFavicon(32);
+  const fav48 = await createTransparentFavicon(48);
 
   fs.writeFileSync(path.join(publicDir, 'favicon-16x16.png'), fav16);
   fs.writeFileSync(path.join(publicDir, 'favicon-32x32.png'), fav32);
+  fs.writeFileSync(path.join(publicDir, 'favicon.png'), fav32);
 
-  // Package favicon.ico
+  // Package transparent favicon.ico
   const icoBuffer = createIco([fav16, fav32, fav48], [16, 32, 48]);
   fs.writeFileSync(path.join(publicDir, 'favicon.ico'), icoBuffer);
-  console.log('Generated favicon.ico (16, 32, 48), favicon-16x16.png, favicon-32x32.png');
+  console.log('Generated transparent favicon.ico (16, 32, 48), favicon-16x16.png, favicon-32x32.png, favicon.png');
 
   // apple-touch-icon.png (180x180)
   const appleTouchSize = 180;
@@ -428,6 +406,101 @@ async function buildAll() {
     .toBuffer();
   fs.writeFileSync(path.join(brandExportDir, 'email-sig-400w-black.png'), sigBlack);
   console.log('Generated email signatures (color and black)');
+
+  console.log('--- Step 5: Generating Portrait & Avatar Derivatives ---');
+  const portrait4x5MasterPath = path.join(brandSourceDir, 'portrait-4x5-raw.jpg');
+  const portrait1x1MasterPath = path.join(brandSourceDir, 'portrait-1x1-raw.jpg');
+
+  // 1. Portrait 4:5 derivatives (480, 800, 1200, 1600 px)
+  const p4x5Widths = [480, 800, 1200, 1600];
+  for (const w of p4x5Widths) {
+    const h = Math.round(w * 1.25); // 4:5 ratio
+
+    // AVIF
+    const avifPath = path.join(assetsBrandDir, `portrait-4x5-${w}.avif`);
+    await sharp(portrait4x5MasterPath)
+      .resize(w, h, { fit: 'cover', position: 'center' })
+      .avif({ quality: 75, effort: 6 })
+      .toFile(avifPath);
+
+    // WebP
+    const webpPath = path.join(assetsBrandDir, `portrait-4x5-${w}.webp`);
+    await sharp(portrait4x5MasterPath)
+      .resize(w, h, { fit: 'cover', position: 'center' })
+      .webp({ quality: 82, effort: 6 })
+      .toFile(webpPath);
+
+    // JPEG
+    const jpgPath = path.join(assetsBrandDir, `portrait-4x5-${w}.jpg`);
+    await sharp(portrait4x5MasterPath)
+      .resize(w, h, { fit: 'cover', position: 'center' })
+      .jpeg({ quality: 85, mozjpeg: true })
+      .toFile(jpgPath);
+
+    const webpSize = (fs.statSync(webpPath).size / 1024).toFixed(1);
+    console.log(`  portrait-4x5-${w}: WebP ${webpSize} KB, AVIF ${(fs.statSync(avifPath).size / 1024).toFixed(1)} KB, JPG ${(fs.statSync(jpgPath).size / 1024).toFixed(1)} KB`);
+  }
+
+  // Low-quality blur placeholder (LQIP)
+  const lqipPath = path.join(assetsBrandDir, 'portrait-4x5-lqip.webp');
+  await sharp(portrait4x5MasterPath)
+    .resize(32, 40, { fit: 'cover' })
+    .webp({ quality: 20 })
+    .toFile(lqipPath);
+
+  // 2. Portrait 1:1 Square derivatives (480, 800, 1200 px)
+  const p1x1Widths = [480, 800, 1200];
+  for (const w of p1x1Widths) {
+    const avifPath = path.join(assetsBrandDir, `portrait-1x1-${w}.avif`);
+    await sharp(portrait1x1MasterPath)
+      .resize(w, w, { fit: 'cover', position: 'center' })
+      .avif({ quality: 75, effort: 6 })
+      .toFile(avifPath);
+
+    const webpPath = path.join(assetsBrandDir, `portrait-1x1-${w}.webp`);
+    await sharp(portrait1x1MasterPath)
+      .resize(w, w, { fit: 'cover', position: 'center' })
+      .webp({ quality: 82, effort: 6 })
+      .toFile(webpPath);
+
+    const jpgPath = path.join(assetsBrandDir, `portrait-1x1-${w}.jpg`);
+    await sharp(portrait1x1MasterPath)
+      .resize(w, w, { fit: 'cover', position: 'center' })
+      .jpeg({ quality: 85, mozjpeg: true })
+      .toFile(jpgPath);
+  }
+
+  // Square version for Open Graph fallback in public/
+  await sharp(portrait1x1MasterPath)
+    .resize(800, 800, { fit: 'cover' })
+    .jpeg({ quality: 88, mozjpeg: true })
+    .toFile(path.join(publicDir, 'portrait-square.jpg'));
+  console.log('Generated public/portrait-square.jpg (Open Graph fallback)');
+
+  // 3. Circular Avatar with transparent background (120, 240, 480 px)
+  for (const size of [120, 240, 480]) {
+    const resized = await sharp(portrait1x1MasterPath)
+      .resize(size, size, { fit: 'cover', position: 'center' })
+      .toBuffer();
+
+    const circleMaskSvg = `<svg width="${size}" height="${size}"><circle cx="${size / 2}" cy="${size / 2}" r="${size / 2}" fill="#fff"/></svg>`;
+
+    const circleBuf = await sharp(resized)
+      .composite([{ input: Buffer.from(circleMaskSvg), blend: 'dest-in' }])
+      .png()
+      .toBuffer();
+
+    const pngPath = path.join(assetsBrandDir, `avatar-circle-${size}.png`);
+    fs.writeFileSync(pngPath, circleBuf);
+
+    const webpPath = path.join(assetsBrandDir, `avatar-circle-${size}.webp`);
+    await sharp(circleBuf).webp({ quality: 90 }).toFile(webpPath);
+  }
+
+  // Export 480px circular avatar to brand-export/
+  const avatarExport = path.join(brandExportDir, 'avatar-circle-480.png');
+  fs.copyFileSync(path.join(assetsBrandDir, 'avatar-circle-480.png'), avatarExport);
+  console.log('Generated circular avatars and exported to brand-export/avatar-circle-480.png');
 
   console.log('--- Brand Assets Build Complete! ---');
 }

@@ -6,8 +6,30 @@ import { IconGithub, IconExternalLink, IconClose, IconCode, IconShield, IconChec
 
 const projectItems = [
   {
+    id: "ieee-deepfake-review",
+    title: "A Comprehensive Review of Deepfake Audio Detection Techniques: Advances, Challenges and Future Directions",
+    subtitle: "Research Publication — ICTBIG 2025 (IEEE Xplore)",
+    track: "cybersecurity",
+    trackLabel: "Cybersecurity Research",
+    isFeatured: true,
+    tags: ["Deepfake Forensics", "Survey", "Voice Synthesis", "Acoustic Artifacts", "ASVspoof"],
+    problem:
+      "Rapid advances in generative voice synthesis, diffusion-based acoustic modeling, and zero-shot voice cloning have lowered the barrier to convincing audio impersonation, challenging conventional forensic detectors with zero-day synthesis signatures.",
+    built:
+      "A comprehensive review published in IEEE Xplore categorizing audio deepfake generation methods, temporal and spectral feature representations, benchmark forensic evaluation datasets (ASVspoof, In-the-Wild), and adversarial evasion attacks, proposing pathways toward robust, generalizable forensic defenses.",
+    learned:
+      "Taxonomy of audio generation pipelines, acoustic distortion signatures under compression and transmission noise, cross-dataset generalization limitations, and multimodal forensic countermeasures.",
+    links: {
+      paper: "https://ieeexplore.ieee.org/document/11323737",
+      doi: "10.1109/ICTBIG68706.2025.11323737",
+      doiUrl: "https://doi.org/10.1109/ICTBIG68706.2025.11323737",
+      proceedings: "https://ieeexplore.ieee.org/xpl/conhome/11323510/proceeding",
+      conference: "2025 IEEE 5th ICTBIG (12–13 Dec 2025 · Added to Xplore: 13 Jan 2026)",
+    },
+  },
+  {
     id: "ieee-deepfake",
-    title: "Real-Time Detection of AI-Generated Deepfake Audio",
+    title: "Real-Time Detection of AI-Generated Deepfake Audio: A Novel Approach",
     subtitle: "Research Publication — ICTBIG 2024 (IEEE Xplore)",
     track: "cybersecurity",
     trackLabel: "Cybersecurity Research",
@@ -20,8 +42,10 @@ const projectItems = [
     learned:
       "Advanced acoustic signal representation, spectrogram feature engineering, and optimizing neural inference for low latency without sacrificing accuracy.",
     links: {
-      paper: "https://doi.org/10.1109/ICTBIG57409.2024.10911062",
-      doi: "10.1109/ICTBIG57409.2024.10911062",
+      paper: "https://ieeexplore.ieee.org/document/10911062",
+      doi: "10.1109/ICTBIG64922.2024.10911062",
+      doiUrl: "https://doi.org/10.1109/ICTBIG64922.2024.10911062",
+      conference: "2024 IEEE 4th ICTBIG (13–14 Dec 2024 · Added to Xplore: 13 Mar 2025)",
     },
   },
   {
@@ -96,6 +120,60 @@ const projectItems = [
       note: "Client production code subject to NDA",
     },
   },
+  {
+    id: "ai-resume-builder",
+    title: "AI-Resume-Builder",
+    subtitle: "AI-Powered Resume Builder with Real-Time Preview",
+    track: "web",
+    trackLabel: "Web Development",
+    isFeatured: false,
+    tags: ["Next.js 14", "TypeScript", "Tailwind CSS", "OpenAI GPT-4", "PDF Export", "Serverless"],
+    problem:
+      "Job applicants often struggle with articulating bullet points effectively and formatting clean, ATS-compliant resumes without tedious manual tweaking.",
+    built:
+      "A full-stack, AI-driven resume builder built on Next.js 14 App Router, React, TypeScript, and Tailwind CSS. Connects to OpenAI's GPT API via lightweight serverless routes to generate tailored summaries and experience descriptions, offers multiple responsive resume templates with live interactive preview, and compiles print-ready PDFs for download.",
+    learned:
+      "Mastering Next.js 14 serverless API routing, streaming OpenAI completions with rate limiting, client-side dynamic PDF document compilation, and building accessible customizable form templates.",
+    links: {
+      github: "https://github.com/prathamesh-07/AI-Resume-Builder",
+    },
+  },
+  {
+    id: "investinsight-stock-prediction",
+    title: "InvestInsight — Stock Prediction & Portfolio Platform",
+    subtitle: "Time-Series Stock Forecasting & Portfolio Analytics",
+    track: "web",
+    trackLabel: "Web Development",
+    isFeatured: false,
+    tags: ["Python", "Streamlit", "TensorFlow", "Keras", "LSTM", "Prophet", "Plotly", "yFinance"],
+    problem:
+      "Retail investors require clear predictive analytics and historical volatility indicators in an intuitive, unified dashboard without having to write custom machine learning scripts.",
+    built:
+      "A web-based financial analytics platform built with Streamlit and Python. Pulls real-time market data through the yFinance API, computes technical indicators (RSI, Moving Averages, Volatility), and generates time-series forecasts using both statistical models (Facebook Prophet) and deep learning architectures (LSTM networks in TensorFlow/Keras), visualized with dynamic Plotly charts.",
+    learned:
+      "Recurrent neural network (LSTM) sequence modeling for financial time-series data, Prophet trend and seasonality decomposition, and architecting reactive Python web UIs with Streamlit.",
+    links: {
+      github: "https://github.com/prathamesh-07/-Stock-Prediction-Webapp",
+    },
+  },
+  {
+    id: "firmware-hawk-eye",
+    title: "Firmware HawkEye",
+    subtitle: "Embedded Firmware Security Analysis & Vulnerability Scanner",
+    track: "cybersecurity",
+    trackLabel: "Cybersecurity",
+    isFeatured: false,
+    tags: ["TypeScript", "React 18", "Tailwind CSS", "Radix UI", "Firmware Analysis", "Security Auditing"],
+    problem:
+      "Embedded IoT device firmware often harbors critical security misconfigurations, exposed keys, and outdated component vulnerabilities that are cumbersome to detect without specialized tooling.",
+    built:
+      "A dedicated firmware security analysis platform built with React 18, TypeScript, Tailwind CSS, and Radix UI primitives. Ingests binary firmware files, performs automated vulnerability detection and potential issue scanning, visualizes internal firmware structure, generates prioritized remediation recommendations, and exports structured audit reports in JSON.",
+    learned:
+      "Firmware binary analysis methodologies, security audit reporting workflows, accessible dashboard component composition using Radix UI primitives, and asynchronous client-side file inspection.",
+    links: {
+      github: "https://github.com/prathamesh-07/firmware-hawk-eye",
+    },
+  },
 ];
 
 const ProjectsPage = () => {
@@ -164,7 +242,7 @@ const ProjectsPage = () => {
               Projects & Research
             </h1>
             <p className="mt-2 text-secondary text-base max-w-2xl leading-relaxed">
-              Real systems spanning secure web applications, data migration pipelines with cryptographic verification, and published AI audio forensic research.
+              Real systems spanning secure web applications, data migration pipelines with cryptographic verification, and 2 published IEEE Xplore papers in AI audio forensic research.
             </p>
           </div>
 
@@ -202,83 +280,165 @@ const ProjectsPage = () => {
         {/* Bento Grid */}
         <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
 
-          {/* Featured Wide Tile: IEEE Research Paper */}
+          {/* Featured Wide Tiles: 2x Published IEEE Research Papers */}
           {(currentTrack === "all" || currentTrack === "cybersecurity") && (
-            <article
-              className="md:col-span-12 bg-[#151030] border border-[#8b5cf6]/40 rounded-2xl p-6 sm:p-8 shadow-card flex flex-col justify-between relative overflow-hidden"
-            >
-              <div className="absolute top-0 right-0 w-64 h-64 bg-[#8b5cf6]/10 rounded-full blur-3xl pointer-events-none" />
+            <>
+              {/* Paper 1: ICTBIG 2025 Comprehensive Review */}
+              <article
+                className="md:col-span-12 bg-[#151030] border border-[#8b5cf6]/40 rounded-2xl p-6 sm:p-8 shadow-card flex flex-col justify-between relative overflow-hidden"
+              >
+                <div className="absolute top-0 right-0 w-64 h-64 bg-[#8b5cf6]/10 rounded-full blur-3xl pointer-events-none" />
 
-              <div>
-                <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
-                  <div className="flex items-center gap-2">
-                    <span className="text-xs px-3 py-1 rounded-full bg-[#8b5cf6]/20 text-[#c4b5fd] border border-[#8b5cf6]/40 font-bold uppercase tracking-wider">
-                      Published Research · IEEE Xplore
-                    </span>
-                    <span className="text-xs text-secondary font-mono">ICTBIG 2024</span>
+                <div>
+                  <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
+                    <div className="flex items-center gap-2">
+                      <span className="text-xs px-3 py-1 rounded-full bg-[#8b5cf6]/20 text-[#c4b5fd] border border-[#8b5cf6]/40 font-bold uppercase tracking-wider">
+                        Published Research · IEEE Xplore
+                      </span>
+                      <span className="text-xs text-secondary font-mono">ICTBIG 2025</span>
+                    </div>
+                    <a
+                      href="https://doi.org/10.1109/ICTBIG68706.2025.11323737"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#8b5cf6] hover:text-white transition-colors"
+                    >
+                      <span>DOI: 10.1109/ICTBIG68706.2025.11323737</span>
+                      <IconExternalLink size={14} />
+                    </a>
                   </div>
+
+                  <h2 className="text-xl sm:text-2xl lg:text-3xl font-black text-white leading-tight mb-2">
+                    A Comprehensive Review of Deepfake Audio Detection Techniques: Advances, Challenges and Future Directions
+                  </h2>
+                  <p className="text-secondary text-sm sm:text-base max-w-4xl leading-relaxed mb-6">
+                    Published peer-reviewed survey examining the audio deepfake threat landscape in IEEE Xplore. Synthesizes generative voice cloning architectures, acoustic anomaly indicators across time and frequency domains, forensic benchmark evaluation (ASVspoof, In-the-Wild), and prospective multimodal defenses.
+                  </p>
+
+                  {/* Method Overview Pill Steps */}
+                  <div className="grid grid-cols-1 sm:grid-cols-4 gap-3 mb-6">
+                    {[
+                      { step: "01", title: "Synthesis Taxonomy", desc: "TTS, neural voice cloning, and diffusion generation architectures." },
+                      { step: "02", title: "Acoustic Artifacts", desc: "Temporal, spectral, and prosodic anomaly representations." },
+                      { step: "03", title: "Benchmark Evaluation", desc: "Comparative analysis across ASVspoof, In-the-Wild, and detection gaps." },
+                      { step: "04", title: "Defense Paradigms", desc: "Adversarial evasion vectors and multimodal forensic avenues." },
+                    ].map((m) => (
+                      <div key={m.step} className="p-3 rounded-xl bg-[#100d25] border border-white/5">
+                        <span className="text-xs font-mono font-bold text-[#8b5cf6]">{m.step}</span>
+                        <h3 className="text-xs font-bold text-white mt-1">{m.title}</h3>
+                        <p className="text-[11px] text-secondary mt-0.5 leading-snug">{m.desc}</p>
+                      </div>
+                    ))}
+                  </div>
+
+                  <div className="flex flex-wrap gap-2 mb-6">
+                    {["Deepfake Forensics", "Survey", "Voice Synthesis", "Acoustic Artifacts", "ASVspoof", "IEEE Xplore"].map((tag) => (
+                      <span key={tag} className="px-2.5 py-1 rounded-md text-xs font-medium bg-white/5 text-secondary border border-white/10">
+                        #{tag}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="pt-4 border-t border-white/5 flex flex-wrap items-center justify-between gap-4">
+                  <button
+                    type="button"
+                    onClick={() => setActiveModalProject(projectItems[0])}
+                    className="px-4 py-2 rounded-xl text-xs font-semibold text-white bg-white/10 hover:bg-white/20 transition-colors"
+                  >
+                    View Full Study Details
+                  </button>
+                  <div className="flex items-center gap-2">
+                    <a
+                      href="https://ieeexplore.ieee.org/document/11323737"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-semibold text-white bg-[#8b5cf6] hover:bg-[#7c3aed] transition-colors"
+                    >
+                      <span>Open IEEE Xplore Record</span>
+                      <IconExternalLink size={14} />
+                    </a>
+                  </div>
+                </div>
+              </article>
+
+              {/* Paper 2: ICTBIG 2024 Real-Time Detection */}
+              <article
+                className="md:col-span-12 bg-[#151030] border border-[#8b5cf6]/40 rounded-2xl p-6 sm:p-8 shadow-card flex flex-col justify-between relative overflow-hidden"
+              >
+                <div className="absolute top-0 right-0 w-64 h-64 bg-[#8b5cf6]/10 rounded-full blur-3xl pointer-events-none" />
+
+                <div>
+                  <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
+                    <div className="flex items-center gap-2">
+                      <span className="text-xs px-3 py-1 rounded-full bg-[#8b5cf6]/20 text-[#c4b5fd] border border-[#8b5cf6]/40 font-bold uppercase tracking-wider">
+                        Published Research · IEEE Xplore
+                      </span>
+                      <span className="text-xs text-secondary font-mono">ICTBIG 2024</span>
+                    </div>
+                    <a
+                      href="https://doi.org/10.1109/ICTBIG64922.2024.10911062"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#8b5cf6] hover:text-white transition-colors"
+                    >
+                      <span>DOI: 10.1109/ICTBIG64922.2024.10911062</span>
+                      <IconExternalLink size={14} />
+                    </a>
+                  </div>
+
+                  <h2 className="text-xl sm:text-2xl lg:text-3xl font-black text-white leading-tight mb-2">
+                    Real-Time Detection of AI-Generated Deepfake Audio: A Novel Approach
+                  </h2>
+                  <p className="text-secondary text-sm sm:text-base max-w-4xl leading-relaxed mb-6">
+                    Published peer-reviewed research addressing synthetic voice cloning threats in IEEE Xplore. Engineered a CNN-based signal-processing pipeline using spectral feature analysis (STFT and MFCCs) capable of distinguishing synthetic speech from authentic human speech in real time with minimal latency overhead.
+                  </p>
+
+                  {/* Method Overview Pill Steps */}
+                  <div className="grid grid-cols-1 sm:grid-cols-4 gap-3 mb-6">
+                    {[
+                      { step: "01", title: "STFT Conversion", desc: "Audio signal converted to time-frequency spectrogram." },
+                      { step: "02", title: "Feature Extraction", desc: "MFCC, chroma, and spectral contrast vectors computed." },
+                      { step: "03", title: "CNN Analysis", desc: "Convolutional network learns synthetic acoustic artifacts." },
+                      { step: "04", title: "Real-Time Scoring", desc: "Softmax probability outputs authentic vs deepfake confidence." },
+                    ].map((m) => (
+                      <div key={m.step} className="p-3 rounded-xl bg-[#100d25] border border-white/5">
+                        <span className="text-xs font-mono font-bold text-[#8b5cf6]">{m.step}</span>
+                        <h3 className="text-xs font-bold text-white mt-1">{m.title}</h3>
+                        <p className="text-[11px] text-secondary mt-0.5 leading-snug">{m.desc}</p>
+                      </div>
+                    ))}
+                  </div>
+
+                  <div className="flex flex-wrap gap-2 mb-6">
+                    {["Signal Processing", "CNN", "STFT Spectrograms", "MFCCs", "AI Threat Defense", "IEEE Xplore"].map((tag) => (
+                      <span key={tag} className="px-2.5 py-1 rounded-md text-xs font-medium bg-white/5 text-secondary border border-white/10">
+                        #{tag}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="pt-4 border-t border-white/5 flex flex-wrap items-center justify-between gap-4">
+                  <button
+                    type="button"
+                    onClick={() => setActiveModalProject(projectItems[1])}
+                    className="px-4 py-2 rounded-xl text-xs font-semibold text-white bg-white/10 hover:bg-white/20 transition-colors"
+                  >
+                    View Full Study Details
+                  </button>
                   <a
-                    href="https://doi.org/10.1109/ICTBIG57409.2024.10911062"
+                    href="https://ieeexplore.ieee.org/document/10911062"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#8b5cf6] hover:text-white transition-colors"
+                    className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-semibold text-white bg-[#8b5cf6] hover:bg-[#7c3aed] transition-colors"
                   >
-                    <span>DOI: 10.1109/ICTBIG57409.2024.10911062</span>
+                    <span>Open IEEE Xplore Record</span>
                     <IconExternalLink size={14} />
                   </a>
                 </div>
-
-                <h2 className="text-xl sm:text-3xl font-black text-white leading-tight mb-2">
-                  Real-Time Detection of AI-Generated Deepfake Audio: A Novel Approach
-                </h2>
-                <p className="text-secondary text-sm sm:text-base max-w-4xl leading-relaxed mb-6">
-                  Published peer-reviewed research addressing synthetic voice cloning threats. Engineered a CNN-based signal-processing pipeline using spectral feature analysis (STFT and MFCCs) capable of distinguishing synthetic speech from authentic human speech in real time with minimal latency overhead.
-                </p>
-
-                {/* Method Overview Pill Steps */}
-                <div className="grid grid-cols-1 sm:grid-cols-4 gap-3 mb-6">
-                  {[
-                    { step: "01", title: "STFT Conversion", desc: "Audio signal converted to time-frequency spectrogram." },
-                    { step: "02", title: "Feature Extraction", desc: "MFCC, chroma, and spectral contrast vectors computed." },
-                    { step: "03", title: "CNN Analysis", desc: "Convolutional network learns synthetic acoustic artifacts." },
-                    { step: "04", title: "Real-Time Scoring", desc: "Softmax probability outputs authentic vs deepfake confidence." },
-                  ].map((m) => (
-                    <div key={m.step} className="p-3 rounded-xl bg-[#100d25] border border-white/5">
-                      <span className="text-xs font-mono font-bold text-[#8b5cf6]">{m.step}</span>
-                      <h3 className="text-xs font-bold text-white mt-1">{m.title}</h3>
-                      <p className="text-[11px] text-secondary mt-0.5 leading-snug">{m.desc}</p>
-                    </div>
-                  ))}
-                </div>
-
-                <div className="flex flex-wrap gap-2 mb-6">
-                  {["Signal Processing", "CNN", "STFT Spectrograms", "MFCCs", "AI Threat Defense"].map((tag) => (
-                    <span key={tag} className="px-2.5 py-1 rounded-md text-xs font-medium bg-white/5 text-secondary border border-white/10">
-                      #{tag}
-                    </span>
-                  ))}
-                </div>
-              </div>
-
-              <div className="pt-4 border-t border-white/5 flex flex-wrap items-center justify-between gap-4">
-                <button
-                  type="button"
-                  onClick={() => setActiveModalProject(projectItems[0])}
-                  className="px-4 py-2 rounded-xl text-xs font-semibold text-white bg-white/10 hover:bg-white/20 transition-colors"
-                >
-                  View Full Study Details
-                </button>
-                <a
-                  href="https://doi.org/10.1109/ICTBIG57409.2024.10911062"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-semibold text-white bg-[#8b5cf6] hover:bg-[#7c3aed] transition-colors"
-                >
-                  <span>Open IEEE Xplore Record</span>
-                  <IconExternalLink size={14} />
-                </a>
-              </div>
-            </article>
+              </article>
+            </>
           )}
 
           {/* Regular Project Tiles */}

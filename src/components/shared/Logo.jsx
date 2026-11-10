@@ -1,13 +1,21 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-// Color Icon
+// Color Icon (Solid Disc)
 import icon48Webp from '../../assets/brand/logo-icon-48.webp';
 import icon96Webp from '../../assets/brand/logo-icon-96.webp';
 import icon192Webp from '../../assets/brand/logo-icon-192.webp';
 import icon48Png from '../../assets/brand/logo-icon-48.png';
 import icon96Png from '../../assets/brand/logo-icon-96.png';
 import icon192Png from '../../assets/brand/logo-icon-192.png';
+
+// Color Logo Mark (Transparent Background, Open Gradient Ring)
+import mark48Webp from '../../assets/brand/logo-mark-48.webp';
+import mark96Webp from '../../assets/brand/logo-mark-96.webp';
+import mark192Webp from '../../assets/brand/logo-mark-192.webp';
+import mark48Png from '../../assets/brand/logo-mark-48.png';
+import mark96Png from '../../assets/brand/logo-mark-96.png';
+import mark192Png from '../../assets/brand/logo-mark-192.png';
 
 // Color Horizontal
 import horiz240Webp from '../../assets/brand/logo-horizontal-240.webp';
@@ -64,7 +72,55 @@ import monoBlackHoriz480Png from '../../assets/brand/logo-mono-black-horizontal-
 import monoBlackHoriz640Png from '../../assets/brand/logo-mono-black-horizontal-640.png';
 
 const ASSET_REGISTRY = {
+  // Transparent PC Logo Mark (Open gradient ring, transparent background - matches favicon mark)
   icon: {
+    color: {
+      aspectRatio: 1,
+      webpSrcSet: `${mark48Webp} 48w, ${mark96Webp} 96w, ${mark192Webp} 192w`,
+      pngSrcSet: `${mark48Png} 48w, ${mark96Png} 96w, ${mark192Png} 192w`,
+      fallback: mark96Png,
+      sizes: '(max-width: 640px) 48px, 96px',
+    },
+    white: {
+      aspectRatio: 1,
+      webpSrcSet: `${monoWhiteIcon48Webp} 48w, ${monoWhiteIcon96Webp} 96w, ${monoWhiteIcon192Webp} 192w`,
+      pngSrcSet: `${monoWhiteIcon48Png} 48w, ${monoWhiteIcon96Png} 96w, ${monoWhiteIcon192Png} 192w`,
+      fallback: monoWhiteIcon96Png,
+      sizes: '(max-width: 640px) 48px, 96px',
+    },
+    black: {
+      aspectRatio: 1,
+      webpSrcSet: `${monoBlackIcon48Webp} 48w, ${monoBlackIcon96Webp} 96w, ${monoBlackIcon192Webp} 192w`,
+      pngSrcSet: `${monoBlackIcon48Png} 48w, ${monoBlackIcon96Png} 96w, ${monoBlackIcon192Png} 192w`,
+      fallback: monoBlackIcon96Png,
+      sizes: '(max-width: 640px) 48px, 96px',
+    },
+  },
+  mark: {
+    color: {
+      aspectRatio: 1,
+      webpSrcSet: `${mark48Webp} 48w, ${mark96Webp} 96w, ${mark192Webp} 192w`,
+      pngSrcSet: `${mark48Png} 48w, ${mark96Png} 96w, ${mark192Png} 192w`,
+      fallback: mark96Png,
+      sizes: '(max-width: 640px) 48px, 96px',
+    },
+    white: {
+      aspectRatio: 1,
+      webpSrcSet: `${monoWhiteIcon48Webp} 48w, ${monoWhiteIcon96Webp} 96w, ${monoWhiteIcon192Webp} 192w`,
+      pngSrcSet: `${monoWhiteIcon48Png} 48w, ${monoWhiteIcon96Png} 96w, ${monoWhiteIcon192Png} 192w`,
+      fallback: monoWhiteIcon96Png,
+      sizes: '(max-width: 640px) 48px, 96px',
+    },
+    black: {
+      aspectRatio: 1,
+      webpSrcSet: `${monoBlackIcon48Webp} 48w, ${monoBlackIcon96Webp} 96w, ${monoBlackIcon192Webp} 192w`,
+      pngSrcSet: `${monoBlackIcon48Png} 48w, ${monoBlackIcon96Png} 96w, ${monoBlackIcon192Png} 192w`,
+      fallback: monoBlackIcon96Png,
+      sizes: '(max-width: 640px) 48px, 96px',
+    },
+  },
+  // Solid Disc Variant
+  disc: {
     color: {
       aspectRatio: 1,
       webpSrcSet: `${icon48Webp} 48w, ${icon96Webp} 96w, ${icon192Webp} 192w`,
@@ -137,6 +193,8 @@ const ASSET_REGISTRY = {
 
 const MIN_SIZES = {
   icon: 24,
+  mark: 24,
+  disc: 24,
   horizontal: 160,
   stacked: 120,
 };
@@ -178,7 +236,7 @@ export const Logo = ({
   } else if (computedHeight && !computedWidth) {
     computedWidth = Math.round(computedHeight / asset.aspectRatio);
   } else if (!computedWidth && !computedHeight) {
-    if (selectedVariant === 'icon') {
+    if (selectedVariant === 'icon' || selectedVariant === 'mark' || selectedVariant === 'disc') {
       computedWidth = 36;
       computedHeight = 36;
     } else if (selectedVariant === 'horizontal') {

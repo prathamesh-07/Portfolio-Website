@@ -15,7 +15,7 @@ import {
 
 const HomePage = () => {
   useEffect(() => {
-    document.title = "Prathamesh Chiddarwar | Full-Stack Developer & Cyber Security Student";
+    document.title = "Prathamesh Chiddarwar | Full-Stack Developer & Cyber Security Graduate";
   }, []);
 
   return (

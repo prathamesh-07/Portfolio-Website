@@ -16,6 +16,9 @@ All source artwork is archived untouched in `/brand-source/`. Optimized WebP and
 | **4. Stacked Lockup** | `logo-stacked-color-raw.png` | 681 × 411 px (~1.66 : 1) | `logo-stacked-240.{webp,png}`<br>`logo-stacked-400.{webp,png}`<br>`logo-stacked-640.{webp,png}` | `public/og-image.png` (1200 × 630 px) |
 | **5. Mono Black Lockup** | `logo-mono-black-raw.png` | 958 × 202 px (~4.74 : 1) | `logo-mono-black-horizontal-{240,320,480,640}`<br>`logo-mono-black-icon-{48,96,192}` | `brand-export/email-sig-400w-black.png` |
 | **6. Mono White Lockup** | `logo-mono-white-raw.png` | 958 × 202 px (~4.74 : 1) | `logo-mono-white-horizontal-{240,320,480,640}`<br>`logo-mono-white-icon-{48,96,192}` | Used in footer copyright row & dark watermarks |
+| **7. 4:5 Portrait** | `portrait-4x5-raw.jpg` | 819 × 1024 px (4:5) | `portrait-4x5-{480,800,1200,1600}.{avif,webp,jpg}`<br>`portrait-4x5-lqip.webp` | Hero bento tile on `/about` |
+| **8. 1:1 Square Portrait** | `portrait-1x1-raw.jpg` | 1024 × 1024 px (1:1) | `portrait-1x1-{480,800,1200}.{avif,webp,jpg}` | `public/portrait-square.jpg` (Open Graph fallback) |
+| **9. Circular Avatar** | `portrait-1x1-raw.jpg` | 1024 × 1024 px (Circle masked) | `avatar-circle-{120,240,480}.{webp,png}` | `brand-export/avatar-circle-480.png` |
 
 ---
 

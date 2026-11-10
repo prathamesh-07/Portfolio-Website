@@ -122,6 +122,19 @@ const technologies = [
 
 const experiences = [
   {
+    title: "Researcher (Published IEEE Xplore)",
+    company_name: "ICTBIG 2025 (DOI: 10.1109/ICTBIG68706.2025.11323737)",
+    link: "https://ieeexplore.ieee.org/document/11323737",
+    track: "Cybersecurity",
+    icon: web,
+    iconBg: "#151030",
+    date: "Dec 2025 – Jan 2026",
+    points: [
+      "Authored and published 'A Comprehensive Review of Deepfake Audio Detection Techniques: Advances, Challenges and Future Directions' in IEEE Xplore.",
+      "Comprehensive analysis of voice synthesis paradigms, acoustic feature representations, benchmark datasets, and adversarial evasion vectors.",
+    ],
+  },
+  {
     title: "Full Stack Developer Intern",
     company_name: "DelPat LLP (Remote)",
     track: "Web Development",
@@ -134,18 +147,6 @@ const experiences = [
       "Built a reusable component library adopted across multiple projects, cutting redundant development time and enforcing consistent design standards.",
       "Kickstarted a cross-platform React Native app from PRD and ER-diagram design through navigation and UI-library integration.",
       "Provisioned AWS EC2 cloud infrastructure and managed multi-environment deployments via Vercel and Firebase Hosting, independently resolving CI/build and backend-integration issues.",
-    ],
-  },
-  {
-    title: "Researcher (Published IEEE Xplore)",
-    company_name: "ICTBIG 2024 (DOI: 10.1109/ICTBIG57409.2024.10911062)",
-    track: "Cybersecurity",
-    icon: web,
-    iconBg: "#151030",
-    date: "Nov 2024 – Mar 2025",
-    points: [
-      "Authored and published 'Real-Time Detection of AI-Generated Deepfake Audio: A Novel Approach' in IEEE Xplore for the AI-security research community.",
-      "Researched and implemented a CNN-based signal-processing pipeline for real-time deepfake audio detection using spectral feature analysis.",
     ],
   },
   {
@@ -170,6 +171,19 @@ const experiences = [
       "Completed rigorous GIAN certification on Decentralized Systems and distributed ledger architecture at NIT Goa.",
     ],
   },
+  {
+    title: "Researcher (Published IEEE Xplore)",
+    company_name: "ICTBIG 2024 (DOI: 10.1109/ICTBIG64922.2024.10911062)",
+    link: "https://ieeexplore.ieee.org/document/10911062",
+    track: "Cybersecurity",
+    icon: web,
+    iconBg: "#151030",
+    date: "Nov 2024 – Mar 2025",
+    points: [
+      "Authored and published 'Real-Time Detection of AI-Generated Deepfake Audio: A Novel Approach' in IEEE Xplore for the AI-security research community.",
+      "Researched and implemented a CNN-based signal-processing pipeline for real-time deepfake audio detection using spectral feature analysis.",
+    ],
+  },
 ];
 
 const testimonials = [
@@ -177,7 +191,7 @@ const testimonials = [
     testimonial:
       "B.Tech in Computer Science (Cyber Security and Forensics) — CGPA 7.47 / 10",
     name: "MIT World Peace University, Pune",
-    designation: "2022 – 2026",
+    designation: "Graduated 2026",
     company: "Pune, India",
     image: null,
   },
@@ -200,6 +214,75 @@ const testimonials = [
 ];
 
 const projects = [
+  {
+    name: "AI-Resume-Builder",
+    subtitle: "AI-Powered Resume Generator",
+    track: "Web Development",
+    description:
+      "Full-stack AI resume builder built with Next.js 14 App Router, TypeScript, and Tailwind CSS. Integrates OpenAI's GPT API via serverless backend routes to generate tailored work summaries and bullet points, supports multiple responsive templates, and provides real-time preview with PDF export.",
+    tags: [
+      {
+        name: "Next.js",
+        color: "blue-text-gradient",
+      },
+      {
+        name: "TypeScript",
+        color: "green-text-gradient",
+      },
+      {
+        name: "OpenAI GPT-4",
+        color: "pink-text-gradient",
+      },
+    ],
+    image: jobit,
+    source_code_link: "https://github.com/prathamesh-07/AI-Resume-Builder",
+  },
+  {
+    name: "Firmware HawkEye",
+    subtitle: "Automated Firmware Vulnerability Scanner",
+    track: "Cybersecurity",
+    description:
+      "Security analysis tool designed to inspect embedded firmware binaries for security vulnerabilities, configuration flaws, and attack surfaces. Built with React 18, TypeScript, Tailwind CSS, and Radix UI with automated issue detection, structure visualization, and actionable remediation reports.",
+    tags: [
+      {
+        name: "TypeScript",
+        color: "blue-text-gradient",
+      },
+      {
+        name: "React",
+        color: "green-text-gradient",
+      },
+      {
+        name: "Firmware Security",
+        color: "pink-text-gradient",
+      },
+    ],
+    image: tripguide,
+    source_code_link: "https://github.com/prathamesh-07/firmware-hawk-eye",
+  },
+  {
+    name: "InvestInsight",
+    subtitle: "Stock Prediction & Portfolio Management",
+    track: "Web Development",
+    description:
+      "Web-based financial forecasting and portfolio management platform built with Python and Streamlit. Utilizes Facebook Prophet for statistical time-series forecasting and LSTM deep learning models in TensorFlow/Keras to predict stock prices from live yFinance market data with interactive Plotly visual analytics.",
+    tags: [
+      {
+        name: "Python",
+        color: "blue-text-gradient",
+      },
+      {
+        name: "TensorFlow / LSTM",
+        color: "green-text-gradient",
+      },
+      {
+        name: "Prophet",
+        color: "pink-text-gradient",
+      },
+    ],
+    image: carrent,
+    source_code_link: "https://github.com/prathamesh-07/-Stock-Prediction-Webapp",
+  },
   {
     name: "Email Security Analyst",
     subtitle: "Phishing Detection Platform",

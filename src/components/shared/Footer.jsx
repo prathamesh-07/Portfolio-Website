@@ -32,7 +32,7 @@ const Footer = () => {
               <Logo variant="horizontal" tone="color" height={56} decorative={false} />
             </Link>
             <p className="text-secondary text-sm max-w-md leading-relaxed mt-1">
-              Full-stack developer and cybersecurity student. Building secure, production-grade web applications and researching AI-driven security threats.
+              Full-stack developer and cybersecurity graduate (Class of 2026). Building secure, production-grade web applications and researching AI-driven security threats.
             </p>
             <div className="flex items-center gap-2 mt-2">
               <span className="text-xs px-2.5 py-1 rounded-full bg-[#6366f1]/20 text-[#a5b4fc] border border-[#6366f1]/30 font-medium">

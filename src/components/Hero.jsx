@@ -32,7 +32,7 @@ const Hero = () => {
             transition={{ duration: 0.5, delay: 0.4 }}
             className="text-[#dfd9ff] font-medium lg:text-[24px] sm:text-[20px] xs:text-[18px] text-[15px] lg:leading-[36px] tracking-wide max-w-2xl"
           >
-            Full-Stack Developer & Cyber Security Student. I build production web applications and research AI-driven security threats.
+            Full-Stack Developer & Cyber Security Graduate (Class of 2026). I build production web applications and research AI-driven security threats.
             <br className="sm:block hidden" />
           </motion.p>
         </div>

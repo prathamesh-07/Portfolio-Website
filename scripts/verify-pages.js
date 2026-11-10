@@ -2,6 +2,7 @@ import puppeteer from 'puppeteer-core';
 import http from 'http';
 import fs from 'fs';
 import path from 'path';
+import os from 'os';
 import { fileURLToPath } from 'url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -36,10 +37,11 @@ const port = 4190;
 
 server.listen(port, async () => {
   console.log(`Server running at http://localhost:${port}`);
+  const testUserDir = fs.mkdtempSync(path.join(os.tmpdir(), 'chrome-test-'));
   const browser = await puppeteer.launch({
     executablePath: chromePath,
     headless: 'new',
-    userDataDir: path.join(__dirname, '..', '.chrome-test-' + Date.now()),
+    userDataDir: testUserDir,
     args: ['--no-sandbox', '--disable-gpu'],
   });
 
