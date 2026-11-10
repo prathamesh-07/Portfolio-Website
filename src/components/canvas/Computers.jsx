@@ -1,6 +1,6 @@
 import React, { Suspense, useEffect, useState } from "react";
 import { Canvas } from "@react-three/fiber";
-import { OrbitControls, Preload, useGLTF } from "@react-three/drei";
+import { OrbitControls, useGLTF } from "@react-three/drei";
 
 import CanvasLoader from "../Loader";
 
@@ -26,29 +26,8 @@ class CanvasErrorBoundary extends React.Component {
   }
 }
 
-const isMobileOrTouch = () => {
-  if (typeof window === "undefined") return false;
-
-  // 1. Viewport width check
-  if (window.innerWidth <= 768) return true;
-
-  // 2. Mobile / tablet user agent detection (catches mobile browsers running in "Desktop site" mode)
-  const ua = navigator.userAgent || navigator.vendor || window.opera || "";
-  if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini|Mobile|mobile|CriOS/i.test(ua)) {
-    return true;
-  }
-
-  // 3. Touch device with coarse pointer (phones / tablets in desktop mode)
-  const hasTouch = (navigator.maxTouchPoints && navigator.maxTouchPoints > 1) || ("ontouchstart" in window);
-  const isCoarse = window.matchMedia && window.matchMedia("(pointer: coarse)").matches;
-  if (hasTouch && isCoarse) {
-    return true;
-  }
-
-  return false;
-};
-
 const isWebGLAvailable = () => {
+  if (typeof window === "undefined") return false;
   try {
     const canvas = document.createElement("canvas");
     return !!(
@@ -60,40 +39,41 @@ const isWebGLAvailable = () => {
   }
 };
 
-const Computers = ({ isMobile }) => {
-  const computer = useGLTF("./desktop_pc/scene.gltf");
+const Computers = ({ isPortrait }) => {
+  const computer = useGLTF("/desktop_pc/scene.gltf");
 
-  // Fix NaNs in geometry synchronously right after loading (before rendering)
-  // This prevents Preload or other components from running into NaN values
-  if (computer && computer.scene) {
-    computer.scene.traverse((child) => {
-      if (child.isMesh && child.geometry) {
-        try {
-          if (child.geometry.attributes && child.geometry.attributes.position) {
-            const positions = child.geometry.attributes.position.array;
-            let hasNaN = false;
-            for (let i = 0; i < positions.length; i++) {
-              if (isNaN(positions[i])) {
-                hasNaN = true;
-                positions[i] = 0;
+  // Fix NaNs in geometry safely inside useEffect once upon loading
+  useEffect(() => {
+    if (computer?.scene) {
+      computer.scene.traverse((child) => {
+        if (child.isMesh && child.geometry) {
+          try {
+            if (child.geometry.attributes?.position) {
+              const positions = child.geometry.attributes.position.array;
+              let hasNaN = false;
+              for (let i = 0; i < positions.length; i++) {
+                if (isNaN(positions[i])) {
+                  hasNaN = true;
+                  positions[i] = 0;
+                }
+              }
+              if (hasNaN) {
+                child.geometry.attributes.position.needsUpdate = true;
+                try {
+                  child.geometry.computeBoundingBox();
+                  child.geometry.computeBoundingSphere();
+                } catch (e) {
+                  // Silently bypass recomputation failure
+                }
               }
             }
-            if (hasNaN) {
-              child.geometry.attributes.position.needsUpdate = true;
-              try {
-                child.geometry.computeBoundingBox();
-                child.geometry.computeBoundingSphere();
-              } catch (err) {
-                // Silently bypass recomputation failure
-              }
-            }
+          } catch (e) {
+            // Bypass geometry traversal error
           }
-        } catch (error) {
-          // Bypass geometry traversal error
         }
-      }
-    });
-  }
+      });
+    }
+  }, [computer]);
 
   return (
     <mesh>
@@ -104,13 +84,13 @@ const Computers = ({ isMobile }) => {
         penumbra={1}
         intensity={1}
         castShadow
-        shadow-mapSize={1024}
+        shadow-mapSize={512}
       />
       <pointLight intensity={1} />
       <primitive
         object={computer.scene}
-        scale={isMobile ? 0.7 : 0.75}
-        position={isMobile ? [0, -3, -2.2] : [0, -3.25, -1.5]}
+        scale={isPortrait ? 0.6 : 0.75}
+        position={isPortrait ? [0, -3.2, -1.8] : [0, -3.25, -1.5]}
         rotation={[-0.01, -0.2, -0.1]}
       />
     </mesh>
@@ -119,26 +99,29 @@ const Computers = ({ isMobile }) => {
 
 const ComputersCanvas = () => {
   const [shouldRender, setShouldRender] = useState(false);
+  const [isPortrait, setIsPortrait] = useState(false);
   const [hasContextLost, setHasContextLost] = useState(false);
 
   useEffect(() => {
-    const checkEligibility = () => {
-      const mobile = isMobileOrTouch();
+    const updateLayout = () => {
+      if (typeof window === "undefined") return;
+      // Allow rendering on desktop screens OR mobile devices in "Desktop site" mode (innerWidth >= 640px)
+      const hasWidth = window.innerWidth >= 640;
       const webgl = isWebGLAvailable();
-      setShouldRender(!mobile && webgl);
+      const portrait = window.innerHeight > window.innerWidth;
+
+      setIsPortrait(portrait);
+      setShouldRender(hasWidth && webgl);
     };
 
-    checkEligibility();
+    updateLayout();
 
-    const mediaQuery = window.matchMedia("(max-width: 768px)");
-    const handleResize = () => checkEligibility();
-
-    mediaQuery.addEventListener("change", handleResize);
-    window.addEventListener("resize", handleResize);
+    window.addEventListener("resize", updateLayout);
+    window.addEventListener("orientationchange", updateLayout);
 
     return () => {
-      mediaQuery.removeEventListener("change", handleResize);
-      window.removeEventListener("resize", handleResize);
+      window.removeEventListener("resize", updateLayout);
+      window.removeEventListener("orientationchange", updateLayout);
     };
   }, []);
 
@@ -151,8 +134,8 @@ const ComputersCanvas = () => {
       <Canvas
         frameloop='demand'
         shadows
-        dpr={[1, 1.5]}
-        camera={{ position: [20, 3, 5], fov: 25 }}
+        dpr={[1, 1.25]}
+        camera={{ position: [20, 3, 5], fov: isPortrait ? 35 : 25 }}
         gl={{ 
           preserveDrawingBuffer: false,
           antialias: true,
@@ -179,10 +162,8 @@ const ComputersCanvas = () => {
             enableDamping
             dampingFactor={0.25}
           />
-          <Computers isMobile={false} />
+          <Computers isPortrait={isPortrait} />
         </Suspense>
-
-        <Preload all />
       </Canvas>
     </CanvasErrorBoundary>
   );
