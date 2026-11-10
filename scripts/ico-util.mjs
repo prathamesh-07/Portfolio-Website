@@ -28,3 +28,4 @@ export function createIco(pngBuffers, sizes) {
 
   return Buffer.concat([header, ...entries, ...pngBuffers]);
 }
+

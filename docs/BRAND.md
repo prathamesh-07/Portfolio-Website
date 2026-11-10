@@ -122,3 +122,4 @@ import Logo from './components/shared/Logo';
 - **Never place the full-color horizontal logo over bright or busy backgrounds** where the light typography loses contrast.
 - **Never use bitmap rasterization without srcset.** The component generates 1x, 2x, and 3x densities for Retina displays.
 - **Never edit derivatives manually.** All files in `src/assets/brand/`, `public/`, and `brand-export/` are compiled deterministically from `/brand-source/`.
+

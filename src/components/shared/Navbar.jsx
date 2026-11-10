@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import Logo from "./Logo";
 import { menu, close } from "../../assets";
 import { navLinks } from "../../constants";
+import { IconGithub, IconLinkedin, IconMail } from "./Icons";
 
 const Navbar = () => {
   const [toggle, setToggle] = useState(false);
@@ -71,10 +72,11 @@ const Navbar = () => {
   return (
     <header
       className={`w-full flex items-center py-4 fixed top-0 z-50 transition-all duration-300 ${
-        scrolled
-          ? "bg-[#050816]/90 backdrop-blur-md border-b border-white/10 shadow-lg"
+        scrolled || toggle
+          ? "bg-[#050816] border-b border-white/10 shadow-lg"
           : "bg-transparent"
       }`}
+      style={scrolled || toggle ? { backgroundColor: '#050816' } : undefined}
     >
       <nav
         aria-label="Main Navigation"
@@ -170,52 +172,97 @@ const Navbar = () => {
             role="dialog"
             aria-modal="true"
             aria-label="Mobile Navigation Menu"
-            initial={{ opacity: 0, y: -10 }}
+            initial={{ opacity: 0, y: -8 }}
             animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            transition={{ duration: 0.2 }}
+            exit={{ opacity: 0, y: -8 }}
+            transition={{ duration: 0.15 }}
             onKeyDown={handleMenuKeyDown}
-            className="md:hidden fixed top-[72px] left-0 w-full bg-[#050816]/98 backdrop-blur-xl border-b border-white/10 p-6 z-40 shadow-2xl"
+            className="md:hidden fixed top-[68px] inset-x-0 bottom-0 w-full h-[calc(100dvh-68px)] bg-[#050816] p-6 z-50 shadow-2xl overflow-y-auto flex flex-col justify-between"
+            style={{ backgroundColor: '#050816' }}
           >
-            <div className="flex items-center gap-3 pb-3 mb-3 border-b border-white/10">
-              <Logo variant="icon" tone="color" height={32} decorative />
-              <span className="text-white font-semibold text-sm">
-                Prathamesh Chiddarwar
-              </span>
-            </div>
-            <ul className="list-none flex flex-col gap-3" role="list">
-              {navLinks.map((nav) => (
-                <li key={nav.title}>
-                  <NavLink
-                    to={nav.path}
-                    end={nav.path === "/"}
+            <div>
+              <div className="flex items-center gap-3 pb-3 mb-4 border-b border-white/10">
+                <Logo variant="icon" tone="color" height={32} decorative />
+                <div className="flex flex-col">
+                  <span className="text-white font-semibold text-sm">
+                    Prathamesh Chiddarwar
+                  </span>
+                  <span className="text-[11px] text-secondary">
+                    Web Development · Cybersecurity
+                  </span>
+                </div>
+              </div>
+              <ul className="list-none flex flex-col gap-2.5" role="list">
+                {navLinks.map((nav) => (
+                  <li key={nav.title}>
+                    <NavLink
+                      to={nav.path}
+                      end={nav.path === "/"}
+                      onClick={() => setToggle(false)}
+                      className={({ isActive }) =>
+                        `flex items-center min-h-[44px] px-4 py-2.5 rounded-xl text-[16px] font-medium transition-colors ${
+                          isActive
+                            ? "bg-[#6366f1]/20 text-white border-l-4 border-[#6366f1]"
+                            : "text-secondary hover:text-white hover:bg-white/5"
+                        }`
+                      }
+                      aria-current={location.pathname === nav.path ? "page" : undefined}
+                    >
+                      {nav.title}
+                    </NavLink>
+                  </li>
+                ))}
+                <li className="pt-3 border-t border-white/10 mt-2">
+                  <a
+                    href="/assets/Prathamesh_Chiddarwar_Resume.pdf"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    download="Prathamesh_Chiddarwar_Resume.pdf"
                     onClick={() => setToggle(false)}
-                    className={({ isActive }) =>
-                      `flex items-center min-h-[44px] px-4 py-2 rounded-lg text-[16px] font-medium transition-colors ${
-                        isActive
-                          ? "bg-[#6366f1]/20 text-white border-l-4 border-[#6366f1]"
-                          : "text-secondary hover:text-white hover:bg-white/5"
-                      }`
-                    }
-                    aria-current={location.pathname === nav.path ? "page" : undefined}
+                    className="w-full flex items-center justify-center min-h-[44px] py-3 rounded-xl text-sm font-semibold text-white bg-[#6366f1] hover:bg-[#4f46e5] shadow-lg shadow-[#6366f1]/25 transition-colors"
                   >
-                    {nav.title}
-                  </NavLink>
+                    Download Resume (PDF)
+                  </a>
                 </li>
-              ))}
-              <li className="pt-3 border-t border-white/10 mt-2">
+              </ul>
+            </div>
+
+            {/* Mobile Footer & Quick Links */}
+            <div className="pt-6 mt-6 border-t border-white/10 flex flex-col gap-4">
+              <div className="flex items-center justify-around text-secondary">
                 <a
-                  href="/assets/Prathamesh_Chiddarwar_Resume.pdf"
+                  href="https://github.com/prathamesh-07"
                   target="_blank"
                   rel="noopener noreferrer"
-                  download="Prathamesh_Chiddarwar_Resume.pdf"
-                  onClick={() => setToggle(false)}
-                  className="w-full flex items-center justify-center min-h-[44px] py-3 rounded-lg text-sm font-semibold text-white bg-[#6366f1] hover:bg-[#4f46e5] transition-colors"
+                  className="inline-flex items-center gap-1.5 text-xs hover:text-white transition-colors"
+                  aria-label="GitHub"
                 >
-                  Download Resume (PDF)
+                  <IconGithub size={16} />
+                  <span>GitHub</span>
                 </a>
-              </li>
-            </ul>
+                <a
+                  href="https://linkedin.com/in/prathamesh-chiddarwar"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1.5 text-xs hover:text-white transition-colors"
+                  aria-label="LinkedIn"
+                >
+                  <IconLinkedin size={16} />
+                  <span>LinkedIn</span>
+                </a>
+                <a
+                  href="mailto:prathameshchiddarwar42@gmail.com"
+                  className="inline-flex items-center gap-1.5 text-xs hover:text-white transition-colors"
+                  aria-label="Email"
+                >
+                  <IconMail size={16} />
+                  <span>Email</span>
+                </a>
+              </div>
+              <p className="text-[11px] text-center text-secondary/60">
+                © 2026 Prathamesh Chiddarwar. All rights reserved.
+              </p>
+            </div>
           </motion.div>
         )}
       </AnimatePresence>
