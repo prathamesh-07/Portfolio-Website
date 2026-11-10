@@ -25,19 +25,6 @@ export const navLinks = [
 
 export const experiences = [
   {
-    id: "ieee-review-research",
-    type: "research",
-    title: "Researcher",
-    org: "ICTBIG 2025 — IEEE Xplore",
-    location: "Published",
-    dateRange: "Dec 2025 – Jan 2026",
-    dateSort: "2025-12",
-    points: [
-      "Authored and published 'A Comprehensive Review of Deepfake Audio Detection Techniques: Advances, Challenges and Future Directions' in IEEE Xplore (DOI: 10.1109/ICTBIG68706.2025.11323737).",
-      "Surveyed state-of-the-art synthetic voice generation architectures, acoustic artifact benchmarks, and future directions for resilient forensic defenses.",
-    ],
-  },
-  {
     id: "delpat",
     type: "work",
     title: "Full Stack Developer Intern",
@@ -51,30 +38,6 @@ export const experiences = [
       "Built a reusable component library adopted across multiple projects, cutting redundant development time and enforcing consistent design standards.",
       "Kickstarted a cross-platform React Native app from PRD and ER-diagram design through navigation and UI-library integration.",
       "Provisioned AWS EC2 cloud infrastructure and managed multi-environment deployments via Vercel and Firebase Hosting, independently resolving CI/build and backend-integration issues.",
-    ],
-  },
-  {
-    id: "hackmit",
-    type: "competition",
-    title: "HackMIT 2025 (CTF) — 5th Rank",
-    org: "MIT CTF Competition",
-    location: "Pune",
-    dateRange: "2025",
-    dateSort: "2025-05",
-    points: [
-      "Secured 5th place by solving 15+ challenges across web security, reverse engineering, cryptography, and logical vulnerability analysis.",
-    ],
-  },
-  {
-    id: "blockchain",
-    type: "certification",
-    title: "Blockchain Evolution Certification",
-    org: "GIAN Program, NIT Goa",
-    location: "Goa",
-    dateRange: "2025",
-    dateSort: "2025-04",
-    points: [
-      "Completed rigorous GIAN certification covering decentralized systems, consensus mechanisms, and distributed ledger architecture.",
     ],
   },
   {

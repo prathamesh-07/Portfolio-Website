@@ -259,27 +259,6 @@ const AboutPage = () => {
               </div>
 
               <div className="space-y-6 relative border-l-2 border-white/10 pl-6 ml-2">
-                {/* IEEE Research 2 (ICTBIG 2025) */}
-                <div className="relative">
-                  <span className="absolute -left-[31px] top-1 w-3.5 h-3.5 rounded-full bg-[#8b5cf6] ring-4 ring-[#151030]" />
-                  <div className="flex items-center gap-2 mb-1">
-                    <span className="text-xs font-semibold px-2 py-0.5 rounded bg-[#8b5cf6]/20 text-[#c4b5fd] border border-[#8b5cf6]/30">
-                      Cybersecurity Research
-                    </span>
-                    <span className="text-xs text-secondary">Dec 2025 – Jan 2026</span>
-                  </div>
-                  <h3 className="text-base sm:text-lg font-bold text-white">
-                    Researcher — ICTBIG 2025 (IEEE Xplore)
-                  </h3>
-                  <p className="text-secondary text-xs mb-2">
-                    DOI: <a href="https://doi.org/10.1109/ICTBIG68706.2025.11323737" target="_blank" rel="noopener noreferrer" className="text-[#6366f1] hover:underline">10.1109/ICTBIG68706.2025.11323737</a>
-                  </p>
-                  <ul className="text-xs sm:text-sm text-secondary space-y-1.5 list-disc ml-4">
-                    <li>Authored &amp; published peer-reviewed paper: "A Comprehensive Review of Deepfake Audio Detection Techniques: Advances, Challenges and Future Directions".</li>
-                    <li>Surveyed state-of-the-art voice cloning pipelines, acoustic artifact signatures, benchmark evaluation datasets, and multimodal defense strategies.</li>
-                  </ul>
-                </div>
-
                 {/* DelPat */}
                 <div className="relative">
                   <span className="absolute -left-[31px] top-1 w-3.5 h-3.5 rounded-full bg-[#6366f1] ring-4 ring-[#151030]" />
@@ -295,45 +274,9 @@ const AboutPage = () => {
                   <p className="text-secondary text-xs mb-2">Remote</p>
                   <ul className="text-xs sm:text-sm text-secondary space-y-1.5 list-disc ml-4">
                     <li>Engineered and deployed 6+ production web applications end-to-end across client and internal projects.</li>
-                    <li>Architected role-based CMS backend with JWT auth and complete CRUD APIs; led WordPress-to-React migration.</li>
+                    <li>Architected role-based CMS backend with JWT auth and complete CRUD APIs; led client WordPress-to-React migration.</li>
                     <li>Built reusable component library and kickstarted cross-platform React Native app from PRD and ER diagrams.</li>
                     <li>Provisioned AWS EC2 infrastructure and managed Vercel / Firebase multi-environment cloud CI deployments.</li>
-                  </ul>
-                </div>
-
-                {/* HackMIT 2025 */}
-                <div className="relative">
-                  <span className="absolute -left-[31px] top-1 w-3.5 h-3.5 rounded-full bg-[#8b5cf6] ring-4 ring-[#151030]" />
-                  <div className="flex items-center gap-2 mb-1">
-                    <span className="text-xs font-semibold px-2 py-0.5 rounded bg-[#8b5cf6]/20 text-[#c4b5fd] border border-[#8b5cf6]/30">
-                      Cybersecurity Competition
-                    </span>
-                    <span className="text-xs text-secondary">2025</span>
-                  </div>
-                  <h3 className="text-base sm:text-lg font-bold text-white">
-                    HackMIT 2025 (CTF) — 5th Rank
-                  </h3>
-                  <p className="text-secondary text-xs mb-2">MIT CTF Competition</p>
-                  <ul className="text-xs sm:text-sm text-secondary space-y-1.5 list-disc ml-4">
-                    <li>Secured 5th place by solving 15+ challenges across web security, reverse engineering, cryptography, and logical vulnerability analysis.</li>
-                  </ul>
-                </div>
-
-                {/* Blockchain Evolution */}
-                <div className="relative">
-                  <span className="absolute -left-[31px] top-1 w-3.5 h-3.5 rounded-full bg-[#6366f1] ring-4 ring-[#151030]" />
-                  <div className="flex items-center gap-2 mb-1">
-                    <span className="text-xs font-semibold px-2 py-0.5 rounded bg-[#6366f1]/20 text-[#a5b4fc] border border-[#6366f1]/30">
-                      Web Development Certification
-                    </span>
-                    <span className="text-xs text-secondary">2025</span>
-                  </div>
-                  <h3 className="text-base sm:text-lg font-bold text-white">
-                    Blockchain Evolution Certification
-                  </h3>
-                  <p className="text-secondary text-xs mb-2">GIAN Program — National Institute of Technology (NIT) Goa</p>
-                  <ul className="text-xs sm:text-sm text-secondary space-y-1.5 list-disc ml-4">
-                    <li>Completed rigorous GIAN certification covering decentralized systems, consensus mechanisms, and distributed ledger architecture.</li>
                   </ul>
                 </div>
 

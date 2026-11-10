@@ -122,19 +122,6 @@ const technologies = [
 
 const experiences = [
   {
-    title: "Researcher (Published IEEE Xplore)",
-    company_name: "ICTBIG 2025 (DOI: 10.1109/ICTBIG68706.2025.11323737)",
-    link: "https://ieeexplore.ieee.org/document/11323737",
-    track: "Cybersecurity",
-    icon: web,
-    iconBg: "#151030",
-    date: "Dec 2025 – Jan 2026",
-    points: [
-      "Authored and published 'A Comprehensive Review of Deepfake Audio Detection Techniques: Advances, Challenges and Future Directions' in IEEE Xplore.",
-      "Comprehensive analysis of voice synthesis paradigms, acoustic feature representations, benchmark datasets, and adversarial evasion vectors.",
-    ],
-  },
-  {
     title: "Full Stack Developer Intern",
     company_name: "DelPat LLP (Remote)",
     track: "Web Development",
@@ -147,6 +134,19 @@ const experiences = [
       "Built a reusable component library adopted across multiple projects, cutting redundant development time and enforcing consistent design standards.",
       "Kickstarted a cross-platform React Native app from PRD and ER-diagram design through navigation and UI-library integration.",
       "Provisioned AWS EC2 cloud infrastructure and managed multi-environment deployments via Vercel and Firebase Hosting, independently resolving CI/build and backend-integration issues.",
+    ],
+  },
+  {
+    title: "Researcher (Published IEEE Xplore)",
+    company_name: "ICTBIG 2024 (DOI: 10.1109/ICTBIG64922.2024.10911062)",
+    link: "https://ieeexplore.ieee.org/document/10911062",
+    track: "Cybersecurity",
+    icon: web,
+    iconBg: "#151030",
+    date: "Nov 2024 – Mar 2025",
+    points: [
+      "Authored and published 'Real-Time Detection of AI-Generated Deepfake Audio: A Novel Approach' in IEEE Xplore for the AI-security research community.",
+      "Researched and implemented a CNN-based signal-processing pipeline for real-time deepfake audio detection using spectral feature analysis.",
     ],
   },
   {
@@ -169,19 +169,6 @@ const experiences = [
     date: "2025",
     points: [
       "Completed rigorous GIAN certification on Decentralized Systems and distributed ledger architecture at NIT Goa.",
-    ],
-  },
-  {
-    title: "Researcher (Published IEEE Xplore)",
-    company_name: "ICTBIG 2024 (DOI: 10.1109/ICTBIG64922.2024.10911062)",
-    link: "https://ieeexplore.ieee.org/document/10911062",
-    track: "Cybersecurity",
-    icon: web,
-    iconBg: "#151030",
-    date: "Nov 2024 – Mar 2025",
-    points: [
-      "Authored and published 'Real-Time Detection of AI-Generated Deepfake Audio: A Novel Approach' in IEEE Xplore for the AI-security research community.",
-      "Researched and implemented a CNN-based signal-processing pipeline for real-time deepfake audio detection using spectral feature analysis.",
     ],
   },
 ];
