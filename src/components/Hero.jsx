@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 
 import { styles } from "../styles";
 import { ComputersCanvas } from "./canvas";
+import ErrorBoundary from "./shared/ErrorBoundary";
 
 const Hero = () => {
   return (
@@ -46,7 +47,9 @@ const Hero = () => {
         className="absolute inset-0 w-full h-full flex items-center justify-center"
       >
         <div className="w-full h-full max-w-7xl mx-auto px-6 sm:px-16">
-          <ComputersCanvas />
+          <ErrorBoundary>
+            <ComputersCanvas />
+          </ErrorBoundary>
         </div>
       </motion.div>
 

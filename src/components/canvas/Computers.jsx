@@ -1,8 +1,64 @@
-import React, { Suspense, useEffect } from "react";
+import React, { Suspense, useEffect, useState } from "react";
 import { Canvas } from "@react-three/fiber";
 import { OrbitControls, Preload, useGLTF } from "@react-three/drei";
 
 import CanvasLoader from "../Loader";
+
+class CanvasErrorBoundary extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { hasError: false };
+  }
+
+  static getDerivedStateFromError() {
+    return { hasError: true };
+  }
+
+  componentDidCatch(error, errorInfo) {
+    console.warn("ComputersCanvas 3D rendering gracefully skipped:", error?.message || error);
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return null;
+    }
+    return this.props.children;
+  }
+}
+
+const isMobileOrTouch = () => {
+  if (typeof window === "undefined") return false;
+
+  // 1. Viewport width check
+  if (window.innerWidth <= 768) return true;
+
+  // 2. Mobile / tablet user agent detection (catches mobile browsers running in "Desktop site" mode)
+  const ua = navigator.userAgent || navigator.vendor || window.opera || "";
+  if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini|Mobile|mobile|CriOS/i.test(ua)) {
+    return true;
+  }
+
+  // 3. Touch device with coarse pointer (phones / tablets in desktop mode)
+  const hasTouch = (navigator.maxTouchPoints && navigator.maxTouchPoints > 1) || ("ontouchstart" in window);
+  const isCoarse = window.matchMedia && window.matchMedia("(pointer: coarse)").matches;
+  if (hasTouch && isCoarse) {
+    return true;
+  }
+
+  return false;
+};
+
+const isWebGLAvailable = () => {
+  try {
+    const canvas = document.createElement("canvas");
+    return !!(
+      window.WebGLRenderingContext &&
+      (canvas.getContext("webgl2") || canvas.getContext("webgl") || canvas.getContext("experimental-webgl"))
+    );
+  } catch (e) {
+    return false;
+  }
+};
 
 const Computers = ({ isMobile }) => {
   const computer = useGLTF("./desktop_pc/scene.gltf");
@@ -62,64 +118,73 @@ const Computers = ({ isMobile }) => {
 };
 
 const ComputersCanvas = () => {
-  const [isMobile, setIsMobile] = React.useState(false);
+  const [shouldRender, setShouldRender] = useState(false);
+  const [hasContextLost, setHasContextLost] = useState(false);
 
   useEffect(() => {
-    // 768px breakpoint protects mobile devices from heavy WebGL crashes
-    const mediaQuery = window.matchMedia("(max-width: 768px)");
-    setIsMobile(mediaQuery.matches);
-
-    const handleMediaQueryChange = (event) => {
-      setIsMobile(event.matches);
+    const checkEligibility = () => {
+      const mobile = isMobileOrTouch();
+      const webgl = isWebGLAvailable();
+      setShouldRender(!mobile && webgl);
     };
 
-    mediaQuery.addEventListener("change", handleMediaQueryChange);
+    checkEligibility();
+
+    const mediaQuery = window.matchMedia("(max-width: 768px)");
+    const handleResize = () => checkEligibility();
+
+    mediaQuery.addEventListener("change", handleResize);
+    window.addEventListener("resize", handleResize);
 
     return () => {
-      mediaQuery.removeEventListener("change", handleMediaQueryChange);
+      mediaQuery.removeEventListener("change", handleResize);
+      window.removeEventListener("resize", handleResize);
     };
   }, []);
 
-  if (isMobile) {
+  if (!shouldRender || hasContextLost) {
     return null;
   }
 
   return (
-    <Canvas
-      frameloop='demand'
-      shadows
-      dpr={[1, 1.5]}
-      camera={{ position: [20, 3, 5], fov: 25 }}
-      gl={{ 
-        preserveDrawingBuffer: false,
-        antialias: true,
-        alpha: true,
-        powerPreference: "high-performance"
-      }}
-      onCreated={({ gl }) => {
-        gl.setClearColor(0x000000, 0);
-        gl.domElement.addEventListener(
-          "webglcontextlost",
-          (e) => {
-            e.preventDefault();
-          },
-          false
-        );
-      }}
-    >
-      <Suspense fallback={<CanvasLoader />}>
-        <OrbitControls
-          enableZoom={false}
-          maxPolarAngle={Math.PI / 2}
-          minPolarAngle={Math.PI / 2}
-          enableDamping
-          dampingFactor={0.25}
-        />
-        <Computers isMobile={isMobile} />
-      </Suspense>
+    <CanvasErrorBoundary>
+      <Canvas
+        frameloop='demand'
+        shadows
+        dpr={[1, 1.5]}
+        camera={{ position: [20, 3, 5], fov: 25 }}
+        gl={{ 
+          preserveDrawingBuffer: false,
+          antialias: true,
+          alpha: true,
+          powerPreference: "default"
+        }}
+        onCreated={({ gl }) => {
+          gl.setClearColor(0x000000, 0);
+          gl.domElement.addEventListener(
+            "webglcontextlost",
+            (e) => {
+              e.preventDefault();
+              setHasContextLost(true);
+            },
+            false
+          );
+        }}
+      >
+        <Suspense fallback={<CanvasLoader />}>
+          <OrbitControls
+            enableZoom={false}
+            maxPolarAngle={Math.PI / 2}
+            minPolarAngle={Math.PI / 2}
+            enableDamping
+            dampingFactor={0.25}
+          />
+          <Computers isMobile={false} />
+        </Suspense>
 
-      <Preload all />
-    </Canvas>
+        <Preload all />
+      </Canvas>
+    </CanvasErrorBoundary>
   );
 };
 

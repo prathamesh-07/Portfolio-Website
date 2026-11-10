@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import Tilt from "react-parallax-tilt";
 import { motion } from "framer-motion";
 
@@ -19,9 +20,19 @@ const ProjectCard = ({
   source_code_link,
 }) => {
   return (
-    <motion.div variants={fadeIn("up", "spring", index * 0.5, 0.75)}>
+    <motion.div
+      variants={fadeIn("up", "spring", index * 0.2, 0.75)}
+      initial="hidden"
+      whileInView="show"
+      viewport={{ once: true, amount: 0.05 }}
+      className='w-full sm:w-[360px] flex flex-col'
+    >
       <Tilt
-        className='bg-tertiary p-5 rounded-2xl sm:w-[360px] w-full h-full flex flex-col justify-between'
+        tiltMaxAngleX={10}
+        tiltMaxAngleY={10}
+        scale={1.02}
+        transitionSpeed={1000}
+        className='bg-tertiary p-5 rounded-2xl w-full h-full flex flex-col justify-between shadow-card border border-white/5'
       >
         <div>
           <div className='relative w-full h-[230px]'>
@@ -94,10 +105,20 @@ const Works = () => {
         </motion.p>
       </div>
 
-      <div className='mt-20 flex flex-wrap gap-7 justify-center'>
+      <div className='mt-16 flex flex-wrap gap-7 justify-center'>
         {projects.map((project, index) => (
           <ProjectCard key={`project-${index}`} index={index} {...project} />
         ))}
+      </div>
+
+      <div className='mt-12 flex justify-center'>
+        <Link
+          to='/projects'
+          className='inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-tertiary hover:bg-[#1f1938] border border-white/10 hover:border-[#6366f1]/50 text-white font-semibold text-sm transition-all duration-200 hover:shadow-lg hover:shadow-indigo-500/10'
+        >
+          <span>View All Projects & Research Publications (9+)</span>
+          <span aria-hidden='true'>&rarr;</span>
+        </Link>
       </div>
     </>
   );
