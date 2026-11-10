@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
 import Navbar from "../components/shared/Navbar";
 import Footer from "../components/shared/Footer";
+import Logo from "../components/shared/Logo";
 import { IconDownload, IconExternalLink, IconShield, IconCode, IconCheck } from "../components/shared/Icons";
 
 const AboutPage = () => {
@@ -83,14 +84,14 @@ const AboutPage = () => {
             className="md:col-span-4 bg-[#100d25] border border-white/10 rounded-2xl p-6 sm:p-8 flex flex-col justify-between shadow-card"
           >
             <div>
-              <div className="w-full aspect-square rounded-xl bg-[#151030] border border-dashed border-white/20 flex flex-col items-center justify-center p-4 text-center mb-6">
-                <span className="text-4xl font-black text-white/30 mb-2">PC</span>
-                <p className="text-xs text-secondary font-mono">
-                  [TODO: Photo placeholder]
-                </p>
-                <p className="text-[11px] text-secondary/60 mt-1">
-                  Place portrait at <code>public/assets/photo.jpg</code>
-                </p>
+              <div className="w-full aspect-square rounded-xl bg-[#151030] border border-white/10 flex flex-col items-center justify-center p-6 text-center mb-6 shadow-inner">
+                <Logo variant="icon" tone="color" width={110} height={110} decorative />
+                <span className="text-white font-bold text-base mt-4 tracking-tight">
+                  Prathamesh Chiddarwar
+                </span>
+                <span className="text-xs text-secondary mt-1">
+                  Full-Stack Developer · Cyber Security
+                </span>
               </div>
 
               <div className="space-y-3 text-sm">

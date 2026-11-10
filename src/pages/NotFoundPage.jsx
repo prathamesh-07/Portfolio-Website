@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
 import Navbar from "../components/shared/Navbar";
 import Footer from "../components/shared/Footer";
+import Logo from "../components/shared/Logo";
 
 const NotFoundPage = () => {
   useEffect(() => {
@@ -12,8 +13,17 @@ const NotFoundPage = () => {
     <div className="relative min-h-screen bg-[#050816] text-white flex flex-col pt-20">
       <Navbar />
 
-      <main className="flex-1 max-w-4xl mx-auto px-6 py-20 flex flex-col items-center justify-center text-center">
-        <span className="text-8xl font-black gradient-text tracking-widest">
+      <main className="flex-1 max-w-4xl mx-auto px-6 py-16 flex flex-col items-center justify-center text-center">
+        <Logo
+          variant="stacked"
+          tone="color"
+          width={280}
+          priority
+          decorative
+          className="mb-8 hover:scale-105 transition-transform"
+        />
+
+        <span className="text-7xl font-black gradient-text tracking-widest">
           404
         </span>
         <h1 className="text-2xl sm:text-3xl font-bold text-white mt-4 mb-3">

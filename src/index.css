@@ -252,3 +252,22 @@ body {
     scroll-behavior: auto;
   }
 }
+
+/* Print Styles: Swap logos to crisp mono-black and format for paper */
+@media print {
+  body {
+    background-color: #ffffff !important;
+    color: #0f172a !important;
+  }
+  header, footer, nav, button, canvas, .canvas-loader, .skip-link {
+    display: none !important;
+  }
+  img, picture img {
+    filter: grayscale(100%) contrast(200%) brightness(0) !important;
+    max-width: 100% !important;
+  }
+  a {
+    color: #0f172a !important;
+    text-decoration: underline !important;
+  }
+}

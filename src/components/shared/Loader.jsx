@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import Logo from "./Logo";
 
 const Loader = () => {
   const [show, setShow] = useState(() => {
@@ -57,11 +58,17 @@ const Loader = () => {
       }`}
     >
       <div className="flex flex-col items-center gap-4">
-        {/* Monogram */}
-        <div className="w-16 h-16 rounded-2xl bg-[#151030] border border-[#6366f1]/40 flex items-center justify-center shadow-lg shadow-[#6366f1]/20">
-          <span className="text-2xl font-black text-white tracking-wider gradient-text">
-            PC
-          </span>
+        {/* Brand Icon (96px, priority) */}
+        <div className="relative flex items-center justify-center p-2 rounded-2xl bg-[#050816] shadow-2xl shadow-[#6366f1]/20">
+          <Logo
+            variant="icon"
+            tone="color"
+            width={96}
+            height={96}
+            priority
+            decorative
+            className="animate-pulse"
+          />
         </div>
 
         {/* Two-word/two-track label */}

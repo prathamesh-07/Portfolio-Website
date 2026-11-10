@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import Logo from "./Logo";
 import { navLinks } from "../../constants";
 import { IconGithub, IconLinkedin, IconMail, IconCopy, IconCheck, IconDownload } from "./Icons";
 
@@ -27,10 +28,10 @@ const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-10 pb-12 border-b border-white/5">
           {/* Brand & Dual Track Positioning */}
           <div className="md:col-span-2 flex flex-col gap-3">
-            <Link to="/" className="text-white text-xl font-black tracking-tight hover:text-[#6366f1] transition-colors">
-              Prathamesh Chiddarwar
+            <Link to="/" className="inline-block hover:opacity-90 transition-opacity">
+              <Logo variant="horizontal" tone="color" height={56} decorative={false} />
             </Link>
-            <p className="text-secondary text-sm max-w-md leading-relaxed">
+            <p className="text-secondary text-sm max-w-md leading-relaxed mt-1">
               Full-stack developer and cybersecurity student. Building secure, production-grade web applications and researching AI-driven security threats.
             </p>
             <div className="flex items-center gap-2 mt-2">
@@ -128,7 +129,10 @@ const Footer = () => {
 
         {/* Bottom Bar: Copyright & Back-to-Top */}
         <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-secondary">
-          <p>© {currentYear} Prathamesh Chiddarwar. All rights reserved.</p>
+          <div className="flex items-center gap-2.5">
+            <Logo variant="icon" tone="white" height={22} decorative />
+            <p>© {currentYear} Prathamesh Chiddarwar. All rights reserved.</p>
+          </div>
           <button
             type="button"
             onClick={scrollToTop}

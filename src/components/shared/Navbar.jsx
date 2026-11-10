@@ -2,7 +2,8 @@ import React, { useEffect, useState, useRef } from "react";
 import { Link, NavLink, useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 
-import { logo, menu, close } from "../../assets";
+import Logo from "./Logo";
+import { menu, close } from "../../assets";
 import { navLinks } from "../../constants";
 
 const Navbar = () => {
@@ -89,14 +90,17 @@ const Navbar = () => {
           }}
           aria-label="Prathamesh Chiddarwar Portfolio Home"
         >
-          <img
-            src={logo}
-            alt="PC Logo"
-            className="w-9 h-9 object-contain transition-transform group-hover:scale-105"
+          <Logo
+            variant="icon"
+            tone="color"
+            height={36}
+            priority
+            decorative
+            className="transition-transform group-hover:scale-105"
           />
           <p className="text-white text-[18px] font-bold cursor-pointer flex flex-wrap items-center">
-            Prathamesh
-            <span className="sm:inline-block hidden ml-2 text-xs font-semibold uppercase px-2 py-0.5 rounded bg-white/10 text-secondary border border-white/5">
+            Prathamesh Chiddarwar
+            <span className="hidden min-[480px]:inline-block ml-2 text-xs font-semibold uppercase px-2 py-0.5 rounded bg-white/10 text-secondary border border-white/5">
               Dev · Sec
             </span>
           </p>
@@ -173,6 +177,12 @@ const Navbar = () => {
             onKeyDown={handleMenuKeyDown}
             className="md:hidden fixed top-[72px] left-0 w-full bg-[#050816]/98 backdrop-blur-xl border-b border-white/10 p-6 z-40 shadow-2xl"
           >
+            <div className="flex items-center gap-3 pb-3 mb-3 border-b border-white/10">
+              <Logo variant="icon" tone="color" height={32} decorative />
+              <span className="text-white font-semibold text-sm">
+                Prathamesh Chiddarwar
+              </span>
+            </div>
             <ul className="list-none flex flex-col gap-3" role="list">
               {navLinks.map((nav) => (
                 <li key={nav.title}>
