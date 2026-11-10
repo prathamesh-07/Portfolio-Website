@@ -97,6 +97,28 @@ const Computers = ({ isPortrait }) => {
   );
 };
 
+const Controls = () => {
+  const controlsRef = React.useRef();
+
+  React.useEffect(() => {
+    if (controlsRef.current?.domElement) {
+      controlsRef.current.domElement.style.touchAction = "pan-y";
+    }
+  }, []);
+
+  return (
+    <OrbitControls
+      ref={controlsRef}
+      enableZoom={false}
+      maxPolarAngle={Math.PI / 2}
+      minPolarAngle={Math.PI / 2}
+      enableDamping
+      dampingFactor={0.25}
+      touches={{ ONE: null, TWO: 0 }}
+    />
+  );
+};
+
 const ComputersCanvas = () => {
   const [shouldRender, setShouldRender] = useState(false);
   const [isPortrait, setIsPortrait] = useState(false);
@@ -136,6 +158,7 @@ const ComputersCanvas = () => {
         shadows
         dpr={[1, 1.25]}
         camera={{ position: [20, 3, 5], fov: isPortrait ? 35 : 25 }}
+        style={{ touchAction: "pan-y" }}
         gl={{ 
           preserveDrawingBuffer: false,
           antialias: true,
@@ -144,6 +167,7 @@ const ComputersCanvas = () => {
         }}
         onCreated={({ gl }) => {
           gl.setClearColor(0x000000, 0);
+          gl.domElement.style.touchAction = "pan-y";
           gl.domElement.addEventListener(
             "webglcontextlost",
             (e) => {
@@ -155,13 +179,7 @@ const ComputersCanvas = () => {
         }}
       >
         <Suspense fallback={<CanvasLoader />}>
-          <OrbitControls
-            enableZoom={false}
-            maxPolarAngle={Math.PI / 2}
-            minPolarAngle={Math.PI / 2}
-            enableDamping
-            dampingFactor={0.25}
-          />
+          <Controls />
           <Computers isPortrait={isPortrait} />
         </Suspense>
       </Canvas>
