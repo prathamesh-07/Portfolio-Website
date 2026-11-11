@@ -16,14 +16,15 @@ const LiteHomePage = () => {
   }, []);
 
   return (
-    <div className="relative z-0 bg-[#050816] text-[#e2e8f0] overflow-x-hidden">
+    <>
       {/* Global Shared Navbar */}
       <Navbar />
 
-      {/* Hero section with subtle topographic hero background pattern */}
-      <div className="bg-hero-pattern bg-cover bg-no-repeat bg-center">
-        <LiteHero />
-      </div>
+      <div className="relative z-0 bg-[#050816] text-[#e2e8f0] overflow-x-hidden">
+        {/* Hero section with subtle topographic hero background pattern */}
+        <div className="bg-hero-pattern bg-cover bg-no-repeat bg-center">
+          <LiteHero />
+        </div>
 
       {/* Main Sections */}
       <LiteAbout />
@@ -41,6 +42,7 @@ const LiteHomePage = () => {
       {/* Global Shared Footer */}
       <Footer />
     </div>
+    </>
   );
 };
 

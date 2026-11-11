@@ -183,7 +183,7 @@ const ComputersCanvas = () => {
         shadows
         dpr={[1, 1.25]}
         camera={{ position: [20, 3, 5], fov: isPortrait ? 35 : 25 }}
-        style={{ touchAction: "pan-y" }}
+        style={{ touchAction: "pan-y", zIndex: 0 }}
         gl={{ 
           preserveDrawingBuffer: typeof window !== "undefined" && window.location.search.includes("capture=true"),
           antialias: true,

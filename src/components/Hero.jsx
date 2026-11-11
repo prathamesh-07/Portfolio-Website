@@ -10,7 +10,7 @@ const Hero = () => {
   const isHeroVisible = appReady || !isLoading;
 
   return (
-    <section className="relative w-full h-screen mx-auto overflow-hidden">
+    <section className="relative w-full h-screen mx-auto overflow-hidden z-0">
       <div
         key={heroKey}
         className="absolute inset-0 top-[110px] sm:top-[120px] max-w-7xl mx-auto px-6 sm:px-16 flex flex-row items-start gap-5 z-10 pointer-events-none"
@@ -51,7 +51,7 @@ const Hero = () => {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 1, delay: 0.6 }}
-        className="absolute inset-0 w-full h-full flex items-center justify-center"
+        className="absolute inset-0 w-full h-full flex items-center justify-center z-0"
       >
         <div className="w-full h-full max-w-7xl mx-auto px-6 sm:px-16">
           <ErrorBoundary>

@@ -26,20 +26,34 @@ const Navbar = () => {
   // Filter out Home from desktop header navigation per user request
   const desktopNavLinks = navLinks.filter((nav) => nav.path !== "/");
 
-  // 1. IntersectionObserver Sentinel for scroll detection (> 8px)
+  // 1. Scroll listener + IntersectionObserver Sentinel for scroll detection (> 8px)
   useEffect(() => {
+    const handleScroll = () => {
+      const scrollY = window.scrollY || document.documentElement.scrollTop || 0;
+      setIsScrolled(scrollY > 8);
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    handleScroll();
+
     const sentinel = sentinelRef.current;
-    if (!sentinel) return;
+    if (sentinel) {
+      const observer = new IntersectionObserver(
+        ([entry]) => {
+          if (entry.boundingClientRect) {
+            setIsScrolled(!entry.isIntersecting);
+          }
+        },
+        { threshold: [0, 1], rootMargin: "0px" }
+      );
+      observer.observe(sentinel);
+      return () => {
+        window.removeEventListener("scroll", handleScroll);
+        observer.disconnect();
+      };
+    }
 
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        setIsScrolled(!entry.isIntersecting);
-      },
-      { threshold: [0, 1], rootMargin: "0px" }
-    );
-
-    observer.observe(sentinel);
-    return () => observer.disconnect();
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   // 2. Auto-close menu on route change
@@ -159,17 +173,17 @@ const Navbar = () => {
       />
 
       <header
-        className="fixed top-0 left-0 right-0 transition-all duration-200 translate-y-0"
+        className="fixed top-0 left-0 right-0 z-50 transition-all duration-200 translate-y-0"
         style={{
-          zIndex: "var(--z-header)",
+          zIndex: 50,
           height: isScrolled ? "var(--header-h-scrolled)" : "var(--header-h)",
           backgroundColor: isScrolled
-            ? "rgba(5, 8, 22, 0.92)"
+            ? "rgba(5, 8, 22, 0.96)"
             : isMenuOpen
             ? "var(--bg-primary)"
             : "transparent",
-          backdropFilter: isScrolled ? "blur(12px)" : "none",
-          WebkitBackdropFilter: isScrolled ? "blur(12px)" : "none",
+          backdropFilter: isScrolled ? "blur(16px)" : "none",
+          WebkitBackdropFilter: isScrolled ? "blur(16px)" : "none",
           borderBottom: isScrolled
             ? "1px solid var(--border-subtle)"
             : "1px solid transparent",
@@ -178,7 +192,7 @@ const Navbar = () => {
       >
         <nav
           aria-label="Primary"
-          className="w-full h-full max-w-[1850px] mx-auto px-5 sm:px-8 lg:px-12 xl:px-16 2xl:px-20 flex items-center justify-between"
+          className="w-full h-full px-5 sm:px-8 lg:px-12 xl:px-16 2xl:px-20 flex items-center justify-between"
         >
           {/* ── Left: Identity Lockup ── */}
           <Link
