@@ -1,62 +1,139 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import { Link, NavLink, useLocation } from "react-router-dom";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useScroll, useSpring, useReducedMotion } from "framer-motion";
 
 import Logo from "./Logo";
-import { menu, close } from "../../assets";
 import { navLinks } from "../../constants";
 import { IconGithub, IconLinkedin, IconMail } from "./Icons";
+import { acquireScrollLock, releaseScrollLock } from "../../utils/scrollLock";
+
+const RESUME_PATH = "/assets/Prathamesh_Chiddarwar_Resume.pdf";
+const RESUME_NAME = "Prathamesh_Chiddarwar_Resume.pdf";
 
 const Navbar = () => {
-  const [toggle, setToggle] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
-  const location = useLocation();
-  const mobileMenuRef = useRef(null);
-  const toggleButtonRef = useRef(null);
+  const [isScrolled, setIsScrolled] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isHeaderHidden, setIsHeaderHidden] = useState(false);
 
+  const location = useLocation();
+  const shouldReduceMotion = useReducedMotion();
+
+  const menuButtonRef = useRef(null);
+  const drawerRef = useRef(null);
+  const sentinelRef = useRef(null);
+  const lastScrollYRef = useRef(0);
+
+  // Scroll Progress Bar (Universal spring progress line)
+  const { scrollYProgress } = useScroll();
+  const scaleX = useSpring(scrollYProgress, {
+    stiffness: 100,
+    damping: 30,
+    restDelta: 0.001,
+  });
+
+  // 1. IntersectionObserver Sentinel for scroll detection (> 8px)
   useEffect(() => {
-    const handleScroll = () => {
-      if (window.scrollY > 40) {
-        setScrolled(true);
-      } else {
-        setScrolled(false);
+    const sentinel = sentinelRef.current;
+    if (!sentinel) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setIsScrolled(!entry.isIntersecting);
+      },
+      { threshold: [0, 1], rootMargin: "0px" }
+    );
+
+    observer.observe(sentinel);
+    return () => observer.disconnect();
+  }, []);
+
+  // 2. Mobile Hide on Scroll Down / Show on Scroll Up (<= 767px)
+  useEffect(() => {
+    if (shouldReduceMotion) return;
+
+    const handleScrollDirection = () => {
+      // Never hide while menu is open or on desktop
+      if (isMenuOpen || window.innerWidth > 767) {
+        setIsHeaderHidden(false);
+        return;
+      }
+
+      const currentScrollY = window.scrollY;
+      const prevScrollY = lastScrollYRef.current;
+
+      if (currentScrollY > 100 && currentScrollY > prevScrollY + 8) {
+        // Scrolling down past threshold -> hide
+        setIsHeaderHidden(true);
+      } else if (currentScrollY < prevScrollY - 8 || currentScrollY < 50) {
+        // Scrolling up or near top -> show
+        setIsHeaderHidden(false);
+      }
+
+      lastScrollYRef.current = currentScrollY;
+    };
+
+    window.addEventListener("scroll", handleScrollDirection, { passive: true });
+    return () => window.removeEventListener("scroll", handleScrollDirection);
+  }, [isMenuOpen, shouldReduceMotion]);
+
+  // 3. Auto-close menu on route change
+  useEffect(() => {
+    setIsMenuOpen(false);
+  }, [location.pathname]);
+
+  // 4. Auto-close menu on viewport resize > 1023px
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth >= 1024 && isMenuOpen) {
+        setIsMenuOpen(false);
       }
     };
 
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, [isMenuOpen]);
 
-  // Close mobile menu on route change
+  // 5. Scroll lock & focus management when mobile menu opens/closes
   useEffect(() => {
-    setToggle(false);
-  }, [location.pathname]);
+    if (isMenuOpen) {
+      acquireScrollLock();
 
-  // Lock body scroll when mobile menu is open & handle Escape
-  useEffect(() => {
-    if (toggle) {
-      document.body.style.overflow = "hidden";
+      // Focus first focusable link in drawer
+      requestAnimationFrame(() => {
+        const firstFocusable = drawerRef.current?.querySelector("a, button");
+        firstFocusable?.focus();
+      });
+
+      // Escape key handler
       const handleKeyDown = (e) => {
         if (e.key === "Escape") {
-          setToggle(false);
-          toggleButtonRef.current?.focus();
+          setIsMenuOpen(false);
+          menuButtonRef.current?.focus();
         }
       };
       window.addEventListener("keydown", handleKeyDown);
+
       return () => {
-        document.body.style.overflow = "unset";
+        releaseScrollLock();
         window.removeEventListener("keydown", handleKeyDown);
       };
     } else {
-      document.body.style.overflow = "unset";
+      // Focus restoration on menu close
+      if (document.activeElement && drawerRef.current?.contains(document.activeElement)) {
+        menuButtonRef.current?.focus();
+      }
     }
-  }, [toggle]);
+  }, [isMenuOpen]);
 
-  // Trap focus within mobile menu
-  const handleMenuKeyDown = (e) => {
-    if (e.key !== "Tab" || !mobileMenuRef.current) return;
-    const focusable = mobileMenuRef.current.querySelectorAll("a, button");
+  // 6. Keyboard Focus Trap within Mobile Menu
+  const handleDrawerKeyDown = useCallback((e) => {
+    if (e.key !== "Tab" || !drawerRef.current) return;
+
+    const focusable = drawerRef.current.querySelectorAll(
+      'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])'
+    );
     if (focusable.length === 0) return;
+
     const first = focusable[0];
     const last = focusable[focusable.length - 1];
 
@@ -67,206 +144,412 @@ const Navbar = () => {
       e.preventDefault();
       first.focus();
     }
+  }, []);
+
+  const toggleMenu = () => setIsMenuOpen((prev) => !prev);
+  const closeMenu = () => {
+    setIsMenuOpen(false);
+    menuButtonRef.current?.focus();
   };
 
   return (
-    <header
-      className={`w-full flex items-center py-4 fixed top-0 z-50 transition-all duration-300 ${
-        scrolled || toggle
-          ? "bg-[#050816] border-b border-white/10 shadow-lg"
-          : "bg-transparent"
-      }`}
-      style={scrolled || toggle ? { backgroundColor: '#050816' } : undefined}
-    >
-      <nav
-        aria-label="Main Navigation"
-        className="w-full flex justify-between items-center max-w-7xl mx-auto px-6 sm:px-16"
+    <>
+      {/* Scroll detection sentinel (positioned 8px from page top) */}
+      <div
+        ref={sentinelRef}
+        className="absolute top-0 left-0 w-full h-[8px] pointer-events-none -z-50"
+        aria-hidden="true"
+      />
+
+      <header
+        className={`fixed top-0 left-0 right-0 transition-all duration-200 ${
+          isHeaderHidden ? "-translate-y-full" : "translate-y-0"
+        }`}
+        style={{
+          zIndex: "var(--z-header)",
+          height: isScrolled ? "var(--header-h-scrolled)" : "var(--header-h)",
+          backgroundColor: isScrolled
+            ? "rgba(5, 8, 22, 0.92)"
+            : isMenuOpen
+            ? "var(--bg-primary)"
+            : "transparent",
+          backdropFilter: isScrolled ? "blur(12px)" : "none",
+          WebkitBackdropFilter: isScrolled ? "blur(12px)" : "none",
+          borderBottom: isScrolled
+            ? "1px solid var(--border-subtle)"
+            : "1px solid transparent",
+          boxShadow: isScrolled ? "0 4px 20px -2px rgba(5, 8, 22, 0.7)" : "none",
+        }}
       >
-        <Link
-          to="/"
-          className="flex items-center gap-2 group"
-          onClick={() => {
-            if (location.pathname === "/") {
-              window.scrollTo({ top: 0, behavior: "smooth" });
-            }
-          }}
-          aria-label="Prathamesh Chiddarwar Portfolio Home"
+        <nav
+          aria-label="Primary"
+          className="w-full h-full max-w-[1200px] mx-auto px-5 sm:px-8 flex items-center justify-between"
         >
-          <Logo
-            variant="icon"
-            tone="color"
-            height={36}
-            priority
-            decorative
-            className="transition-transform group-hover:scale-105"
-          />
-          <p className="text-white text-[18px] font-bold cursor-pointer flex flex-wrap items-center">
-            Prathamesh Chiddarwar
-            <span className="hidden min-[480px]:inline-block ml-2 text-xs font-semibold uppercase px-2 py-0.5 rounded bg-white/10 text-secondary border border-white/5">
-              Dev · Sec
-            </span>
-          </p>
-        </Link>
-
-        {/* Desktop Nav */}
-        <div className="hidden md:flex items-center gap-8">
-          <ul className="list-none flex flex-row gap-7" role="list">
-            {navLinks.map((nav) => (
-              <li key={nav.title}>
-                <NavLink
-                  to={nav.path}
-                  end={nav.path === "/"}
-                  className={({ isActive }) =>
-                    `text-[15px] font-medium transition-colors duration-200 py-1 border-b-2 ${
-                      isActive
-                        ? "text-white border-[#6366f1]"
-                        : "text-secondary hover:text-white border-transparent"
-                    }`
-                  }
-                  aria-current={location.pathname === nav.path ? "page" : undefined}
-                >
-                  {nav.title}
-                </NavLink>
-              </li>
-            ))}
-          </ul>
-
-          <a
-            href="/assets/Prathamesh_Chiddarwar_Resume.pdf"
-            target="_blank"
-            rel="noopener noreferrer"
-            download="Prathamesh_Chiddarwar_Resume.pdf"
-            className="inline-flex items-center justify-center min-h-[44px] px-5 text-sm font-semibold text-white bg-[#6366f1] hover:bg-[#4f46e5] rounded-xl shadow-md shadow-[#6366f1]/20 transition-all hover:scale-[1.02]"
+          {/* ── Left: Identity Lockup ── */}
+          <Link
+            to="/"
+            className="flex items-center gap-3 group focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-indigo)] rounded-lg p-1 -ml-1 transition-transform"
+            aria-label="Prathamesh Chiddarwar, home"
+            onClick={() => {
+              if (location.pathname === "/") {
+                window.scrollTo({ top: 0, behavior: shouldReduceMotion ? "auto" : "smooth" });
+              }
+            }}
           >
-            Resume
-          </a>
-        </div>
+            <div className="w-[36px] sm:w-[38px] h-[36px] sm:h-[38px] flex items-center justify-center flex-shrink-0 transition-transform group-hover:scale-105">
+              <Logo variant="icon" tone="color" height={38} decorative priority />
+            </div>
 
-        {/* Mobile Hamburger Toggle */}
-        <div className="md:hidden flex items-center">
-          <button
-            ref={toggleButtonRef}
-            type="button"
-            onClick={() => setToggle(!toggle)}
-            aria-expanded={toggle}
-            aria-controls="mobile-navigation"
-            aria-label={toggle ? "Close navigation menu" : "Open navigation menu"}
-            className="w-11 h-11 min-h-[44px] min-w-[44px] flex items-center justify-center rounded-lg bg-white/5 border border-white/10 text-white focus:outline-none focus:ring-2 focus:ring-[#6366f1]"
-          >
-            <img
-              src={toggle ? close : menu}
-              alt=""
-              aria-hidden="true"
-              className="w-6 h-6 object-contain"
-            />
-          </button>
-        </div>
-      </nav>
+            <div className="flex items-center gap-2">
+              <span
+                className="font-bold text-[16px] sm:text-[17px] tracking-tight transition-colors"
+                style={{ color: "var(--text-main)" }}
+              >
+                <span className="hidden sm:inline">Prathamesh Chiddarwar</span>
+                <span className="sm:hidden">Prathamesh</span>
+              </span>
 
-      {/* Accessible Mobile Drawer */}
-      <AnimatePresence>
-        {toggle && (
-          <motion.div
-            id="mobile-navigation"
-            ref={mobileMenuRef}
-            role="dialog"
-            aria-modal="true"
-            aria-label="Mobile Navigation Menu"
-            initial={{ opacity: 0, y: -8 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -8 }}
-            transition={{ duration: 0.15 }}
-            onKeyDown={handleMenuKeyDown}
-            className="md:hidden fixed top-[68px] inset-x-0 bottom-0 w-full h-[calc(100dvh-68px)] bg-[#050816] p-6 z-50 shadow-2xl overflow-y-auto flex flex-col justify-between"
-            style={{ backgroundColor: '#050816' }}
-          >
-            <div>
-              <div className="flex items-center gap-3 pb-3 mb-4 border-b border-white/10">
-                <Logo variant="icon" tone="color" height={32} decorative />
-                <div className="flex flex-col">
-                  <span className="text-white font-semibold text-sm">
-                    Prathamesh Chiddarwar
-                  </span>
-                  <span className="text-[11px] text-secondary">
-                    Web Development · Cybersecurity
-                  </span>
-                </div>
+              {/* Dev · Sec Badge (Hidden below 480px per brief) */}
+              <span
+                className="hidden min-[480px]:inline-flex items-center text-[10px] font-bold tracking-wider uppercase px-2 py-0.5 rounded-md border"
+                style={{
+                  backgroundColor: "var(--bg-surface)",
+                  color: "var(--text-muted)",
+                  borderColor: "var(--border-subtle)",
+                }}
+              >
+                Dev · Sec
+              </span>
+            </div>
+          </Link>
+
+          {/* ── Center / Right: Desktop Navigation Links (>= 1024px) ── */}
+          <div className="hidden lg:flex items-center gap-8">
+            <ul className="flex items-center gap-1 sm:gap-2 list-none" role="list">
+              {navLinks.map((nav) => (
+                <li key={nav.title} className="relative">
+                  <NavLink
+                    to={nav.path}
+                    end={nav.path === "/"}
+                    className={({ isActive }) =>
+                      `relative inline-flex items-center px-3.5 py-1.5 text-[14px] font-medium transition-colors duration-200 rounded-md focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-indigo)] ${
+                        isActive
+                          ? "text-[var(--text-main)] font-semibold"
+                          : "text-[var(--text-muted)] hover:text-[var(--text-main)]"
+                      }`
+                    }
+                  >
+                    {({ isActive }) => (
+                      <>
+                        <span className="relative z-10">{nav.title}</span>
+                        {isActive && (
+                          <motion.span
+                            layoutId="activeNavIndicator"
+                            className="absolute -bottom-1 left-2 right-2 h-[2px] rounded-full"
+                            style={{
+                              background:
+                                "linear-gradient(90deg, var(--color-indigo), var(--color-violet))",
+                            }}
+                            transition={{
+                              type: "spring",
+                              stiffness: 380,
+                              damping: 30,
+                              duration: shouldReduceMotion ? 0 : 0.25,
+                            }}
+                            aria-hidden="true"
+                          />
+                        )}
+                      </>
+                    )}
+                  </NavLink>
+                </li>
+              ))}
+            </ul>
+
+            {/* Resume Button */}
+            <a
+              href={RESUME_PATH}
+              download={RESUME_NAME}
+              className="inline-flex items-center justify-center min-h-[44px] px-5 text-[14px] font-semibold text-white rounded-xl shadow-md transition-all hover:scale-[1.02] active:scale-[0.98] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-indigo)]"
+              style={{
+                backgroundColor: "var(--color-indigo)",
+                boxShadow: "0 4px 14px 0 rgba(99, 102, 241, 0.28)",
+              }}
+            >
+              Resume
+            </a>
+          </div>
+
+          {/* ── Mobile / Tablet Menu Button (< 1024px) ── */}
+          <div className="lg:hidden flex items-center">
+            <button
+              ref={menuButtonRef}
+              type="button"
+              onClick={toggleMenu}
+              aria-expanded={isMenuOpen}
+              aria-controls="mobile-navigation-drawer"
+              aria-label={isMenuOpen ? "Close menu" : "Open menu"}
+              className="w-11 h-11 min-h-[44px] min-w-[44px] flex items-center justify-center rounded-xl border transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-indigo)]"
+              style={{
+                backgroundColor: "rgba(255, 255, 255, 0.04)",
+                borderColor: "var(--border-subtle)",
+              }}
+            >
+              {/* Morphing Hamburger to X */}
+              <div className="w-5 h-4 relative flex flex-col justify-between" aria-hidden="true">
+                <span
+                  className={`h-[2px] w-full rounded-full transition-all duration-300 transform origin-left ${
+                    isMenuOpen
+                      ? "rotate-45 translate-x-0.5 -translate-y-0.5"
+                      : ""
+                  }`}
+                  style={{ backgroundColor: "var(--text-main)" }}
+                />
+                <span
+                  className={`h-[2px] w-full rounded-full transition-opacity duration-200 ${
+                    isMenuOpen ? "opacity-0" : "opacity-100"
+                  }`}
+                  style={{ backgroundColor: "var(--text-main)" }}
+                />
+                <span
+                  className={`h-[2px] w-full rounded-full transition-all duration-300 transform origin-left ${
+                    isMenuOpen
+                      ? "-rotate-45 translate-x-0.5 translate-y-0.5"
+                      : ""
+                  }`}
+                  style={{ backgroundColor: "var(--text-main)" }}
+                />
               </div>
-              <ul className="list-none flex flex-col gap-2.5" role="list">
-                {navLinks.map((nav) => (
-                  <li key={nav.title}>
-                    <NavLink
-                      to={nav.path}
-                      end={nav.path === "/"}
-                      onClick={() => setToggle(false)}
-                      className={({ isActive }) =>
-                        `flex items-center min-h-[44px] px-4 py-2.5 rounded-xl text-[16px] font-medium transition-colors ${
-                          isActive
-                            ? "bg-[#6366f1]/20 text-white border-l-4 border-[#6366f1]"
-                            : "text-secondary hover:text-white hover:bg-white/5"
-                        }`
-                      }
-                      aria-current={location.pathname === nav.path ? "page" : undefined}
-                    >
-                      {nav.title}
-                    </NavLink>
-                  </li>
-                ))}
-                <li className="pt-3 border-t border-white/10 mt-2">
+            </button>
+          </div>
+        </nav>
+
+        {/* 2px Scroll Progress Line pinned along header bottom */}
+        <motion.div
+          className="absolute bottom-0 left-0 right-0 h-[2px] origin-left"
+          style={{
+            scaleX,
+            background:
+              "linear-gradient(90deg, var(--color-indigo), var(--color-violet))",
+          }}
+          aria-hidden="true"
+        />
+      </header>
+
+      {/* ── Mobile Navigation Drawer (< 1024px) ── */}
+      <AnimatePresence>
+        {isMenuOpen && (
+          <div
+            className="lg:hidden fixed inset-0 flex"
+            style={{ zIndex: "var(--z-mobile-menu)" }}
+          >
+            {/* Backdrop overlay */}
+            <motion.div
+              className="fixed inset-0"
+              style={{
+                backgroundColor: "rgba(5, 8, 22, 0.72)",
+                backdropFilter: "blur(6px)",
+                WebkitBackdropFilter: "blur(6px)",
+              }}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: shouldReduceMotion ? 0 : 0.2 }}
+              onClick={closeMenu}
+              aria-hidden="true"
+            />
+
+            {/* Right Drawer Panel */}
+            <motion.div
+              id="mobile-navigation-drawer"
+              ref={drawerRef}
+              role="dialog"
+              aria-modal="true"
+              aria-label="Navigation Menu"
+              onKeyDown={handleDrawerKeyDown}
+              initial={
+                shouldReduceMotion
+                  ? { opacity: 0 }
+                  : { x: "100%", opacity: 0.7 }
+              }
+              animate={
+                shouldReduceMotion
+                  ? { opacity: 1 }
+                  : { x: 0, opacity: 1 }
+              }
+              exit={
+                shouldReduceMotion
+                  ? { opacity: 0 }
+                  : { x: "100%", opacity: 0 }
+              }
+              transition={{
+                duration: shouldReduceMotion ? 0.15 : 0.3,
+                ease: [0.22, 1, 0.36, 1],
+              }}
+              className="relative ml-auto w-full max-w-sm h-full flex flex-col justify-between p-6 sm:p-8 overflow-y-auto border-l shadow-2xl"
+              style={{
+                backgroundColor: "var(--bg-primary)",
+                borderColor: "var(--border-subtle)",
+              }}
+            >
+              {/* Header inside drawer with close button */}
+              <div>
+                <div className="flex items-center justify-between pb-5 mb-6 border-b" style={{ borderColor: "var(--border-subtle)" }}>
+                  <div className="flex items-center gap-3">
+                    <Logo variant="icon" tone="color" height={32} decorative />
+                    <div className="flex flex-col">
+                      <span className="font-bold text-sm tracking-tight" style={{ color: "var(--text-main)" }}>
+                        Prathamesh Chiddarwar
+                      </span>
+                      <span className="text-[11px] font-medium" style={{ color: "var(--text-muted)" }}>
+                        Web Dev · Cybersecurity
+                      </span>
+                    </div>
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={closeMenu}
+                    className="w-10 h-10 flex items-center justify-center rounded-lg border text-lg transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-indigo)]"
+                    style={{
+                      borderColor: "var(--border-subtle)",
+                      color: "var(--text-muted)",
+                      backgroundColor: "rgba(255, 255, 255, 0.04)",
+                    }}
+                    aria-label="Close menu"
+                  >
+                    ✕
+                  </button>
+                </div>
+
+                {/* Staggered Navigation Links (01 to 04) */}
+                <ul className="flex flex-col gap-2 list-none" role="list">
+                  {navLinks.map((nav, idx) => {
+                    const isCurrent = location.pathname === nav.path;
+                    const indexStr = String(idx + 1).padStart(2, "0");
+
+                    return (
+                      <motion.li
+                        key={nav.title}
+                        initial={shouldReduceMotion ? {} : { opacity: 0, y: 8 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{
+                          delay: shouldReduceMotion ? 0 : idx * 0.04,
+                          duration: 0.2,
+                          ease: [0.22, 1, 0.36, 1],
+                        }}
+                      >
+                        <NavLink
+                          to={nav.path}
+                          end={nav.path === "/"}
+                          onClick={closeMenu}
+                          className={({ isActive }) =>
+                            `flex items-center justify-between min-h-[56px] px-4 rounded-xl text-[16px] font-medium transition-colors border ${
+                              isActive
+                                ? "font-semibold"
+                                : "hover:text-[var(--text-main)]"
+                            }`
+                          }
+                          style={({ isActive }) => ({
+                            backgroundColor: isActive
+                              ? "var(--bg-surface)"
+                              : "transparent",
+                            borderColor: isActive
+                              ? "var(--color-indigo)"
+                              : "transparent",
+                            color: isActive
+                              ? "var(--text-main)"
+                              : "var(--text-muted)",
+                          })}
+                          aria-current={isCurrent ? "page" : undefined}
+                        >
+                          <div className="flex items-center gap-3">
+                            <span
+                              className="font-mono text-xs font-semibold"
+                              style={{ color: "var(--color-indigo)" }}
+                            >
+                              {indexStr}
+                            </span>
+                            <span>{nav.title}</span>
+                          </div>
+
+                          {isCurrent && (
+                            <span
+                              className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full"
+                              style={{
+                                backgroundColor: "rgba(99, 102, 241, 0.16)",
+                                color: "var(--color-indigo)",
+                              }}
+                            >
+                              Current
+                            </span>
+                          )}
+                        </NavLink>
+                      </motion.li>
+                    );
+                  })}
+                </ul>
+              </div>
+
+              {/* Drawer Bottom: Resume CTA + Social Row */}
+              <div className="pt-6 mt-8 border-t flex flex-col gap-5" style={{ borderColor: "var(--border-subtle)" }}>
+                {/* Full-width Resume button (48px tall) */}
+                <a
+                  href={RESUME_PATH}
+                  download={RESUME_NAME}
+                  onClick={closeMenu}
+                  className="w-full flex items-center justify-center min-h-[48px] px-6 text-[15px] font-semibold text-white rounded-xl shadow-lg transition-all active:scale-[0.98] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-indigo)]"
+                  style={{
+                    backgroundColor: "var(--color-indigo)",
+                    boxShadow: "0 6px 20px 0 rgba(99, 102, 241, 0.32)",
+                  }}
+                >
+                  Download Resume (PDF)
+                </a>
+
+                {/* Social icons row (each tap target >= 44x44) */}
+                <div className="flex items-center justify-around py-1">
                   <a
-                    href="/assets/Prathamesh_Chiddarwar_Resume.pdf"
+                    href="https://github.com/prathamesh-07"
                     target="_blank"
                     rel="noopener noreferrer"
-                    download="Prathamesh_Chiddarwar_Resume.pdf"
-                    onClick={() => setToggle(false)}
-                    className="w-full flex items-center justify-center min-h-[44px] py-3 rounded-xl text-sm font-semibold text-white bg-[#6366f1] hover:bg-[#4f46e5] shadow-lg shadow-[#6366f1]/25 transition-colors"
+                    className="min-h-[44px] min-w-[44px] flex items-center justify-center rounded-xl text-sm transition-colors hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-indigo)]"
+                    style={{ color: "var(--text-muted)" }}
+                    aria-label="GitHub profile"
                   >
-                    Download Resume (PDF)
+                    <IconGithub size={20} />
                   </a>
-                </li>
-              </ul>
-            </div>
 
-            {/* Mobile Footer & Quick Links */}
-            <div className="pt-6 mt-6 border-t border-white/10 flex flex-col gap-4">
-              <div className="flex items-center justify-around text-secondary">
-                <a
-                  href="https://github.com/prathamesh-07"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1.5 text-xs hover:text-white transition-colors"
-                  aria-label="GitHub"
-                >
-                  <IconGithub size={16} />
-                  <span>GitHub</span>
-                </a>
-                <a
-                  href="https://linkedin.com/in/prathamesh-chiddarwar"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1.5 text-xs hover:text-white transition-colors"
-                  aria-label="LinkedIn"
-                >
-                  <IconLinkedin size={16} />
-                  <span>LinkedIn</span>
-                </a>
-                <a
-                  href="mailto:prathameshchiddarwar42@gmail.com"
-                  className="inline-flex items-center gap-1.5 text-xs hover:text-white transition-colors"
-                  aria-label="Email"
-                >
-                  <IconMail size={16} />
-                  <span>Email</span>
-                </a>
+                  <a
+                    href="https://linkedin.com/in/prathamesh-chiddarwar"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="min-h-[44px] min-w-[44px] flex items-center justify-center rounded-xl text-sm transition-colors hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-indigo)]"
+                    style={{ color: "var(--text-muted)" }}
+                    aria-label="LinkedIn profile"
+                  >
+                    <IconLinkedin size={20} />
+                  </a>
+
+                  <a
+                    href="mailto:prathameshchiddarwar42@gmail.com"
+                    className="min-h-[44px] min-w-[44px] flex items-center justify-center rounded-xl text-sm transition-colors hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-indigo)]"
+                    style={{ color: "var(--text-muted)" }}
+                    aria-label="Send email"
+                  >
+                    <IconMail size={20} />
+                  </a>
+                </div>
+
+                <p className="text-[11px] text-center" style={{ color: "var(--text-muted)" }}>
+                  © {new Date().getFullYear()} Prathamesh Chiddarwar
+                </p>
               </div>
-              <p className="text-[11px] text-center text-secondary/60">
-                © 2026 Prathamesh Chiddarwar. All rights reserved.
-              </p>
-            </div>
-          </motion.div>
+            </motion.div>
+          </div>
         )}
       </AnimatePresence>
-    </header>
+    </>
   );
 };
 
