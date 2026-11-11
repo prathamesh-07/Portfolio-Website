@@ -1,94 +1,127 @@
-import React, { useState, useEffect } from "react";
-import Logo from "./Logo";
+import { useEffect } from "react";
+import { acquireScrollLock, releaseScrollLock } from "../../utils/scrollLock";
 
+/**
+ * Orchestrator for the critical first-visit loader.
+ * The loader's HTML & critical CSS are inlined in index.html to ensure 0ms first-paint.
+ * This component takes over the inlined DOM element `#app-loader`, tracks real readiness
+ * (fonts, app mount, critical images, window load), enforces min 350ms / max 1200ms duration,
+ * and performs a graceful 400ms exit transition with zero layout shift.
+ */
 const Loader = () => {
-  const [show, setShow] = useState(() => {
-    if (typeof window === "undefined") return false;
-    // Skip if user visited in current session
-    if (sessionStorage.getItem("portfolio_loaded")) return false;
-    // Skip if user prefers reduced motion
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return false;
-    return true;
-  });
-  const [fading, setFading] = useState(false);
-  const [progress, setProgress] = useState(25);
-
   useEffect(() => {
-    if (!show) return;
+    if (typeof document === "undefined") return;
 
-    // Simulate progress tied to initial lifecycle
-    const pTimer = setTimeout(() => setProgress(75), 250);
-    const completeTimer = setTimeout(() => setProgress(100), 650);
+    const loaderEl = document.getElementById("app-loader");
+    const progressBar = document.getElementById("loader-progress-bar");
+    const rootEl = document.getElementById("root");
 
-    const finish = () => {
-      setProgress(100);
-      setTimeout(() => {
-        setFading(true);
-        setTimeout(() => {
-          setShow(false);
-          sessionStorage.setItem("portfolio_loaded", "true");
-        }, 300);
-      }, 200);
+    // If loader is absent, already hidden, or skipped via <head> script
+    if (!loaderEl || document.documentElement.classList.contains("loader-skip")) {
+      try {
+        sessionStorage.setItem("portfolio_visited", "true");
+      } catch (e) {}
+      if (loaderEl) loaderEl.remove();
+      return;
+    }
+
+    const startTime = performance.now();
+    let currentProgress = 0.15;
+    let isExited = false;
+
+    // Helper to safely advance progress (monotonically increasing)
+    const setProgress = (value) => {
+      if (value > currentProgress) {
+        currentProgress = value;
+        if (progressBar) {
+          progressBar.style.transform = `scaleX(${value})`;
+        }
+      }
     };
 
+    // Lock scroll and mark app root inert while loader is presented
+    acquireScrollLock();
+    if (rootEl) {
+      rootEl.setAttribute("aria-hidden", "true");
+      if ("inert" in rootEl) {
+        rootEl.inert = true;
+      }
+    }
+
+    const finish = () => {
+      if (isExited) return;
+      isExited = true;
+
+      setProgress(1.0);
+
+      const elapsed = performance.now() - startTime;
+      const minDuration = 350;
+      const remainingDelay = Math.max(0, minDuration - elapsed);
+
+      setTimeout(() => {
+        // Trigger exit animation: 400ms fade and subtle lift
+        loaderEl.classList.add("loader-exiting");
+
+        // Unlock root accessibility and scroll
+        if (rootEl) {
+          rootEl.removeAttribute("aria-hidden");
+          if ("inert" in rootEl) {
+            rootEl.inert = false;
+          }
+        }
+        releaseScrollLock();
+
+        try {
+          sessionStorage.setItem("portfolio_visited", "true");
+        } catch (e) {}
+
+        // Complete DOM removal after CSS transition ends
+        setTimeout(() => {
+          if (loaderEl && loaderEl.parentNode) {
+            loaderEl.remove();
+          }
+        }, 420);
+      }, remainingDelay);
+    };
+
+    // Real readiness tracking:
+    // 1. App mounted in React
+    setProgress(0.6);
+
+    // 2. Web fonts ready
+    if (document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(() => {
+        setProgress(0.85);
+      }).catch(() => {});
+    }
+
+    // 3. Document / window load or hero image decode
     if (document.readyState === "complete") {
       finish();
     } else {
       window.addEventListener("load", finish, { once: true });
     }
 
-    // Hard cap of 1200ms
+    // 4. Hard cap failsafe at 1200ms
     const hardCapTimer = setTimeout(finish, 1200);
 
+    // 5. Handle back/forward cache navigation
+    const handlePageShow = (e) => {
+      if (e.persisted) {
+        if (loaderEl && loaderEl.parentNode) loaderEl.remove();
+        releaseScrollLock();
+      }
+    };
+    window.addEventListener("pageshow", handlePageShow);
+
     return () => {
-      clearTimeout(pTimer);
-      clearTimeout(completeTimer);
       clearTimeout(hardCapTimer);
       window.removeEventListener("load", finish);
+      window.removeEventListener("pageshow", handlePageShow);
     };
-  }, [show]);
+  }, []);
 
-  if (!show) return null;
-
-  return (
-    <div
-      aria-hidden="true"
-      className={`fixed inset-0 z-[100] flex flex-col items-center justify-center bg-[#050816] transition-opacity duration-300 ${
-        fading ? "opacity-0 pointer-events-none" : "opacity-100"
-      }`}
-    >
-      <div className="flex flex-col items-center gap-4">
-        {/* Brand Icon (96px, priority) */}
-        <div className="relative flex items-center justify-center p-2 rounded-2xl bg-[#050816] shadow-2xl shadow-[#6366f1]/20">
-          <Logo
-            variant="icon"
-            tone="color"
-            width={96}
-            height={96}
-            priority
-            decorative
-            className="animate-pulse"
-          />
-        </div>
-
-        {/* Two-word/two-track label */}
-        <div className="flex items-center gap-2 text-xs font-semibold tracking-widest uppercase text-secondary">
-          <span className="text-[#6366f1]">Web Development</span>
-          <span className="text-white/40">·</span>
-          <span className="text-[#8b5cf6]">Cybersecurity</span>
-        </div>
-
-        {/* Thin progress line */}
-        <div className="w-48 h-1 bg-[#151030] rounded-full overflow-hidden border border-white/5">
-          <div
-            className="h-full bg-gradient-to-r from-[#6366f1] to-[#8b5cf6] transition-all duration-300 ease-out"
-            style={{ width: `${progress}%` }}
-          />
-        </div>
-      </div>
-    </div>
-  );
+  return null;
 };
 
 export default Loader;
-
