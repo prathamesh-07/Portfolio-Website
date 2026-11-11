@@ -219,7 +219,7 @@ const Footer = () => {
         >
           {/* Left: Copyright */}
           <div className="flex items-center gap-3">
-            <p>© {currentYear} Prathamesh Chiddarwar. All rights reserved.</p>
+            <p>© {currentYear} Prathamesh Chiddarwar</p>
           </div>
 
           {/* Center / Right: White Logo Icon */}
