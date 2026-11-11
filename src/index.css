@@ -14,16 +14,45 @@
 }
 
 :root {
+  --bg-primary: #050816;
+  --bg-surface: #0b1030;
+  --bg-surface-raised: #151030;
+  --border-subtle: #1e212e;
+  --border-focus: #6366f1;
+  --color-indigo: #6366f1;
+  --color-violet: #885cf5;
+  --color-orange: #ff7917;
+  --text-main: #e2e8f0;
+  --text-muted: #94a3b8;
+  --track-web: #6366f1;
+  --track-sec: #885cf5;
+
+  /* Backwards compatibility aliases */
   --primary: #050816;
-  --secondary: #aaa6c3;
-  --tertiary: #151030;
+  --secondary: #94a3b8;
+  --tertiary: #0b1030;
   --accent: #6366f1;
   --accent-hover: #4f46e5;
-  --accent-cyber: #8b5cf6;
-  --text-primary: #ffffff;
-  --text-secondary: #aaa6c3;
+  --accent-cyber: #885cf5;
+  --text-primary: #e2e8f0;
+  --text-secondary: #94a3b8;
   --gradient-start: #6366f1;
-  --gradient-end: #8b5cf6;
+  --gradient-end: #885cf5;
+}
+
+/* Subtle background patterns for inner pages (4-8% opacity) */
+.bg-dot-grid {
+  background-image: radial-gradient(circle, var(--border-subtle) 1.5px, transparent 1.5px);
+  background-size: 24px 24px;
+}
+
+.bg-pinstripe-grid {
+  background-image: linear-gradient(to bottom, var(--border-subtle) 1px, transparent 1px);
+  background-size: 100% 32px;
+}
+
+.bg-ambient-radial {
+  background: radial-gradient(circle at 18% 32%, rgba(99, 102, 241, 0.08) 0%, transparent 60%);
 }
 
 body {

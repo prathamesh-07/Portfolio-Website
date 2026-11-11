@@ -1,481 +1,685 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef, useState, useCallback } from "react";
 import { Link } from "react-router-dom";
+import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import Navbar from "../components/shared/Navbar";
 import Footer from "../components/shared/Footer";
-import Logo from "../components/shared/Logo";
-import { IconDownload, IconExternalLink, IconShield, IconCode, IconCheck } from "../components/shared/Icons";
+import {
+  IconDownload,
+  IconExternalLink,
+  IconChevronRight,
+  IconCode,
+  IconShield,
+  IconCheck,
+} from "../components/shared/Icons";
 
-// Portrait 4:5 AVIF
-import portraitAvif480 from "../assets/brand/portrait-4x5-480.avif";
-import portraitAvif800 from "../assets/brand/portrait-4x5-800.avif";
+import portraitAvif480  from "../assets/brand/portrait-4x5-480.avif";
+import portraitAvif800  from "../assets/brand/portrait-4x5-800.avif";
 import portraitAvif1200 from "../assets/brand/portrait-4x5-1200.avif";
-import portraitAvif1600 from "../assets/brand/portrait-4x5-1600.avif";
-
-// Portrait 4:5 WebP
-import portraitWebp480 from "../assets/brand/portrait-4x5-480.webp";
-import portraitWebp800 from "../assets/brand/portrait-4x5-800.webp";
+import portraitWebp480  from "../assets/brand/portrait-4x5-480.webp";
+import portraitWebp800  from "../assets/brand/portrait-4x5-800.webp";
 import portraitWebp1200 from "../assets/brand/portrait-4x5-1200.webp";
-import portraitWebp1600 from "../assets/brand/portrait-4x5-1600.webp";
+import portraitJpg480   from "../assets/brand/portrait-4x5-480.jpg";
+import portraitJpg800   from "../assets/brand/portrait-4x5-800.jpg";
 
-// Portrait 4:5 JPG Fallback
-import portraitJpg480 from "../assets/brand/portrait-4x5-480.jpg";
-import portraitJpg800 from "../assets/brand/portrait-4x5-800.jpg";
-import portraitJpg1200 from "../assets/brand/portrait-4x5-1200.jpg";
-import portraitJpg1600 from "../assets/brand/portrait-4x5-1600.jpg";
+/* ─── Design tokens ─────────────────────────────────────────────────────── */
+const T = {
+  bg:          "var(--bg-primary)",
+  surface:     "var(--bg-surface-raised)",
+  border:      "var(--border-subtle)",
+  indigo:      "var(--color-indigo)",
+  violet:      "var(--color-violet)",
+  muted:       "var(--text-muted)",
+  main:        "var(--text-main)",
+};
 
+/* ─── Track pills (identical styling for both tracks) ───────────────────── */
+const TrackPill = ({ track }) => {
+  const isWeb = track === "web";
+  return (
+    <span
+      style={{
+        backgroundColor: isWeb ? "rgba(99,102,241,0.15)" : "rgba(136,92,245,0.15)",
+        color:           isWeb ? "#a5b4fc" : "#c4b5fd",
+        border:          `1px solid ${isWeb ? "rgba(99,102,241,0.3)" : "rgba(136,92,245,0.3)"}`,
+      }}
+      className="inline-flex items-center gap-1 text-[11px] font-semibold uppercase tracking-widest px-2.5 py-1 rounded-full"
+    >
+      <span
+        style={{ background: isWeb ? T.indigo : T.violet }}
+        className="w-1.5 h-1.5 rounded-full"
+      />
+      {isWeb ? "Web Development" : "Cybersecurity"}
+    </span>
+  );
+};
+
+/* ─── Disclosure toggle (accordion) ─────────────────────────────────────── */
+const Disclosure = ({ label, children }) => {
+  const [open, setOpen] = useState(false);
+  const shouldReduce = useReducedMotion();
+
+  return (
+    <div>
+      <button
+        type="button"
+        onClick={() => setOpen((v) => !v)}
+        aria-expanded={open}
+        className="flex items-center gap-2 text-[13px] font-semibold mt-3 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--border-focus)] rounded"
+        style={{ color: T.indigo }}
+      >
+        <motion.span
+          animate={{ rotate: open ? 90 : 0 }}
+          transition={shouldReduce ? { duration: 0 } : { duration: 0.18 }}
+        >
+          <IconChevronRight size={14} />
+        </motion.span>
+        {label}
+      </button>
+
+      <AnimatePresence initial={false}>
+        {open && (
+          <motion.div
+            key="content"
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={shouldReduce ? { duration: 0 } : { duration: 0.2, ease: "easeOut" }}
+            style={{ overflow: "hidden" }}
+          >
+            <div className="pt-3">{children}</div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+};
+
+/* ─── Chapter section wrapper ────────────────────────────────────────────── */
+const Chapter = ({ id, num, heading, children, chapterRef }) => {
+  const shouldReduce = useReducedMotion();
+  return (
+    <motion.section
+      ref={chapterRef}
+      id={id}
+      aria-labelledby={`${id}-heading`}
+      initial={{ opacity: 0, y: shouldReduce ? 0 : 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, amount: 0.08 }}
+      transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+      className="scroll-mt-28 pb-16 border-b last:border-b-0"
+      style={{ borderColor: T.border }}
+    >
+      <div className="flex items-baseline gap-4 mb-6">
+        <span
+          className="text-[11px] font-mono font-bold tracking-widest"
+          style={{ color: T.indigo, minWidth: "2rem" }}
+          aria-hidden="true"
+        >
+          {num}
+        </span>
+        <h2
+          id={`${id}-heading`}
+          className="text-xl sm:text-2xl font-bold"
+          style={{ color: T.main }}
+        >
+          {heading}
+        </h2>
+      </div>
+      {children}
+    </motion.section>
+  );
+};
+
+/* ─── Main page ─────────────────────────────────────────────────────────── */
 const AboutPage = () => {
+  const shouldReduce = useReducedMotion();
+  const [activeChapter, setActiveChapter] = useState("who");
+  const [skillsTrack, setSkillsTrack] = useState("web");
+  const [showAllSkills, setShowAllSkills] = useState(false);
+
+  const chapterRefs = {
+    who:   useRef(null),
+    exp:   useRef(null),
+    edu:   useRef(null),
+    skills: useRef(null),
+    certs:  useRef(null),
+    next:   useRef(null),
+  };
+
+  const chapters = [
+    { id: "who",    num: "01", label: "Who I Am" },
+    { id: "exp",    num: "02", label: "Experience" },
+    { id: "edu",    num: "03", label: "Education" },
+    { id: "skills", num: "04", label: "Skills" },
+    { id: "certs",  num: "05", label: "Certifications" },
+    { id: "next",   num: "06", label: "Next Steps" },
+  ];
+
   useEffect(() => {
     document.title = "About | Prathamesh Chiddarwar — Web Development & Cybersecurity";
     window.scrollTo(0, 0);
   }, []);
 
+  /* Scroll-spy via IntersectionObserver */
+  useEffect(() => {
+    const observers = [];
+    Object.entries(chapterRefs).forEach(([id, ref]) => {
+      if (!ref.current) return;
+      const obs = new IntersectionObserver(
+        ([entry]) => { if (entry.isIntersecting) setActiveChapter(id); },
+        { rootMargin: "-30% 0px -60% 0px", threshold: 0 }
+      );
+      obs.observe(ref.current);
+      observers.push(obs);
+    });
+    return () => observers.forEach((o) => o.disconnect());
+  }, []);
+
+  /* Skills data */
+  const webSkills    = ["JavaScript", "TypeScript", "Python", "React", "Next.js", "Node.js", "Express.js", "TailwindCSS", "React Native", "MongoDB", "MySQL", "Firebase", "AWS EC2", "AWS S3", "Vercel", "GCP"];
+  const cyberSkills  = ["Vulnerability Assessment", "Penetration Testing", "Risk Assessment", "Wireshark", "Nmap", "Nessus", "Burp Suite", "Metasploit", "ISO 27001 (ISMS)", "ISO 9001 (QMS)", "RBAC Architecture", "CI/CD"];
+
+  const activeSkills  = skillsTrack === "web" ? webSkills : cyberSkills;
+  const visibleSkills = showAllSkills ? activeSkills : activeSkills.slice(0, 8);
+
   return (
-    <div className="relative min-h-screen bg-[#050816] text-white flex flex-col pt-20">
+    <div
+      className="relative min-h-screen flex flex-col pt-20"
+      style={{ background: T.bg, color: T.main }}
+    >
+      {/* Dot-grid background at 6% opacity */}
+      <div
+        className="pointer-events-none fixed inset-0 bg-dot-grid opacity-[0.06]"
+        aria-hidden="true"
+        style={{ zIndex: 0 }}
+      />
+
       <Navbar />
 
-      <main className="flex-1 max-w-7xl mx-auto px-6 sm:px-16 py-12 w-full">
-        {/* Header Breadcrumb / Label */}
-        <div className="mb-8">
-          <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-widest text-[#6366f1] mb-2">
-            <span>Profile</span>
-            <span className="text-secondary">/</span>
-            <span className="text-secondary">Background & Experience</span>
-          </div>
-          <h1 className="text-3xl sm:text-5xl font-black text-white tracking-tight">
+      <main className="relative z-10 flex-1 w-full" id="main-content">
+        {/* ─── Page header ─── */}
+        <div className="max-w-[1200px] mx-auto px-6 sm:px-10 pt-10 pb-6">
+          <span
+            className="text-[11px] font-bold uppercase tracking-[0.2em] mb-2 block"
+            style={{ color: T.indigo }}
+          >
+            Profile
+          </span>
+          <h1 className="text-4xl sm:text-5xl lg:text-[3.5rem] font-black tracking-tight leading-none" style={{ color: T.main }}>
             About Me
           </h1>
-          <p className="mt-3 text-secondary text-base sm:text-lg max-w-3xl leading-relaxed">
-            Full-stack developer and cybersecurity graduate (Class of 2026). I build production web applications and research AI-driven security threats.
+          <p className="mt-3 text-base max-w-xl leading-relaxed" style={{ color: T.muted }}>
+            Full-stack developer and cybersecurity graduate (Class of 2026).
+            I build production web applications and research AI-driven security threats.
           </p>
         </div>
 
-        {/* 12-Column Bento Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
+        {/* ─── Two-column layout ─── */}
+        <div className="max-w-[1200px] mx-auto px-6 sm:px-10 pb-20">
+          <div className="lg:grid lg:grid-cols-[280px_1fr] lg:gap-16 items-start">
 
-          {/* Tile 1 (Span 7 on desktop): Bio & Engineering Background */}
-          <section
-            aria-labelledby="bio-heading"
-            className="md:col-span-7 bg-[#151030] border border-white/10 rounded-2xl p-6 sm:p-8 flex flex-col justify-between shadow-card"
-          >
-            <div>
-              <div className="flex items-center gap-2 mb-4">
-                <span className="w-2.5 h-2.5 rounded-full bg-[#6366f1]" />
-                <h2 id="bio-heading" className="text-xl sm:text-2xl font-bold text-white">
-                  Engineering Background
-                </h2>
-              </div>
-              <div className="text-secondary text-[15px] sm:text-[16px] leading-relaxed space-y-4">
-                <p>
-                  I am a Computer Science graduate (<strong className="text-white font-semibold">Class of 2026</strong>) specializing in <strong className="text-white font-semibold">Cyber Security and Forensics</strong> at MIT World Peace University, Pune, with practical experience building and deploying full-stack web applications end-to-end.
-                </p>
-                <p>
-                  During my internship at <strong className="text-white font-semibold">DelPat LLP</strong>, I engineered and deployed 6+ production web applications across client and internal products. My responsibilities included architecting a role-based CMS backend with JWT authentication, leading a complete WordPress-to-React migration, publishing a reusable component library, and orchestrating multi-environment cloud deployments across AWS EC2, Vercel, and Firebase.
-                </p>
-                <p>
-                  Alongside production web development, I pursue academic research on emerging digital threats. I have authored and published two peer-reviewed research papers in <strong className="text-white font-semibold">IEEE Xplore</strong> (ICTBIG 2024 &amp; ICTBIG 2025) focused on AI-generated deepfake audio detection methods and comprehensive reviews of acoustic forensic defenses.
-                </p>
-              </div>
-            </div>
-
-            <div className="mt-6 pt-6 border-t border-white/5 flex flex-wrap items-center justify-between gap-4">
-              <div className="flex items-center gap-3">
-                <span className="text-xs font-semibold text-secondary uppercase tracking-wider">Tracks:</span>
-                <span className="text-xs px-2.5 py-1 rounded-full bg-[#6366f1]/20 text-[#a5b4fc] border border-[#6366f1]/30 font-medium">
-                  Web Development
-                </span>
-                <span className="text-xs px-2.5 py-1 rounded-full bg-[#8b5cf6]/20 text-[#c4b5fd] border border-[#8b5cf6]/30 font-medium">
-                  Cybersecurity
-                </span>
-              </div>
-              <Link
-                to="/contact"
-                className="text-sm font-semibold text-[#6366f1] hover:text-[#a5b4fc] transition-colors"
-              >
-                Get in touch →
-              </Link>
-            </div>
-          </section>
-
-          {/* Tile 2 (Span 5 on desktop): Portrait & Caption Tile */}
-          <div className="md:col-span-5 flex flex-col gap-6">
-            {/* Large Bento Tile: 4:5 Portrait */}
-            <div className="rounded-2xl border border-white/10 overflow-hidden shadow-[0_12px_36px_-8px_rgba(139,92,246,0.3)] bg-[#151030] relative aspect-[4/5] w-full">
-              <picture>
-                <source
-                  type="image/avif"
-                  srcSet={`${portraitAvif480} 480w, ${portraitAvif800} 800w, ${portraitAvif1200} 1200w, ${portraitAvif1600} 1600w`}
-                  sizes="(max-width: 768px) 100vw, (max-width: 1280px) 45vw, 480px"
-                />
-                <source
-                  type="image/webp"
-                  srcSet={`${portraitWebp480} 480w, ${portraitWebp800} 800w, ${portraitWebp1200} 1200w, ${portraitWebp1600} 1600w`}
-                  sizes="(max-width: 768px) 100vw, (max-width: 1280px) 45vw, 480px"
-                />
-                <img
-                  src={portraitJpg800}
-                  srcSet={`${portraitJpg480} 480w, ${portraitJpg800} 800w, ${portraitJpg1200} 1200w, ${portraitJpg1600} 1600w`}
-                  sizes="(max-width: 768px) 100vw, (max-width: 1280px) 45vw, 480px"
-                  alt="Portrait of Prathamesh Chiddarwar in a navy blazer"
-                  width={800}
-                  height={1000}
-                  loading="lazy"
-                  decoding="async"
-                  className="w-full h-full object-cover"
-                  style={{ objectPosition: "50% 30%" }}
-                />
-              </picture>
-            </div>
-
-            {/* Small Caption Tile */}
+            {/* ─── LEFT: Sticky column ─── */}
             <aside
-              aria-label="Author snapshot"
-              className="rounded-2xl border border-white/10 bg-[#100d25] p-6 shadow-card flex flex-col justify-between"
+              className="hidden lg:block lg:sticky lg:top-28 self-start pb-10"
+              aria-label="Page navigation"
             >
-              <div>
-                <h2 className="text-xl font-bold text-white tracking-tight">
-                  Prathamesh Chiddarwar
-                </h2>
-                <div className="flex items-center gap-2 mt-1.5 text-xs font-semibold">
-                  <span className="text-[#6366f1]">Full-Stack Developer</span>
-                  <span className="text-white/30">·</span>
-                  <span className="text-[#8b5cf6]">Cybersecurity</span>
-                </div>
-
-                <div className="mt-4 pt-4 border-t border-white/5 space-y-2 text-sm">
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs uppercase tracking-wider text-secondary">Location</span>
-                    <span className="text-white font-medium text-xs">Pune, Maharashtra, India</span>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs uppercase tracking-wider text-secondary">Education</span>
-                    <span className="text-white font-medium text-xs">B.Tech Graduate (Class of 2026)</span>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs uppercase tracking-wider text-secondary">Specialization</span>
-                    <span className="text-white font-medium text-xs">Cyber Security &amp; Forensics</span>
-                  </div>
-                </div>
+              {/* Portrait */}
+              <div
+                className="rounded-2xl overflow-hidden aspect-[4/5] mb-6 shadow-[0_8px_32px_-8px_rgba(136,92,245,0.3)]"
+                style={{ border: `1px solid ${T.border}` }}
+              >
+                <picture>
+                  <source
+                    type="image/avif"
+                    srcSet={`${portraitAvif480} 480w, ${portraitAvif800} 800w, ${portraitAvif1200} 1200w`}
+                    sizes="280px"
+                  />
+                  <source
+                    type="image/webp"
+                    srcSet={`${portraitWebp480} 480w, ${portraitWebp800} 800w, ${portraitWebp1200} 1200w`}
+                    sizes="280px"
+                  />
+                  <img
+                    src={portraitJpg800}
+                    srcSet={`${portraitJpg480} 480w, ${portraitJpg800} 800w`}
+                    sizes="280px"
+                    alt="Prathamesh Chiddarwar"
+                    width={280}
+                    height={350}
+                    loading="eager"
+                    decoding="async"
+                    className="w-full h-full object-cover"
+                    style={{ objectPosition: "50% 20%" }}
+                  />
+                </picture>
               </div>
 
-              <div className="mt-5 pt-4 border-t border-white/5">
-                <a
-                  href="/assets/Prathamesh_Chiddarwar_Resume.pdf"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  download="Prathamesh_Chiddarwar_Resume.pdf"
-                  className="w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl text-sm font-semibold text-white bg-[#6366f1] hover:bg-[#4f46e5] shadow-md shadow-[#6366f1]/20 transition-all"
+              {/* Name & role */}
+              <p className="text-base font-bold leading-tight" style={{ color: T.main }}>
+                Prathamesh Chiddarwar
+              </p>
+              <p className="text-xs mt-1" style={{ color: T.muted }}>
+                Full-Stack Developer · Cyber Security Researcher
+              </p>
+
+              {/* Chapter nav */}
+              <nav
+                className="mt-6"
+                aria-label="Chapters on this page"
+              >
+                <p
+                  className="text-[10px] font-bold uppercase tracking-[0.18em] mb-3"
+                  style={{ color: T.muted }}
                 >
-                  <IconDownload size={15} />
-                  <span>Download Resume (PDF)</span>
-                </a>
-              </div>
+                  On This Page
+                </p>
+                <ul className="space-y-0.5">
+                  {chapters.map((ch) => {
+                    const isActive = activeChapter === ch.id;
+                    return (
+                      <li key={ch.id}>
+                        <a
+                          href={`#${ch.id}`}
+                          aria-current={isActive ? "true" : undefined}
+                          className="flex items-center gap-3 py-1.5 px-2 rounded-lg text-[13px] font-medium transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--border-focus)]"
+                          style={{
+                            color:   isActive ? T.indigo : T.muted,
+                            background: isActive ? "rgba(99,102,241,0.08)" : "transparent",
+                          }}
+                        >
+                          <span
+                            className="font-mono text-[10px] font-bold w-6 shrink-0"
+                            style={{ color: isActive ? T.indigo : T.border }}
+                          >
+                            {ch.num}
+                          </span>
+                          {ch.label}
+                        </a>
+                      </li>
+                    );
+                  })}
+                </ul>
+              </nav>
             </aside>
-          </div>
 
-          {/* Tile 3 (Span 12): Two Tracks Split (Equal Prominence) */}
-          <section
-            aria-labelledby="tracks-heading"
-            className="md:col-span-12 bg-[#151030] border border-white/10 rounded-2xl p-6 sm:p-8 shadow-card"
-          >
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
-              <div>
-                <h2 id="tracks-heading" className="text-xl sm:text-2xl font-bold text-white">
-                  Equal Focus: Two Core Disciplines
-                </h2>
-                <p className="text-secondary text-sm mt-1">
-                  Neither discipline is secondary. Software engineering provides the ability to build; cybersecurity ensures what is built resists adversarial attack.
-                </p>
-              </div>
-            </div>
+            {/* ─── RIGHT: Scrolling chapters ─── */}
+            <div className="pt-8 lg:pt-0 space-y-0">
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {/* Track A: Web Development */}
-              <div className="p-6 rounded-xl bg-[#100d25] border-l-4 border-[#6366f1] border-t border-r border-b border-white/5">
-                <div className="flex items-center gap-2.5 mb-3">
-                  <span className="p-2 rounded-lg bg-[#6366f1]/20 text-[#6366f1]">
-                    <IconCode size={18} />
-                  </span>
-                  <h3 className="text-lg font-bold text-white">Web Development Track</h3>
-                </div>
-                <p className="text-secondary text-sm leading-relaxed mb-4">
-                  Full-stack application engineering from concept to multi-environment deployment. Focus on robust backend APIs, role-based architectures, and modern component systems.
-                </p>
-                <ul className="space-y-2 text-sm text-secondary" role="list">
-                  <li className="flex items-start gap-2">
-                    <span className="text-[#6366f1] mt-0.5">▸</span>
-                    <span><strong className="text-white">DelPat LLP:</strong> Built and shipped 6+ web applications end-to-end.</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <span className="text-[#6366f1] mt-0.5">▸</span>
-                    <span><strong className="text-white">Full-Stack Stack:</strong> React, Next.js, Node.js, Express, MongoDB, MySQL.</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <span className="text-[#6366f1] mt-0.5">▸</span>
-                    <span><strong className="text-white">Cloud Delivery:</strong> AWS EC2 & S3, Vercel, Firebase hosting with CI pipelines.</span>
-                  </li>
-                </ul>
-              </div>
-
-              {/* Track B: Cybersecurity */}
-              <div className="p-6 rounded-xl bg-[#100d25] border-l-4 border-[#8b5cf6] border-t border-r border-b border-white/5">
-                <div className="flex items-center gap-2.5 mb-3">
-                  <span className="p-2 rounded-lg bg-[#8b5cf6]/20 text-[#8b5cf6]">
-                    <IconShield size={18} />
-                  </span>
-                  <h3 className="text-lg font-bold text-white">Cybersecurity Track</h3>
-                </div>
-                <p className="text-secondary text-sm leading-relaxed mb-4">
-                  Penetration testing, threat modeling, security compliance standards, and applied AI-security research into synthetic audio detection.
-                </p>
-                <ul className="space-y-2 text-sm text-secondary" role="list">
-                  <li className="flex items-start gap-2">
-                    <span className="text-[#8b5cf6] mt-0.5">▸</span>
-                    <span><strong className="text-white">2x Published IEEE Xplore Papers:</strong> Real-time detection &amp; comprehensive review of deepfake audio forensic techniques.</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <span className="text-[#8b5cf6] mt-0.5">▸</span>
-                    <span><strong className="text-white">Vulnerability Assessment:</strong> Wireshark, Nmap, Nessus, Burp Suite, Metasploit.</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <span className="text-[#8b5cf6] mt-0.5">▸</span>
-                    <span><strong className="text-white">Competitions & Governance:</strong> HackMIT CTF 5th Rank, ISO 27001 (ISMS), ISO 9001.</span>
-                  </li>
-                </ul>
-              </div>
-            </div>
-          </section>
-
-          {/* Tile 4 (Span 7): Experience Timeline */}
-          <section
-            aria-labelledby="experience-timeline-heading"
-            className="md:col-span-7 bg-[#151030] border border-white/10 rounded-2xl p-6 sm:p-8 shadow-card flex flex-col justify-between"
-          >
-            <div>
-              <div className="flex items-center justify-between mb-6">
-                <h2 id="experience-timeline-heading" className="text-xl font-bold text-white">
-                  Experience & Research
-                </h2>
-                <span className="text-xs text-secondary font-mono">2024–2025</span>
-              </div>
-
-              <div className="space-y-6 relative border-l-2 border-white/10 pl-6 ml-2">
-                {/* DelPat */}
-                <div className="relative">
-                  <span className="absolute -left-[31px] top-1 w-3.5 h-3.5 rounded-full bg-[#6366f1] ring-4 ring-[#151030]" />
-                  <div className="flex items-center gap-2 mb-1">
-                    <span className="text-xs font-semibold px-2 py-0.5 rounded bg-[#6366f1]/20 text-[#a5b4fc] border border-[#6366f1]/30">
-                      Web Development
-                    </span>
-                    <span className="text-xs text-secondary">Jun 2025 – Dec 2025</span>
-                  </div>
-                  <h3 className="text-base sm:text-lg font-bold text-white">
-                    Full Stack Developer Intern — DelPat LLP
-                  </h3>
-                  <p className="text-secondary text-xs mb-2">Remote</p>
-                  <ul className="text-xs sm:text-sm text-secondary space-y-1.5 list-disc ml-4">
-                    <li>Engineered and deployed 6+ production web applications end-to-end across client and internal projects.</li>
-                    <li>Architected role-based CMS backend with JWT auth and complete CRUD APIs; led client WordPress-to-React migration.</li>
-                    <li>Built reusable component library and kickstarted cross-platform React Native app from PRD and ER diagrams.</li>
-                    <li>Provisioned AWS EC2 infrastructure and managed Vercel / Firebase multi-environment cloud CI deployments.</li>
-                  </ul>
-                </div>
-
-                {/* IEEE Research 1 (ICTBIG 2024) */}
-                <div className="relative">
-                  <span className="absolute -left-[31px] top-1 w-3.5 h-3.5 rounded-full bg-[#8b5cf6] ring-4 ring-[#151030]" />
-                  <div className="flex items-center gap-2 mb-1">
-                    <span className="text-xs font-semibold px-2 py-0.5 rounded bg-[#8b5cf6]/20 text-[#c4b5fd] border border-[#8b5cf6]/30">
-                      Cybersecurity Research
-                    </span>
-                    <span className="text-xs text-secondary">Nov 2024 – Mar 2025</span>
-                  </div>
-                  <h3 className="text-base sm:text-lg font-bold text-white">
-                    Researcher — ICTBIG 2024 (IEEE Xplore)
-                  </h3>
-                  <p className="text-secondary text-xs mb-2">
-                    DOI: <a href="https://doi.org/10.1109/ICTBIG64922.2024.10911062" target="_blank" rel="noopener noreferrer" className="text-[#6366f1] hover:underline">10.1109/ICTBIG64922.2024.10911062</a>
+              {/* ── 01 WHO I AM ── */}
+              <Chapter id="who" num="01" heading="Who I Am" chapterRef={chapterRefs.who}>
+                <div className="space-y-4 text-[15px] leading-relaxed" style={{ color: T.muted }}>
+                  <p>
+                    I am a Computer Science graduate (<strong style={{ color: T.main }}>Class of 2026</strong>) specializing in{" "}
+                    <strong style={{ color: T.main }}>Cyber Security and Forensics</strong> at MIT World Peace University, Pune.
+                    My work spans production full-stack engineering and peer-reviewed AI security research.
                   </p>
-                  <ul className="text-xs sm:text-sm text-secondary space-y-1.5 list-disc ml-4">
-                    <li>Authored &amp; published peer-reviewed paper: "Real-Time Detection of AI-Generated Deepfake Audio: A Novel Approach".</li>
-                    <li>Designed and implemented CNN signal-processing pipeline using spectral feature analysis (STFT and MFCCs).</li>
-                  </ul>
+                  <p>
+                    At <strong style={{ color: T.main }}>DelPat LLP</strong>, I engineered and shipped 6+ production web applications,
+                    architected a role-based CMS with JWT authentication, and managed multi-environment cloud deployments
+                    across AWS EC2, Vercel, and Firebase. In parallel, I authored{" "}
+                    <strong style={{ color: T.main }}>two IEEE Xplore-published papers</strong> on AI-generated deepfake audio detection.
+                  </p>
                 </div>
-              </div>
-            </div>
 
-            <div className="mt-6 pt-4 border-t border-white/5 flex items-center justify-between text-xs text-secondary">
-              <span>Timeline verified with resume</span>
-              <Link to="/projects" className="text-[#6366f1] hover:underline">View Projects →</Link>
-            </div>
-          </section>
+                {/* Two equal tracks */}
+                <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  {[
+                    {
+                      track: "web",
+                      icon: <IconCode size={16} />,
+                      title: "Web Development",
+                      desc: "Full-stack engineering from architecture through multi-environment cloud deployment. React, Next.js, Node.js, AWS, Vercel.",
+                    },
+                    {
+                      track: "cyber",
+                      icon: <IconShield size={16} />,
+                      title: "Cybersecurity",
+                      desc: "Vulnerability assessment, penetration testing, threat modeling, ISO compliance, and applied AI security research.",
+                    },
+                  ].map((t) => {
+                    const isWeb = t.track === "web";
+                    return (
+                      <div
+                        key={t.track}
+                        className="rounded-xl p-5"
+                        style={{
+                          background: isWeb ? "rgba(99,102,241,0.07)" : "rgba(136,92,245,0.07)",
+                          border: `1px solid ${isWeb ? "rgba(99,102,241,0.2)" : "rgba(136,92,245,0.2)"}`,
+                        }}
+                      >
+                        <div className="flex items-center gap-2 mb-2">
+                          <span style={{ color: isWeb ? T.indigo : T.violet }}>{t.icon}</span>
+                          <span
+                            className="text-sm font-bold"
+                            style={{ color: T.main }}
+                          >
+                            {t.title}
+                          </span>
+                        </div>
+                        <p className="text-[13px] leading-relaxed" style={{ color: T.muted }}>
+                          {t.desc}
+                        </p>
+                      </div>
+                    );
+                  })}
+                </div>
+              </Chapter>
 
-          {/* Tile 5 (Span 5): Education & Achievements */}
-          <section
-            aria-labelledby="education-heading"
-            className="md:col-span-5 bg-[#151030] border border-white/10 rounded-2xl p-6 sm:p-8 shadow-card flex flex-col justify-between"
-          >
-            <div>
-              <h2 id="education-heading" className="text-xl font-bold text-white mb-4">
-                Education & Honors
-              </h2>
-
-              <div className="space-y-4">
-                <div className="p-3.5 rounded-xl bg-[#100d25] border border-white/5">
-                  <div className="flex justify-between items-start">
-                    <div>
-                      <h3 className="text-sm font-bold text-white">MIT World Peace University</h3>
-                      <p className="text-xs text-secondary">B.Tech in CSE (Cyber Security & Forensics)</p>
+              {/* ── 02 EXPERIENCE ── */}
+              <Chapter id="exp" num="02" heading="Experience & Research" chapterRef={chapterRefs.exp}>
+                {/* Timeline */}
+                <div className="relative pl-6 border-l-2" style={{ borderColor: T.border }}>
+                  {/* DelPat */}
+                  <div className="relative mb-10">
+                    <span
+                      className="absolute -left-[25px] top-1 w-3 h-3 rounded-full ring-4"
+                      style={{
+                        background: T.indigo,
+                        ringColor: T.bg,
+                        boxShadow: `0 0 0 3px ${T.bg}, 0 0 0 5px ${T.indigo}`,
+                      }}
+                    />
+                    <div className="flex flex-wrap items-center gap-2 mb-1.5">
+                      <TrackPill track="web" />
+                      <span className="text-[12px]" style={{ color: T.muted }}>Jun 2025 – Dec 2025</span>
                     </div>
-                    <span className="text-xs font-semibold text-[#6366f1] bg-[#6366f1]/10 px-2 py-0.5 rounded">
+                    <h3 className="text-base font-bold" style={{ color: T.main }}>
+                      Full Stack Developer Intern — DelPat LLP
+                    </h3>
+                    <p className="text-[13px] mt-1" style={{ color: T.muted }}>
+                      Engineered and deployed 6+ production web applications, led a WordPress-to-React migration,
+                      and provisioned AWS EC2 multi-environment cloud infrastructure.
+                    </p>
+                    <Disclosure label="Details">
+                      <ul className="space-y-1.5 text-[13px]" style={{ color: T.muted }}>
+                        {[
+                          "Architected role-based CMS backend with JWT authentication, image processing, and full CRUD APIs.",
+                          "Built a reusable component library adopted across multiple projects, enforcing consistent design standards.",
+                          "Kickstarted a cross-platform React Native app from PRD and ER-diagram through navigation and UI integration.",
+                          "Provisioned AWS EC2 and managed Vercel / Firebase multi-environment deployments, resolving CI/build issues.",
+                        ].map((pt, i) => (
+                          <li key={i} className="flex gap-2 items-start">
+                            <span style={{ color: T.indigo, marginTop: 2 }}>▸</span>
+                            <span>{pt}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </Disclosure>
+                  </div>
+
+                  {/* IEEE Research ICTBIG 2024 */}
+                  <div className="relative mb-10">
+                    <span
+                      className="absolute -left-[25px] top-1 w-3 h-3 rounded-full"
+                      style={{
+                        background: T.violet,
+                        boxShadow: `0 0 0 3px ${T.bg}, 0 0 0 5px ${T.violet}`,
+                      }}
+                    />
+                    <div className="flex flex-wrap items-center gap-2 mb-1.5">
+                      <TrackPill track="cyber" />
+                      <span className="text-[12px]" style={{ color: T.muted }}>Nov 2024 – Mar 2025</span>
+                    </div>
+                    <h3 className="text-base font-bold" style={{ color: T.main }}>
+                      Researcher — ICTBIG 2024, IEEE Xplore
+                    </h3>
+                    <p className="text-[13px] mt-1" style={{ color: T.muted }}>
+                      Published peer-reviewed paper on real-time CNN-based deepfake audio detection using STFT and MFCC spectral analysis.{" "}
+                      <a
+                        href="https://doi.org/10.1109/ICTBIG64922.2024.10911062"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="font-medium hover:underline focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[var(--border-focus)] rounded"
+                        style={{ color: T.indigo }}
+                      >
+                        DOI ↗
+                      </a>
+                    </p>
+                    <Disclosure label="Details">
+                      <ul className="space-y-1.5 text-[13px]" style={{ color: T.muted }}>
+                        {[
+                          'Authored "Real-Time Detection of AI-Generated Deepfake Audio: A Novel Approach" — added to IEEE Xplore March 2025.',
+                          "Designed a CNN signal-processing pipeline: audio → STFT spectrogram → MFCC extraction → softmax classifier with configurable threshold.",
+                          "Conference: 2024 IEEE 4th ICTBIG, 13–14 December 2024.",
+                        ].map((pt, i) => (
+                          <li key={i} className="flex gap-2 items-start">
+                            <span style={{ color: T.violet, marginTop: 2 }}>▸</span>
+                            <span>{pt}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </Disclosure>
+                  </div>
+
+                  {/* IEEE Research ICTBIG 2025 */}
+                  <div className="relative">
+                    <span
+                      className="absolute -left-[25px] top-1 w-3 h-3 rounded-full"
+                      style={{
+                        background: T.violet,
+                        boxShadow: `0 0 0 3px ${T.bg}, 0 0 0 5px ${T.violet}`,
+                      }}
+                    />
+                    <div className="flex flex-wrap items-center gap-2 mb-1.5">
+                      <TrackPill track="cyber" />
+                      <span className="text-[12px]" style={{ color: T.muted }}>Dec 2025 – Jan 2026</span>
+                    </div>
+                    <h3 className="text-base font-bold" style={{ color: T.main }}>
+                      Researcher — ICTBIG 2025, IEEE Xplore
+                    </h3>
+                    <p className="text-[13px] mt-1" style={{ color: T.muted }}>
+                      Published comprehensive survey reviewing deepfake audio detection techniques, adversarial evasion, and future forensic directions.{" "}
+                      <a
+                        href="https://doi.org/10.1109/ICTBIG68706.2025.11323737"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="font-medium hover:underline focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[var(--border-focus)] rounded"
+                        style={{ color: T.indigo }}
+                      >
+                        DOI ↗
+                      </a>
+                    </p>
+                    <Disclosure label="Details">
+                      <ul className="space-y-1.5 text-[13px]" style={{ color: T.muted }}>
+                        {[
+                          'Authored "A Comprehensive Review of Deepfake Audio Detection Techniques: Advances, Challenges and Future Directions" — added to IEEE Xplore January 2026.',
+                          "Covered taxonomy of generative voice synthesis engines, temporal/spectral feature extraction, benchmark evaluation (ASVspoof, In-the-Wild), and multimodal forensic countermeasures.",
+                          "Conference: 2025 IEEE 5th ICTBIG, 12–13 December 2025.",
+                        ].map((pt, i) => (
+                          <li key={i} className="flex gap-2 items-start">
+                            <span style={{ color: T.violet, marginTop: 2 }}>▸</span>
+                            <span>{pt}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </Disclosure>
+                  </div>
+                </div>
+              </Chapter>
+
+              {/* ── 03 EDUCATION ── */}
+              <Chapter id="edu" num="03" heading="Academic Foundation" chapterRef={chapterRefs.edu}>
+                {/* Primary */}
+                <div
+                  className="rounded-xl p-5"
+                  style={{ background: "rgba(99,102,241,0.07)", border: `1px solid rgba(99,102,241,0.2)` }}
+                >
+                  <div className="flex flex-wrap items-start justify-between gap-3">
+                    <div>
+                      <p className="text-[13px] font-bold" style={{ color: T.main }}>MIT World Peace University, Pune</p>
+                      <p className="text-[13px] mt-0.5" style={{ color: T.muted }}>B.Tech in CSE (Cyber Security &amp; Forensics)</p>
+                    </div>
+                    <span
+                      className="text-[11px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full shrink-0"
+                      style={{ background: "rgba(99,102,241,0.15)", color: "#a5b4fc", border: "1px solid rgba(99,102,241,0.3)" }}
+                    >
                       Graduated 2026
                     </span>
                   </div>
-                  <p className="text-xs text-white/90 mt-2 font-medium">CGPA: 7.47 / 10</p>
+                  <p className="text-[13px] mt-2 font-medium" style={{ color: T.muted }}>CGPA: 7.47 / 10</p>
                 </div>
 
-                <div className="p-3.5 rounded-xl bg-[#100d25] border border-white/5">
-                  <div className="flex justify-between items-start">
-                    <div>
-                      <h3 className="text-sm font-bold text-white">Hislop Junior College</h3>
-                      <p className="text-xs text-secondary">HSC (MSBSHSE), Nagpur</p>
+                {/* Earlier education accordion */}
+                <Disclosure label="Earlier Education">
+                  <div className="space-y-3">
+                    {[
+                      { name: "Hislop Junior College", loc: "Nagpur", degree: "HSC (MSBSHSE)", grade: "70.67%", year: "2022" },
+                      { name: "Jet Kids International School", loc: "Pusad", degree: "SSC (CBSE)", grade: "87.6%", year: "2020" },
+                    ].map((e) => (
+                      <div
+                        key={e.name}
+                        className="rounded-xl p-4 flex flex-wrap items-start justify-between gap-2"
+                        style={{ background: "rgba(30,33,46,0.5)", border: `1px solid ${T.border}` }}
+                      >
+                        <div>
+                          <p className="text-[13px] font-bold" style={{ color: T.main }}>{e.name}, {e.loc}</p>
+                          <p className="text-[12px] mt-0.5" style={{ color: T.muted }}>{e.degree} · {e.grade}</p>
+                        </div>
+                        <span className="text-[12px] font-mono" style={{ color: T.muted }}>{e.year}</span>
+                      </div>
+                    ))}
+                  </div>
+                </Disclosure>
+              </Chapter>
+
+              {/* ── 04 SKILLS ── */}
+              <Chapter id="skills" num="04" heading="Technical Capabilities" chapterRef={chapterRefs.skills}>
+                {/* Segmented control */}
+                <div
+                  className="inline-flex p-1 rounded-xl mb-6"
+                  role="tablist"
+                  aria-label="Skills track"
+                  style={{ background: "rgba(30,33,46,0.8)", border: `1px solid ${T.border}` }}
+                >
+                  {[
+                    { id: "web",   label: "Web Development",  color: T.indigo },
+                    { id: "cyber", label: "Cybersecurity",    color: T.violet },
+                  ].map((tab) => {
+                    const active = skillsTrack === tab.id;
+                    return (
+                      <button
+                        key={tab.id}
+                        role="tab"
+                        aria-selected={active}
+                        onClick={() => { setSkillsTrack(tab.id); setShowAllSkills(false); }}
+                        onKeyDown={(e) => {
+                          if (e.key === "ArrowRight") { setSkillsTrack("cyber"); setShowAllSkills(false); }
+                          if (e.key === "ArrowLeft")  { setSkillsTrack("web"); setShowAllSkills(false); }
+                        }}
+                        className="relative px-4 py-2 rounded-lg text-[13px] font-semibold transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--border-focus)]"
+                        style={{
+                          color: active ? "#fff" : T.muted,
+                          background: active ? tab.color : "transparent",
+                        }}
+                      >
+                        {tab.label}
+                      </button>
+                    );
+                  })}
+                </div>
+
+                {/* Skill chips */}
+                <div className="flex flex-wrap gap-2">
+                  <AnimatePresence mode="wait">
+                    {visibleSkills.map((skill, i) => (
+                      <motion.span
+                        key={`${skillsTrack}-${skill}`}
+                        initial={{ opacity: 0, y: shouldReduce ? 0 : 6 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0 }}
+                        transition={{ duration: 0.25, delay: shouldReduce ? 0 : Math.min(i * 0.04, 0.32) }}
+                        className="px-3 py-1.5 rounded-lg text-[13px] font-medium"
+                        style={{
+                          background: skillsTrack === "web" ? "rgba(99,102,241,0.1)" : "rgba(136,92,245,0.1)",
+                          color: skillsTrack === "web" ? "#c7d2fe" : "#ddd6fe",
+                          border: `1px solid ${skillsTrack === "web" ? "rgba(99,102,241,0.2)" : "rgba(136,92,245,0.2)"}`,
+                        }}
+                      >
+                        {skill}
+                      </motion.span>
+                    ))}
+                  </AnimatePresence>
+                </div>
+
+                {activeSkills.length > 8 && (
+                  <button
+                    type="button"
+                    onClick={() => setShowAllSkills((v) => !v)}
+                    className="mt-4 text-[13px] font-semibold flex items-center gap-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--border-focus)] rounded"
+                    style={{ color: T.indigo }}
+                  >
+                    {showAllSkills ? "Show fewer" : `+ Show all ${activeSkills.length} skills`}
+                  </button>
+                )}
+              </Chapter>
+
+              {/* ── 05 CERTIFICATIONS ── */}
+              <Chapter id="certs" num="05" heading="Honors & Certifications" chapterRef={chapterRefs.certs}>
+                <div className="space-y-3">
+                  {[
+                    {
+                      title: "Blockchain Evolution Certification",
+                      org: "GIAN Program, NIT Goa",
+                      year: "2025",
+                      desc: "Decentralized Systems and distributed ledger architecture.",
+                      track: "web",
+                    },
+                  ].map((cert) => (
+                    <div
+                      key={cert.title}
+                      className="flex items-start gap-4 rounded-xl p-4"
+                      style={{ background: "rgba(30,33,46,0.5)", border: `1px solid ${T.border}` }}
+                    >
+                      <span
+                        className="mt-0.5 w-6 h-6 rounded-full flex items-center justify-center shrink-0"
+                        style={{ background: "rgba(99,102,241,0.15)", color: T.indigo }}
+                      >
+                        <IconCheck size={12} />
+                      </span>
+                      <div>
+                        <p className="text-[13px] font-bold" style={{ color: T.main }}>{cert.title}</p>
+                        <p className="text-[12px] mt-0.5" style={{ color: T.muted }}>{cert.org} · {cert.year}</p>
+                        <p className="text-[12px] mt-1" style={{ color: T.muted }}>{cert.desc}</p>
+                      </div>
                     </div>
-                    <span className="text-xs text-secondary">2022</span>
-                  </div>
-                  <p className="text-xs text-white/90 mt-2 font-medium">Score: 70.67%</p>
+                  ))}
                 </div>
+              </Chapter>
 
-                <div className="p-3.5 rounded-xl bg-[#100d25] border border-white/5">
-                  <div className="flex justify-between items-start">
-                    <div>
-                      <h3 className="text-sm font-bold text-white">Jet Kids International School</h3>
-                      <p className="text-xs text-secondary">SSC (CBSE), Pusad</p>
-                    </div>
-                    <span className="text-xs text-secondary">2020</span>
-                  </div>
-                  <p className="text-xs text-white/90 mt-2 font-medium">Score: 87.6%</p>
+              {/* ── 06 NEXT STEPS ── */}
+              <Chapter id="next" num="06" heading="Next Steps" chapterRef={chapterRefs.next}>
+                <p className="text-[15px] mb-6" style={{ color: T.muted }}>
+                  Open to software engineering roles and cybersecurity research collaboration.
+                </p>
+                <div className="flex flex-wrap gap-3">
+                  <a
+                    href="/assets/Prathamesh_Chiddarwar_Resume.pdf"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    download="Prathamesh_Chiddarwar_Resume.pdf"
+                    className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold text-white transition-opacity hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--border-focus)]"
+                    style={{ background: T.indigo, boxShadow: "0 4px 14px rgba(99,102,241,0.3)" }}
+                  >
+                    <IconDownload size={15} />
+                    Download Resume
+                  </a>
+                  <Link
+                    to="/contact"
+                    className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--border-focus)]"
+                    style={{
+                      color: T.main,
+                      background: "rgba(30,33,46,0.8)",
+                      border: `1px solid ${T.border}`,
+                    }}
+                  >
+                    Get in touch
+                    <span aria-hidden="true">→</span>
+                  </Link>
                 </div>
+              </Chapter>
 
-                <div className="pt-3 border-t border-white/5 space-y-2">
-                  <div className="flex items-start gap-2 text-xs">
-                    <span className="text-amber-400 font-bold mt-0.5">★</span>
-                    <p className="text-white">
-                      <strong>HackMIT 2025 CTF (5th Rank):</strong> Solved 15+ challenges across web security, reverse engineering, and crypto.
-                    </p>
-                  </div>
-                  <div className="flex items-start gap-2 text-xs">
-                    <span className="text-[#8b5cf6] font-bold mt-0.5">★</span>
-                    <p className="text-white">
-                      <strong>GIAN Program, NIT Goa:</strong> Blockchain Evolution & Decentralized Systems Certification (2025).
-                    </p>
-                  </div>
-                </div>
-              </div>
             </div>
-          </section>
-
-          {/* Tile 6 (Span 12): Skills Bento Split into Two Equal Track Groups */}
-          <section
-            aria-labelledby="skills-bento-heading"
-            className="md:col-span-12 bg-[#151030] border border-white/10 rounded-2xl p-6 sm:p-8 shadow-card"
-          >
-            <div className="mb-6">
-              <h2 id="skills-bento-heading" className="text-xl sm:text-2xl font-bold text-white">
-                Technical Skills & Tools
-              </h2>
-              <p className="text-secondary text-sm mt-1">
-                Strictly factual skills grouped by track. No arbitrary percentage bars or star ratings.
-              </p>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {/* Web Development Skills Group */}
-              <div className="p-6 rounded-xl bg-[#100d25] border border-white/5">
-                <h3 className="text-sm font-bold uppercase tracking-wider text-[#6366f1] mb-4 flex items-center gap-2">
-                  <span className="w-2 h-2 rounded-full bg-[#6366f1]" />
-                  Web Development Toolkit
-                </h3>
-
-                <div className="space-y-4">
-                  <div>
-                    <span className="text-xs text-secondary block mb-2">Languages & Core:</span>
-                    <div className="flex flex-wrap gap-2">
-                      {["JavaScript", "TypeScript", "Python", "SQL"].map((skill) => (
-                        <span key={skill} className="px-3 py-1 rounded-lg text-xs font-medium bg-white/5 text-white border border-white/10">
-                          {skill}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-
-                  <div>
-                    <span className="text-xs text-secondary block mb-2">Web Frameworks & UI:</span>
-                    <div className="flex flex-wrap gap-2">
-                      {["React", "Next.js", "React Native", "Node.js", "Express.js", "TailwindCSS", "REST APIs"].map((skill) => (
-                        <span key={skill} className="px-3 py-1 rounded-lg text-xs font-medium bg-[#6366f1]/10 text-[#c7d2fe] border border-[#6366f1]/20">
-                          {skill}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-
-                  <div>
-                    <span className="text-xs text-secondary block mb-2">Databases & Cloud:</span>
-                    <div className="flex flex-wrap gap-2">
-                      {["MongoDB", "MySQL", "Firebase", "AWS EC2", "AWS S3", "Vercel", "GCP"].map((skill) => (
-                        <span key={skill} className="px-3 py-1 rounded-lg text-xs font-medium bg-white/5 text-white border border-white/10">
-                          {skill}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Cybersecurity Skills Group */}
-              <div className="p-6 rounded-xl bg-[#100d25] border border-white/5">
-                <h3 className="text-sm font-bold uppercase tracking-wider text-[#8b5cf6] mb-4 flex items-center gap-2">
-                  <span className="w-2 h-2 rounded-full bg-[#8b5cf6]" />
-                  Cybersecurity & Forensics Toolkit
-                </h3>
-
-                <div className="space-y-4">
-                  <div>
-                    <span className="text-xs text-secondary block mb-2">Security Tools:</span>
-                    <div className="flex flex-wrap gap-2">
-                      {["Wireshark", "Nmap", "Nessus", "Burp Suite", "Metasploit"].map((skill) => (
-                        <span key={skill} className="px-3 py-1 rounded-lg text-xs font-medium bg-[#8b5cf6]/10 text-[#ddd6fe] border border-[#8b5cf6]/20">
-                          {skill}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-
-                  <div>
-                    <span className="text-xs text-secondary block mb-2">Security & Compliance:</span>
-                    <div className="flex flex-wrap gap-2">
-                      {["Vulnerability Assessment", "Risk Assessment", "ISO 27001 (ISMS)", "ISO 9001 (QMS)", "Penetration Testing"].map((skill) => (
-                        <span key={skill} className="px-3 py-1 rounded-lg text-xs font-medium bg-white/5 text-white border border-white/10">
-                          {skill}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-
-                  <div>
-                    <span className="text-xs text-secondary block mb-2">Practices & Methodologies:</span>
-                    <div className="flex flex-wrap gap-2">
-                      {["CI/CD", "Technical Documentation", "Agile Collaboration", "RBAC Architecture", "Analytical Problem-Solving"].map((skill) => (
-                        <span key={skill} className="px-3 py-1 rounded-lg text-xs font-medium bg-white/5 text-white border border-white/10">
-                          {skill}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </section>
-
+          </div>
         </div>
       </main>
 
@@ -485,4 +689,3 @@ const AboutPage = () => {
 };
 
 export default AboutPage;
-

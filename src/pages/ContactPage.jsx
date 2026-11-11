@@ -1,22 +1,50 @@
 import React, { useState, useRef, useEffect } from "react";
 import emailjs from "@emailjs/browser";
+import { motion, useReducedMotion } from "framer-motion";
 import Navbar from "../components/shared/Navbar";
 import Footer from "../components/shared/Footer";
 import initEmailJS from "../utils/emailjs-init";
-import { IconMail, IconGithub, IconLinkedin, IconCopy, IconCheck, IconDownload } from "../components/shared/Icons";
+import {
+  IconMail,
+  IconGithub,
+  IconLinkedin,
+  IconCopy,
+  IconCheck,
+  IconDownload,
+  IconArrowRight,
+} from "../components/shared/Icons";
 
+/* ─── Design tokens ─────────────────────────────────────────────────────── */
+const T = {
+  bg:      "var(--bg-primary)",
+  surface: "var(--bg-surface-raised)",
+  border:  "var(--border-subtle)",
+  indigo:  "var(--color-indigo)",
+  violet:  "var(--color-violet)",
+  muted:   "var(--text-muted)",
+  main:    "var(--text-main)",
+};
+
+/* ─── Field-level inline validation ─────────────────────────────────────── */
+const FieldError = ({ message }) =>
+  message ? (
+    <p role="alert" className="text-xs mt-1.5" style={{ color: "#f87171" }}>
+      {message}
+    </p>
+  ) : null;
+
+/* ─── Contact page ───────────────────────────────────────────────────────── */
 const ContactPage = () => {
-  const formRef = useRef();
+  const formRef     = useRef();
   const honeypotRef = useRef();
-  const [form, setForm] = useState({
-    name: "",
-    email: "",
-    message: "",
-  });
-  const [loading, setLoading] = useState(false);
-  const [status, setStatus] = useState(null); // null | "success" | "error"
+  const shouldReduce = useReducedMotion();
+
+  const [form, setForm] = useState({ name: "", email: "", message: "" });
+  const [fieldErrors, setFieldErrors] = useState({});
+  const [loading, setLoading]   = useState(false);
+  const [status, setStatus]     = useState(null); // null | "success" | "error"
   const [errorMessage, setErrorMessage] = useState("");
-  const [copied, setCopied] = useState(false);
+  const [copied, setCopied]     = useState(false);
 
   useEffect(() => {
     document.title = "Contact | Prathamesh Chiddarwar — Full-Stack & Cyber Security";
@@ -24,9 +52,11 @@ const ContactPage = () => {
     initEmailJS();
   }, []);
 
+  /* ── Handlers ── */
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setForm({ ...form, [name]: value });
+    setForm((prev) => ({ ...prev, [name]: value }));
+    if (fieldErrors[name]) setFieldErrors((prev) => ({ ...prev, [name]: "" }));
     if (status) setStatus(null);
   };
 
@@ -36,28 +66,29 @@ const ContactPage = () => {
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     } catch {
-      // Fallback
+      /* Clipboard API not available — silent fail */
     }
+  };
+
+  const validate = () => {
+    const errors = {};
+    if (!form.name.trim())    errors.name    = "Name is required.";
+    if (!form.email.trim())   errors.email   = "Email is required.";
+    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email))
+      errors.email = "Enter a valid email address.";
+    if (!form.message.trim()) errors.message = "Message is required.";
+    return errors;
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    // Honeypot spam field check
-    if (honeypotRef.current && honeypotRef.current.value) {
-      return;
-    }
+    /* Honeypot check */
+    if (honeypotRef.current?.value) return;
 
-    if (!form.name.trim() || !form.email.trim() || !form.message.trim()) {
-      setStatus("error");
-      setErrorMessage("Please complete all required fields.");
-      return;
-    }
-
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(form.email)) {
-      setStatus("error");
-      setErrorMessage("Please enter a valid email address.");
+    const errors = validate();
+    if (Object.keys(errors).length) {
+      setFieldErrors(errors);
       return;
     }
 
@@ -69,11 +100,11 @@ const ContactPage = () => {
         import.meta.env.VITE_APP_EMAILJS_SERVICE_ID,
         import.meta.env.VITE_APP_EMAILJS_TEMPLATE_ID,
         {
-          from_name: form.name,
-          to_name: "Prathamesh",
+          from_name:  form.name,
+          to_name:    "Prathamesh",
           from_email: form.email,
-          to_email: "prathameshchiddarwar42@gmail.com",
-          message: form.message,
+          to_email:   "prathameshchiddarwar42@gmail.com",
+          message:    form.message,
         },
         import.meta.env.VITE_APP_EMAILJS_PUBLIC_KEY
       )
@@ -81,59 +112,217 @@ const ContactPage = () => {
         () => {
           setLoading(false);
           setStatus("success");
-          setForm({
-            name: "",
-            email: "",
-            message: "",
-          });
+          setForm({ name: "", email: "", message: "" });
+          setFieldErrors({});
         },
         (error) => {
           setLoading(false);
           setStatus("error");
-          setErrorMessage("Failed to send message via EmailJS. Please write directly to prathameshchiddarwar42@gmail.com.");
-          console.error("EmailJS submission error:", error);
+          setErrorMessage(
+            "Failed to send via EmailJS. Write directly to prathameshchiddarwar42@gmail.com."
+          );
+          console.error("EmailJS error:", error);
         }
       );
   };
 
+  /* ── Direct link rows ── */
+  const channels = [
+    {
+      icon: <IconMail size={16} />,
+      label: "Email",
+      display: "prathameshchiddarwar42@gmail.com",
+      href: "mailto:prathameshchiddarwar42@gmail.com",
+      action: (
+        <button
+          type="button"
+          onClick={handleCopyEmail}
+          aria-label={copied ? "Email copied" : "Copy email address"}
+          className="flex-shrink-0 flex items-center gap-1 text-[11px] font-semibold px-2.5 py-1 rounded transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--border-focus)]"
+          style={{
+            background: copied ? "rgba(74,222,128,0.1)" : "rgba(255,255,255,0.05)",
+            color: copied ? "#4ade80" : "var(--text-muted)",
+            border: `1px solid ${copied ? "rgba(74,222,128,0.3)" : T.border}`,
+          }}
+        >
+          {copied ? <IconCheck size={12} /> : <IconCopy size={12} />}
+          {copied ? "Copied!" : "Copy"}
+        </button>
+      ),
+    },
+    {
+      icon: <IconLinkedin size={16} />,
+      label: "LinkedIn",
+      display: "prathamesh-chiddarwar",
+      href: "https://linkedin.com/in/prathamesh-chiddarwar",
+    },
+    {
+      icon: <IconGithub size={16} />,
+      label: "GitHub",
+      display: "prathamesh-07",
+      href: "https://github.com/prathamesh-07",
+    },
+  ];
+
+  /* ── Entry animations ── */
+  const fadeUp = (delay = 0) => ({
+    initial: { opacity: 0, y: shouldReduce ? 0 : 16 },
+    animate: { opacity: 1, y: 0 },
+    transition: { duration: 0.5, delay, ease: [0.22, 1, 0.36, 1] },
+  });
+
   return (
-    <div className="relative min-h-screen bg-[#050816] text-white flex flex-col pt-20">
+    <div
+      className="relative min-h-screen flex flex-col pt-20"
+      style={{ background: T.bg, color: "var(--text-main)" }}
+    >
+      {/* Static ambient radial background */}
+      <div
+        className="bg-ambient-radial fixed inset-0 pointer-events-none"
+        aria-hidden="true"
+      />
+
       <Navbar />
 
-      <main className="flex-1 max-w-7xl mx-auto px-6 sm:px-16 py-12 w-full">
-        {/* Header Breadcrumb */}
-        <div className="mb-10">
-          <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-widest text-[#6366f1] mb-2">
-            <span>Inquiries</span>
-            <span className="text-secondary">/</span>
-            <span className="text-secondary">Get in touch</span>
-          </div>
-          <h1 className="text-3xl sm:text-5xl font-black text-white tracking-tight">
-            Contact
-          </h1>
-          <p className="mt-2 text-secondary text-base max-w-2xl leading-relaxed">
-            Open to software engineering roles, security research collaboration, and technical inquiries.
-          </p>
-        </div>
+      <main className="relative flex-1 w-full max-w-[1200px] mx-auto px-5 sm:px-10 py-16 sm:py-24">
 
-        {/* 12-Column Bento Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
+        {/* 12-col grid: left 5, right 7 — stacked on mobile */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-20 items-start">
 
-          {/* Form Tile (Span 7) */}
-          <section
-            aria-labelledby="contact-form-title"
-            className="md:col-span-7 bg-[#151030] border border-white/10 rounded-2xl p-6 sm:p-8 shadow-card flex flex-col justify-between"
-          >
-            <div>
-              <h2 id="contact-form-title" className="text-xl sm:text-2xl font-bold text-white mb-2">
-                Send a Message
-              </h2>
-              <p className="text-secondary text-sm mb-6">
-                Connected to original EmailJS delivery pipeline. Fill out the form below or email directly.
+          {/* ══ LEFT COLUMN ══════════════════════════════════════════════════ */}
+          <div className="lg:col-span-5 flex flex-col gap-10">
+
+            {/* Statement */}
+            <motion.div {...fadeUp(0)}>
+              <p
+                className="text-[11px] font-bold uppercase tracking-widest mb-5"
+                style={{ color: "var(--color-indigo)" }}
+              >
+                Contact
+              </p>
+              <h1
+                className="font-black leading-tight mb-4"
+                style={{
+                  fontSize: "clamp(1.75rem, 4.5vw, 3rem)",
+                  color: "var(--text-main)",
+                }}
+              >
+                Let's build secure,<br />
+                scalable web<br />
+                applications.
+              </h1>
+              <p
+                className="text-base leading-relaxed max-w-sm"
+                style={{ color: "var(--text-muted)" }}
+              >
+                Open for software engineering roles and cybersecurity research.
+              </p>
+            </motion.div>
+
+            {/* Direct channels */}
+            <motion.div {...fadeUp(0.08)}>
+              <p
+                className="text-[10px] font-bold uppercase tracking-widest mb-4"
+                style={{ color: "var(--text-muted)" }}
+              >
+                Direct Channels
               </p>
 
-              <form ref={formRef} onSubmit={handleSubmit} noValidate className="space-y-5">
-                {/* Honeypot Spam Trap */}
+              <ul className="flex flex-col gap-1" role="list">
+                {channels.map((ch) => (
+                  <li
+                    key={ch.label}
+                    className="flex items-center justify-between gap-3 py-3"
+                    style={{ borderBottom: `1px solid ${T.border}` }}
+                  >
+                    <div className="flex items-center gap-3 overflow-hidden">
+                      <span style={{ color: "var(--color-indigo)" }} aria-hidden="true">
+                        {ch.icon}
+                      </span>
+                      <div className="overflow-hidden">
+                        <span
+                          className="text-[10px] font-semibold uppercase tracking-wider block"
+                          style={{ color: "var(--text-muted)" }}
+                        >
+                          {ch.label}
+                        </span>
+                        <a
+                          href={ch.href}
+                          target={ch.href.startsWith("http") ? "_blank" : undefined}
+                          rel={ch.href.startsWith("http") ? "noopener noreferrer" : undefined}
+                          className="text-sm font-medium truncate block hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--border-focus)] rounded"
+                          style={{ color: "var(--text-main)" }}
+                        >
+                          {ch.display}
+                        </a>
+                      </div>
+                    </div>
+                    {ch.action ?? (
+                      <a
+                        href={ch.href}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex-shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--border-focus)] rounded"
+                        aria-label={`Open ${ch.label}`}
+                        style={{ color: "var(--text-muted)" }}
+                      >
+                        <IconArrowRight size={14} />
+                      </a>
+                    )}
+                  </li>
+                ))}
+              </ul>
+            </motion.div>
+
+            {/* Resume download — quiet text link */}
+            <motion.div {...fadeUp(0.14)}>
+              <a
+                href="/assets/Prathamesh_Chiddarwar_Resume.pdf"
+                target="_blank"
+                rel="noopener noreferrer"
+                download="Prathamesh_Chiddarwar_Resume.pdf"
+                className="inline-flex items-center gap-2 text-sm font-medium hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--border-focus)] rounded transition-opacity hover:opacity-80"
+                style={{ color: "var(--text-muted)" }}
+              >
+                <IconDownload size={14} />
+                Download Resume PDF
+              </a>
+            </motion.div>
+          </div>
+
+          {/* ══ RIGHT COLUMN — form card ══════════════════════════════════ */}
+          <motion.div
+            {...fadeUp(0.12)}
+            className="lg:col-span-7"
+          >
+            <div
+              className="rounded-2xl p-6 sm:p-8"
+              style={{
+                background: T.surface,
+                border: `1px solid ${T.border}`,
+                boxShadow: "0 8px 40px rgba(0,0,0,0.3)",
+              }}
+            >
+              <h2
+                className="text-lg font-bold mb-1"
+                style={{ color: "var(--text-main)" }}
+              >
+                Send a Message
+              </h2>
+              <p
+                className="text-xs mb-6"
+                style={{ color: "var(--text-muted)" }}
+              >
+                Delivered via EmailJS. I typically reply within 48 hours.
+              </p>
+
+              <form
+                ref={formRef}
+                onSubmit={handleSubmit}
+                noValidate
+                className="flex flex-col gap-5"
+              >
+                {/* Honeypot */}
                 <div style={{ display: "none" }} aria-hidden="true">
                   <input
                     ref={honeypotRef}
@@ -144,9 +333,14 @@ const ContactPage = () => {
                   />
                 </div>
 
+                {/* Name */}
                 <div>
-                  <label htmlFor="contact-name" className="block text-xs font-semibold uppercase tracking-wider text-secondary mb-2">
-                    Your Name *
+                  <label
+                    htmlFor="contact-name"
+                    className="block text-xs font-semibold uppercase tracking-wider mb-2"
+                    style={{ color: "var(--text-muted)" }}
+                  >
+                    Your Name <span aria-hidden="true" style={{ color: "var(--color-indigo)" }}>*</span>
                   </label>
                   <input
                     id="contact-name"
@@ -156,13 +350,26 @@ const ContactPage = () => {
                     value={form.name}
                     onChange={handleChange}
                     placeholder="e.g. Alex Morgan"
-                    className="w-full bg-[#100d25] border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder:text-secondary/60 focus:outline-none focus:border-[#6366f1] transition-colors"
+                    aria-invalid={!!fieldErrors.name}
+                    aria-describedby={fieldErrors.name ? "name-error" : undefined}
+                    className="w-full px-4 py-3 rounded-xl text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--border-focus)]"
+                    style={{
+                      background: "var(--bg-primary)",
+                      border: `1px solid ${fieldErrors.name ? "#f87171" : T.border}`,
+                      color: "var(--text-main)",
+                    }}
                   />
+                  <FieldError message={fieldErrors.name} />
                 </div>
 
+                {/* Email */}
                 <div>
-                  <label htmlFor="contact-email" className="block text-xs font-semibold uppercase tracking-wider text-secondary mb-2">
-                    Email Address *
+                  <label
+                    htmlFor="contact-email"
+                    className="block text-xs font-semibold uppercase tracking-wider mb-2"
+                    style={{ color: "var(--text-muted)" }}
+                  >
+                    Email Address <span aria-hidden="true" style={{ color: "var(--color-indigo)" }}>*</span>
                   </label>
                   <input
                     id="contact-email"
@@ -172,13 +379,26 @@ const ContactPage = () => {
                     value={form.email}
                     onChange={handleChange}
                     placeholder="alex@company.com"
-                    className="w-full bg-[#100d25] border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder:text-secondary/60 focus:outline-none focus:border-[#6366f1] transition-colors"
+                    aria-invalid={!!fieldErrors.email}
+                    aria-describedby={fieldErrors.email ? "email-error" : undefined}
+                    className="w-full px-4 py-3 rounded-xl text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--border-focus)]"
+                    style={{
+                      background: "var(--bg-primary)",
+                      border: `1px solid ${fieldErrors.email ? "#f87171" : T.border}`,
+                      color: "var(--text-main)",
+                    }}
                   />
+                  <FieldError message={fieldErrors.email} />
                 </div>
 
+                {/* Message */}
                 <div>
-                  <label htmlFor="contact-message" className="block text-xs font-semibold uppercase tracking-wider text-secondary mb-2">
-                    Message *
+                  <label
+                    htmlFor="contact-message"
+                    className="block text-xs font-semibold uppercase tracking-wider mb-2"
+                    style={{ color: "var(--text-muted)" }}
+                  >
+                    Message <span aria-hidden="true" style={{ color: "var(--color-indigo)" }}>*</span>
                   </label>
                   <textarea
                     id="contact-message"
@@ -188,145 +408,87 @@ const ContactPage = () => {
                     value={form.message}
                     onChange={handleChange}
                     placeholder="Tell me about the role, project, or inquiry..."
-                    className="w-full bg-[#100d25] border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder:text-secondary/60 focus:outline-none focus:border-[#6366f1] transition-colors resize-y"
+                    aria-invalid={!!fieldErrors.message}
+                    aria-describedby={fieldErrors.message ? "message-error" : undefined}
+                    className="w-full px-4 py-3 rounded-xl text-sm resize-y transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--border-focus)]"
+                    style={{
+                      background: "var(--bg-primary)",
+                      border: `1px solid ${fieldErrors.message ? "#f87171" : T.border}`,
+                      color: "var(--text-main)",
+                    }}
                   />
+                  <FieldError message={fieldErrors.message} />
                 </div>
 
-                {status === "success" && (
-                  <div role="status" className="p-4 rounded-xl bg-green-900/30 border border-green-500 text-green-300 text-sm">
-                    Thank you! Your message has been sent successfully. I will get back to you shortly.
+                {/* Submit button — morphs on success */}
+                {status === "success" ? (
+                  <div className="flex flex-col gap-3">
+                    <div
+                      role="status"
+                      className="flex items-center gap-2 px-4 py-3 rounded-xl text-sm font-semibold"
+                      style={{
+                        background: "rgba(74,222,128,0.08)",
+                        border: "1px solid rgba(74,222,128,0.3)",
+                        color: "#4ade80",
+                      }}
+                    >
+                      <IconCheck size={16} />
+                      Message sent — I'll reply within 48 hours.
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => setStatus(null)}
+                      className="text-xs underline self-start focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--border-focus)] rounded"
+                      style={{ color: "var(--text-muted)" }}
+                    >
+                      Send another message
+                    </button>
                   </div>
+                ) : (
+                  <>
+                    {status === "error" && (
+                      <p
+                        role="alert"
+                        className="text-xs px-4 py-3 rounded-xl"
+                        style={{
+                          background: "rgba(248,113,113,0.08)",
+                          border: "1px solid rgba(248,113,113,0.3)",
+                          color: "#f87171",
+                        }}
+                      >
+                        {errorMessage}
+                      </p>
+                    )}
+                    <button
+                      type="submit"
+                      disabled={loading}
+                      className="inline-flex items-center justify-center min-h-[44px] px-7 py-3 rounded-xl text-sm font-semibold text-white transition-opacity hover:opacity-90 disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--border-focus)]"
+                      style={{ background: "var(--color-indigo)", boxShadow: "0 4px 14px rgba(99,102,241,0.3)" }}
+                    >
+                      {loading ? (
+                        <>
+                          <svg
+                            className="animate-spin mr-2"
+                            width="14"
+                            height="14"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            aria-hidden="true"
+                          >
+                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z" />
+                          </svg>
+                          Sending…
+                        </>
+                      ) : (
+                        "Send Message"
+                      )}
+                    </button>
+                  </>
                 )}
-
-                {status === "error" && (
-                  <div role="alert" className="p-4 rounded-xl bg-red-900/30 border border-red-500 text-red-300 text-sm">
-                    {errorMessage}
-                  </div>
-                )}
-
-                <button
-                  type="submit"
-                  disabled={loading}
-                  className="w-full sm:w-auto inline-flex items-center justify-center min-h-[44px] px-8 py-3 rounded-xl text-sm font-semibold text-white bg-[#6366f1] hover:bg-[#4f46e5] shadow-md shadow-[#6366f1]/20 transition-all disabled:opacity-50"
-                >
-                  {loading ? "Sending Message..." : "Send Message"}
-                </button>
               </form>
             </div>
-          </section>
-
-          {/* Direct Channels & Details (Span 5) */}
-          <section
-            aria-labelledby="direct-channels-title"
-            className="md:col-span-5 space-y-6"
-          >
-            {/* Direct Links Tile */}
-            <div className="bg-[#151030] border border-white/10 rounded-2xl p-6 sm:p-8 shadow-card">
-              <h2 id="direct-channels-title" className="text-xl font-bold text-white mb-4">
-                Direct Channels
-              </h2>
-
-              <ul className="space-y-4" role="list">
-                {/* Email with copy */}
-                <li className="p-3.5 rounded-xl bg-[#100d25] border border-white/5 flex items-center justify-between gap-3">
-                  <div className="flex items-center gap-3 overflow-hidden">
-                    <span className="p-2 rounded-lg bg-[#6366f1]/20 text-[#6366f1]">
-                      <IconMail size={16} />
-                    </span>
-                    <div className="truncate">
-                      <span className="text-[11px] text-secondary uppercase tracking-wider block">Email</span>
-                      <a
-                        href="mailto:prathameshchiddarwar42@gmail.com"
-                        className="text-xs sm:text-sm text-white font-medium hover:text-[#6366f1] truncate block"
-                      >
-                        prathameshchiddarwar42@gmail.com
-                      </a>
-                    </div>
-                  </div>
-                  <button
-                    type="button"
-                    onClick={handleCopyEmail}
-                    className="p-2 rounded-lg bg-white/5 hover:bg-white/10 text-white transition-colors flex-shrink-0"
-                    aria-label={copied ? "Email copied" : "Copy email address"}
-                    title={copied ? "Copied!" : "Copy email"}
-                  >
-                    {copied ? <IconCheck size={16} className="text-green-400" /> : <IconCopy size={16} />}
-                  </button>
-                </li>
-
-                {/* LinkedIn */}
-                <li className="p-3.5 rounded-xl bg-[#100d25] border border-white/5 flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <span className="p-2 rounded-lg bg-[#6366f1]/20 text-[#6366f1]">
-                      <IconLinkedin size={16} />
-                    </span>
-                    <div>
-                      <span className="text-[11px] text-secondary uppercase tracking-wider block">LinkedIn</span>
-                      <span className="text-xs sm:text-sm text-white font-medium">prathamesh-chiddarwar</span>
-                    </div>
-                  </div>
-                  <a
-                    href="https://linkedin.com/in/prathamesh-chiddarwar"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-xs font-semibold text-[#6366f1] hover:underline px-2 py-1"
-                  >
-                    Connect →
-                  </a>
-                </li>
-
-                {/* GitHub */}
-                <li className="p-3.5 rounded-xl bg-[#100d25] border border-white/5 flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <span className="p-2 rounded-lg bg-[#6366f1]/20 text-[#6366f1]">
-                      <IconGithub size={16} />
-                    </span>
-                    <div>
-                      <span className="text-[11px] text-secondary uppercase tracking-wider block">GitHub</span>
-                      <span className="text-xs sm:text-sm text-white font-medium">prathamesh-07</span>
-                    </div>
-                  </div>
-                  <a
-                    href="https://github.com/prathamesh-07"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-xs font-semibold text-[#6366f1] hover:underline px-2 py-1"
-                  >
-                    Follow →
-                  </a>
-                </li>
-              </ul>
-            </div>
-
-            {/* Location & Resume Tile */}
-            <div className="bg-[#151030] border border-white/10 rounded-2xl p-6 sm:p-8 shadow-card space-y-4">
-              <div>
-                <span className="text-xs font-semibold uppercase tracking-wider text-secondary">Location</span>
-                <p className="text-sm font-medium text-white mt-0.5">Pune, Maharashtra, India (IST / UTC+5:30)</p>
-              </div>
-
-              <div>
-                <span className="text-xs font-semibold uppercase tracking-wider text-secondary">Phone Number</span>
-                <p className="text-xs text-secondary mt-0.5 leading-relaxed">
-                  Omitted from public view for security & privacy. Included directly inside the verified resume PDF.
-                </p>
-              </div>
-
-              <div className="pt-2">
-                <a
-                  href="/assets/Prathamesh_Chiddarwar_Resume.pdf"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  download="Prathamesh_Chiddarwar_Resume.pdf"
-                  className="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-xl text-xs sm:text-sm font-semibold text-white bg-[#100d25] border border-white/10 hover:border-[#6366f1] transition-all"
-                >
-                  <IconDownload size={15} />
-                  <span>Download Verified Resume</span>
-                </a>
-              </div>
-            </div>
-          </section>
-
+          </motion.div>
         </div>
       </main>
 
@@ -336,4 +498,3 @@ const ContactPage = () => {
 };
 
 export default ContactPage;
-
