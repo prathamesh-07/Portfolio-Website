@@ -327,13 +327,13 @@ body {
   }
 }
 
-/* Print Styles: Swap logos to crisp mono-black and format for paper */
+/* Print Styles: Hide header, loader, nav controls and format logos for print */
 @media print {
   body {
     background-color: #ffffff !important;
     color: #0f172a !important;
   }
-  header, footer, nav, button, canvas, .canvas-loader, .skip-link {
+  header, #app-loader, .skip-link, nav[aria-label="Primary"], button, canvas, .canvas-loader {
     display: none !important;
   }
   img, picture img {
