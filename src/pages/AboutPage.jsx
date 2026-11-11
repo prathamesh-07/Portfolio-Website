@@ -187,11 +187,10 @@ const AboutPage = () => {
       className="relative min-h-screen flex flex-col pt-20"
       style={{ background: T.bg, color: T.main }}
     >
-      {/* Dot-grid background at 6% opacity */}
+      {/* Static ambient radial background */}
       <div
-        className="pointer-events-none fixed inset-0 bg-dot-grid opacity-[0.06]"
+        className="bg-ambient-radial fixed inset-0 pointer-events-none"
         aria-hidden="true"
-        style={{ zIndex: 0 }}
       />
 
       <Navbar />

@@ -656,8 +656,8 @@ const ProjectsPage = () => {
 
   return (
     <div className="relative min-h-screen flex flex-col pt-20" style={{ background: T.bg, color: T.main }}>
-      {/* Same dot-grid background as About page — fully cohesive across site */}
-      <div className="bg-dot-grid fixed inset-0 pointer-events-none" aria-hidden="true" />
+      {/* Static ambient radial background matching Contact page */}
+      <div className="bg-ambient-radial fixed inset-0 pointer-events-none" aria-hidden="true" />
 
       <Navbar />
 
