@@ -79,10 +79,11 @@
           var nav = window.performance && window.performance.getEntriesByType && window.performance.getEntriesByType('navigation');
           var isBackForward = nav && nav.length > 0 && nav[0].type === 'back_forward';
 
-          // LOADER_ROUTES: "all" (default) or array e.g. ["/"]
-          var allowedRoutes = "all";
+          // LOADER_ROUTES: "all" or array e.g. ["/"]
+          var allowedRoutes = ["/"];
           var path = window.location.pathname;
-          var isAllowed = allowedRoutes === 'all' || (Array.isArray(allowedRoutes) && allowedRoutes.indexOf(path) !== -1);
+          var normPath = (path.length > 1 && path.endsWith('/')) ? path.slice(0, -1) : path;
+          var isAllowed = allowedRoutes === 'all' || (Array.isArray(allowedRoutes) && (allowedRoutes.indexOf(path) !== -1 || allowedRoutes.indexOf(normPath) !== -1 || (normPath === '/index.html' && allowedRoutes.indexOf('/') !== -1)));
 
           if (isReduced || hasHash || isBackForward || !isAllowed) {
             document.documentElement.classList.add('loader-skip');

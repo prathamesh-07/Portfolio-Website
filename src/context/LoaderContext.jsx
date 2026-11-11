@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useState, useEffect, useCallback, useRef } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { acquireScrollLock, releaseScrollLock } from "../utils/scrollLock";
-import { LOADER_ROUTES } from "../constants/loaderConfig";
+import { LOADER_ROUTES, isRouteAllowed } from "../components/shared/loaderShared";
 
 const LoaderContext = createContext({
   isLoading: false,
@@ -43,8 +43,11 @@ export const LoaderProvider = ({ children }) => {
       }
     };
 
+    const isPathAllowed = isRouteAllowed(location.pathname, LOADER_ROUTES);
+
     const isSkipped =
       !loaderEl ||
+      !isPathAllowed ||
       document.documentElement.classList.contains("loader-skip");
 
     if (isSkipped) {

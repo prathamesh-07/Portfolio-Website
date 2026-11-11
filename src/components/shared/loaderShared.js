@@ -2,6 +2,17 @@ import { LOADER_ROUTES } from "../../constants/loaderConfig";
 
 export { LOADER_ROUTES };
 
+export const isRouteAllowed = (path, allowedRoutes = LOADER_ROUTES) => {
+  if (allowedRoutes === "all") return true;
+  if (!Array.isArray(allowedRoutes)) return false;
+  const normalized = path.length > 1 && path.endsWith("/") ? path.slice(0, -1) : path;
+  return (
+    allowedRoutes.includes(normalized) ||
+    allowedRoutes.includes(path) ||
+    (normalized === "/index.html" && allowedRoutes.includes("/"))
+  );
+};
+
 export const LOADER_LABEL = "Build · Secure";
 
 export const LOADER_SVG = `<svg class="loader-icon" viewBox="0 0 49 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">

@@ -154,7 +154,7 @@ const Navbar = () => {
     menuButtonRef.current?.focus();
   };
 
-  // Header PC Logo click handler per Revision Brief
+  // Header PC Logo click handler
   const handleLogoClick = (e) => {
     // If click has modifier key (Ctrl, Cmd, Shift, Alt) or is a non-primary button,
     // let browser handle it normally (e.g. opens a new tab).
@@ -167,6 +167,19 @@ const Navbar = () => {
 
     if (isMenuOpen) {
       setIsMenuOpen(false);
+    }
+
+    const currentScrollY =
+      window.scrollY || document.documentElement.scrollTop || 0;
+
+    // Rule: When scrolled down on homepage or any other page, clicking logo scrolls back to top.
+    // Only when already on top (scrollY <= 20) does clicking logo trigger the loader.
+    if (currentScrollY > 20) {
+      window.scrollTo({
+        top: 0,
+        behavior: shouldReduceMotion ? "auto" : "smooth",
+      });
+      return;
     }
 
     play("logo");
