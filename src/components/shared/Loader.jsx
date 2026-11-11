@@ -1,15 +1,15 @@
 import React from "react";
 import { createPortal } from "react-dom";
 import { useLoader } from "../../context/LoaderContext";
-import { LOADER_SVG, LOADER_LABEL } from "./loaderShared";
+import { PC_LETTERS_DATA_URI, PC_RING_DATA_URI } from "./loaderShared";
 
 /**
  * React loader component for replaying the branded entrance overlay
  * (e.g. when clicking the header PC logo).
- * Renders the identical visual markup, SVG mark, progress bar, and label as the inline HTML loader.
+ * Renders the identical visual markup: PC Logo with rotating ring.
  */
 const Loader = () => {
-  const { isLoading, loadingReason, isReplayExiting, replayProgress } = useLoader();
+  const { isLoading, loadingReason, isReplayExiting } = useLoader();
 
   // The initial document load is handled by inlined #app-loader in index.html and orchestrated in LoaderContext.
   // This React component exclusively mounts during replay ("logo").
@@ -36,23 +36,27 @@ const Loader = () => {
           "opacity 400ms cubic-bezier(0.22, 1, 0.36, 1), transform 400ms cubic-bezier(0.22, 1, 0.36, 1)",
         pointerEvents: "auto",
         opacity: isReplayExiting ? 0 : 1,
-        transform: isReplayExiting ? "translateY(-12px)" : "translateY(0)",
+        transform: isReplayExiting ? "translateY(-8px) scale(0.96)" : "translateY(0) scale(1)",
       }}
     >
       <div className="loader-content">
-        <div dangerouslySetInnerHTML={{ __html: LOADER_SVG }} />
-        <div className="loader-meta" style={{ opacity: 1, animation: "none" }}>
-          <p className="loader-label">{LOADER_LABEL}</p>
-          <div className="loader-bar-bg">
-            <div
-              id="loader-progress-bar-replay"
-              className="loader-bar-fill"
-              style={{
-                transform: `scaleX(${replayProgress})`,
-                transition: "transform 200ms ease-out",
-              }}
-            />
-          </div>
+        <div className="pc-loader-wrap" role="img" aria-label="Prathamesh Chiddarwar PC Logo Loading">
+          <div className="pc-loader-glow" aria-hidden="true" />
+          <img
+            className="pc-loader-ring"
+            src={PC_RING_DATA_URI}
+            alt=""
+            width={112}
+            height={112}
+            aria-hidden="true"
+          />
+          <img
+            className="pc-loader-letters"
+            src={PC_LETTERS_DATA_URI}
+            alt="PC"
+            width={112}
+            height={112}
+          />
         </div>
       </div>
     </div>

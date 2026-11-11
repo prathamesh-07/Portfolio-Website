@@ -14,8 +14,8 @@ function syncLoaderPlugin() {
         `<style id="critical-loader-css">${LOADER_CSS}</style>`
       );
       res = res.replace(
-        /<div id="app-loader"[\s\S]*?<\/div>\s*<\/div>\s*<\/div>/,
-        `<div id="app-loader" role="status" aria-label="Loading">${LOADER_INNER_HTML}</div>`
+        /<div id="app-loader"[^>]*>[\s\S]*?<\/div>\s*(?=<a href="#main-content")/,
+        `<div id="app-loader" role="status" aria-label="Loading">${LOADER_INNER_HTML}</div>\n    `
       );
       return res;
     },
