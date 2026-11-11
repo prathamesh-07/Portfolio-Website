@@ -70,17 +70,32 @@
       }
     }
     </script>
-    <!-- Synchronous Session / Reduced-Motion / Hash Check -->
+    <!-- Synchronous Document Load Check per Revision Brief -->
     <script>
       (function() {
         try {
-          var isReducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+          var isReduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
           var hasHash = window.location.hash && window.location.hash.length > 1;
-          var visited = sessionStorage.getItem('portfolio_visited');
-          if (visited || isReducedMotion || hasHash) {
+          var nav = window.performance && window.performance.getEntriesByType && window.performance.getEntriesByType('navigation');
+          var isBackForward = nav && nav.length > 0 && nav[0].type === 'back_forward';
+
+          // LOADER_ROUTES: "all" (default) or array e.g. ["/"]
+          var allowedRoutes = "all";
+          var path = window.location.pathname;
+          var isAllowed = allowedRoutes === 'all' || (Array.isArray(allowedRoutes) && allowedRoutes.indexOf(path) !== -1);
+
+          if (isReduced || hasHash || isBackForward || !isAllowed) {
             document.documentElement.classList.add('loader-skip');
           }
         } catch (e) {}
+
+        window.addEventListener('pageshow', function(e) {
+          if (e.persisted) {
+            document.documentElement.classList.add('loader-skip');
+            var el = document.getElementById('app-loader');
+            if (el) el.remove();
+          }
+        });
       })();
     </script>
     <style id="critical-loader-css">

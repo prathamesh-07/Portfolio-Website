@@ -1,7 +1,6 @@
 import React, { useEffect } from "react";
 import Navbar from "../components/shared/Navbar";
 import Footer from "../components/shared/Footer";
-import Loader from "../components/shared/Loader";
 
 import LiteHero from "../components/lite/LiteHero";
 import LiteAbout from "../components/lite/LiteAbout";
@@ -18,9 +17,6 @@ const LiteHomePage = () => {
 
   return (
     <div className="relative z-0 bg-[#050816] text-[#e2e8f0] overflow-x-hidden">
-      {/* Non-blocking loader */}
-      <Loader />
-
       {/* Global Shared Navbar */}
       <Navbar />
 

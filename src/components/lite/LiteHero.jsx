@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { motion, useReducedMotion } from "framer-motion";
 import { IconDownload, IconArrowRight } from "../shared/Icons";
+import { useLoader } from "../../context/LoaderContext";
 
 import pcAvif480 from "../../assets/hero/hero-pc-480.avif";
 import pcAvif720 from "../../assets/hero/hero-pc-720.avif";
@@ -16,6 +17,7 @@ import pcPng960  from "../../assets/hero/hero-pc-960.png";
 const LiteHero = () => {
   const shouldReduce = useReducedMotion();
   const [hasScrolled, setHasScrolled] = useState(false);
+  const { appReady, heroKey } = useLoader();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -40,14 +42,14 @@ const LiteHero = () => {
       }}
     >
       {/* 2-column on tablet (>=768px), single column stacked on mobile (<768px) */}
-      <div className="grid grid-cols-1 md:grid-cols-12 gap-8 md:gap-12 items-center my-auto z-10">
+      <div key={heroKey} className="grid grid-cols-1 md:grid-cols-12 gap-8 md:gap-12 items-center my-auto z-10">
         
         {/* Left Column: Heading, Subtitle & Actions */}
         <div className="md:col-span-7 flex flex-row items-start gap-4 sm:gap-6">
           {/* Vertical Indigo Line & Dot Motif */}
           <motion.div
             initial={{ scaleY: 0, opacity: 0 }}
-            animate={{ scaleY: 1, opacity: 1 }}
+            animate={appReady ? { scaleY: 1, opacity: 1 } : { scaleY: 0, opacity: 0 }}
             transition={{ duration: shouldReduce ? 0 : 0.45, ease }}
             className="flex flex-col justify-center items-center mt-2.5 origin-top shrink-0"
             aria-hidden="true"
@@ -60,8 +62,8 @@ const LiteHero = () => {
           <div className="flex flex-col gap-4">
             <motion.h1
               initial={{ opacity: 0, y: shouldReduce ? 0 : 16 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: dur, delay: shouldReduce ? 0 : 0.15, ease }}
+              animate={appReady ? { opacity: 1, y: 0 } : { opacity: 0, y: shouldReduce ? 0 : 16 }}
+              transition={{ duration: dur, delay: shouldReduce || !appReady ? 0 : 0.15, ease }}
               className="font-black text-white tracking-tight leading-[1.12]"
               style={{ fontSize: "clamp(2rem, 7.5vw, 4.25rem)" }}
             >

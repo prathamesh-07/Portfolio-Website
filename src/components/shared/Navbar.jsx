@@ -6,6 +6,7 @@ import Logo from "./Logo";
 import { navLinks } from "../../constants";
 import { IconGithub, IconLinkedin, IconMail } from "./Icons";
 import { acquireScrollLock, releaseScrollLock } from "../../utils/scrollLock";
+import { useLoader } from "../../context/LoaderContext";
 
 const RESUME_PATH = "/assets/Prathamesh_Chiddarwar_Resume.pdf";
 const RESUME_NAME = "Prathamesh_Chiddarwar_Resume.pdf";
@@ -17,6 +18,7 @@ const Navbar = () => {
 
   const location = useLocation();
   const shouldReduceMotion = useReducedMotion();
+  const { play, isLoading } = useLoader();
 
   const menuButtonRef = useRef(null);
   const drawerRef = useRef(null);
@@ -152,6 +154,24 @@ const Navbar = () => {
     menuButtonRef.current?.focus();
   };
 
+  // Header PC Logo click handler per Revision Brief
+  const handleLogoClick = (e) => {
+    // If click has modifier key (Ctrl, Cmd, Shift, Alt) or is a non-primary button,
+    // let browser handle it normally (e.g. opens a new tab).
+    if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) {
+      return;
+    }
+    e.preventDefault();
+
+    if (isLoading) return; // Prevent stacking on double or rapid clicks
+
+    if (isMenuOpen) {
+      setIsMenuOpen(false);
+    }
+
+    play("logo");
+  };
+
   return (
     <>
       {/* Scroll detection sentinel (positioned 8px from page top) */}
@@ -190,11 +210,7 @@ const Navbar = () => {
             to="/"
             className="flex items-center gap-3 group focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-indigo)] rounded-lg p-1 -ml-1 transition-transform"
             aria-label="Prathamesh Chiddarwar, home"
-            onClick={() => {
-              if (location.pathname === "/") {
-                window.scrollTo({ top: 0, behavior: shouldReduceMotion ? "auto" : "smooth" });
-              }
-            }}
+            onClick={handleLogoClick}
           >
             <div className="w-[36px] sm:w-[38px] h-[36px] sm:h-[38px] flex items-center justify-center flex-shrink-0 transition-transform group-hover:scale-105">
               <Logo variant="icon" tone="color" height={38} decorative priority />
@@ -395,7 +411,12 @@ const Navbar = () => {
               {/* Header inside drawer with close button */}
               <div>
                 <div className="flex items-center justify-between pb-5 mb-6 border-b" style={{ borderColor: "var(--border-subtle)" }}>
-                  <div className="flex items-center gap-3">
+                  <Link
+                    to="/"
+                    onClick={handleLogoClick}
+                    className="flex items-center gap-3 group focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-indigo)] rounded-lg p-1 -ml-1"
+                    aria-label="Prathamesh Chiddarwar, home"
+                  >
                     <Logo variant="icon" tone="color" height={32} decorative />
                     <div className="flex flex-col">
                       <span className="font-bold text-sm tracking-tight" style={{ color: "var(--text-main)" }}>
@@ -405,7 +426,7 @@ const Navbar = () => {
                         Web Dev · Cybersecurity
                       </span>
                     </div>
-                  </div>
+                  </Link>
 
                   <button
                     type="button"

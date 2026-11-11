@@ -10,7 +10,6 @@ import {
   Works,
   StarsCanvas,
   Footer,
-  Loader,
 } from "../components";
 
 const DesktopHomePage = () => {
@@ -20,7 +19,6 @@ const DesktopHomePage = () => {
 
   return (
     <div className='relative z-0 bg-primary'>
-      <Loader />
       <Navbar />
       <div className='bg-hero-pattern bg-cover bg-no-repeat bg-center'>
         <Hero />
