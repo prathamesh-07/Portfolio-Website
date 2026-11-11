@@ -447,17 +447,29 @@ const ContactPage = () => {
                 ) : (
                   <>
                     {status === "error" && (
-                      <p
+                      <div
                         role="alert"
-                        className="text-xs px-4 py-3 rounded-xl"
+                        className="text-xs px-4 py-3 rounded-xl space-y-2.5"
                         style={{
                           background: "rgba(248,113,113,0.08)",
                           border: "1px solid rgba(248,113,113,0.3)",
                           color: "#f87171",
                         }}
                       >
-                        {errorMessage}
-                      </p>
+                        <p>{errorMessage}</p>
+                        <a
+                          href={`mailto:prathameshchiddarwar42@gmail.com?subject=${encodeURIComponent(
+                            `Portfolio Inquiry from ${form.name || "Visitor"}`
+                          )}&body=${encodeURIComponent(
+                            `${form.message}\n\n---\nFrom: ${form.name} (${form.email})`
+                          )}`}
+                          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-white font-medium text-xs transition-opacity hover:opacity-90"
+                          style={{ background: "rgba(239,68,68,0.25)", border: "1px solid rgba(239,68,68,0.4)" }}
+                        >
+                          <span>Open in Email App</span>
+                          <span aria-hidden="true">&rarr;</span>
+                        </a>
+                      </div>
                     )}
                     <button
                       type="submit"

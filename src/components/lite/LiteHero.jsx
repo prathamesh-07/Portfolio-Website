@@ -36,9 +36,9 @@ const LiteHero = () => {
   return (
     <section
       aria-label="Introduction & Hero"
-      className="relative w-full min-h-[100svh] flex flex-col justify-between pt-24 pb-8 px-6 sm:px-12 max-w-7xl mx-auto overflow-hidden"
+      className="relative w-full min-h-[100svh] flex flex-col justify-between pt-28 sm:pt-32 pb-8 px-6 sm:px-12 max-w-7xl mx-auto overflow-hidden"
       style={{
-        paddingTop: "calc(5.5rem + env(safe-area-inset-top, 0px))",
+        paddingTop: "calc(7rem + env(safe-area-inset-top, 0px))",
         paddingBottom: "calc(2rem + env(safe-area-inset-bottom, 0px))",
       }}
     >
@@ -60,7 +60,7 @@ const LiteHero = () => {
           </motion.div>
 
           {/* Text Block */}
-          <div className="flex flex-col gap-4">
+          <div className="flex flex-col gap-4 w-full">
             <motion.h1
               initial={{ opacity: 0, y: shouldReduce ? 0 : 16 }}
               animate={isHeroVisible ? { opacity: 1, y: 0 } : { opacity: 0, y: shouldReduce ? 0 : 16 }}
@@ -78,7 +78,7 @@ const LiteHero = () => {
               initial={{ opacity: 0, y: shouldReduce ? 0 : 12 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: dur, delay: shouldReduce ? 0 : 0.28, ease }}
-              className="text-[#dfd9ff] font-medium text-base sm:text-lg leading-relaxed max-w-xl"
+              className="text-[#dfd9ff] font-medium text-base sm:text-lg leading-relaxed w-full"
             >
               Full-Stack Developer &amp; Cyber Security Graduate (Class of 2026).
               I build production web applications and research AI-driven security threats.

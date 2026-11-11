@@ -26,7 +26,7 @@ const LiteWorks = () => {
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, amount: 0.1 }}
         transition={{ duration: shouldReduce ? 0 : 0.45, delay: shouldReduce ? 0 : 0.1, ease: [0.22, 1, 0.36, 1] }}
-        className="mt-4 text-[#94a3b8] text-base sm:text-lg max-w-3xl leading-relaxed"
+        className="mt-4 text-[#94a3b8] text-base sm:text-lg w-full leading-relaxed"
       >
         Following projects showcase my skills and experience through real-world examples of my work. Each project is briefly described with links to code repositories and technical write-ups.
       </motion.p>

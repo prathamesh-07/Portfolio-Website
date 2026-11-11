@@ -89,8 +89,8 @@ const Computers = ({ isPortrait }) => {
       <pointLight intensity={1} />
       <primitive
         object={computer.scene}
-        scale={isPortrait ? 0.6 : 0.75}
-        position={isPortrait ? [0, -3.2, -1.8] : [0, -3.25, -1.5]}
+        scale={isPortrait ? 0.52 : 0.64}
+        position={isPortrait ? [0, -3.3, -1.8] : [0, -3.4, -1.4]}
         rotation={[-0.01, -0.2, -0.1]}
       />
     </mesh>
@@ -123,30 +123,19 @@ const ComputersCanvas = () => {
   const [shouldRender, setShouldRender] = useState(false);
   const [isPortrait, setIsPortrait] = useState(false);
   const [hasContextLost, setHasContextLost] = useState(false);
-  const [isTabVisible, setIsTabVisible] = useState(true);
   const rendererRef = React.useRef(null);
 
-  // Pause rendering when tab is hidden to save GPU/battery
+  // When switching back to tab/browser, trigger a redraw event so 3D scene renders immediately
   useEffect(() => {
     const handleVisibility = () => {
-      setIsTabVisible(document.visibilityState !== "hidden");
+      if (document.visibilityState === "visible") {
+        setHasContextLost(false);
+        // Dispatch synthetic resize so Three.js camera & controls refresh cleanly
+        window.dispatchEvent(new Event("resize"));
+      }
     };
     document.addEventListener("visibilitychange", handleVisibility);
     return () => document.removeEventListener("visibilitychange", handleVisibility);
-  }, []);
-
-  // Dispose WebGL resources on unmount
-  useEffect(() => {
-    return () => {
-      if (rendererRef.current) {
-        try {
-          rendererRef.current.dispose();
-          rendererRef.current.forceContextLoss?.();
-        } catch (e) {
-          // Ignore disposal errors
-        }
-      }
-    };
   }, []);
 
   useEffect(() => {
@@ -172,7 +161,7 @@ const ComputersCanvas = () => {
     };
   }, []);
 
-  if (!shouldRender || hasContextLost || !isTabVisible) {
+  if (!shouldRender) {
     return null;
   }
 
@@ -199,6 +188,13 @@ const ComputersCanvas = () => {
             (e) => {
               e.preventDefault();
               setHasContextLost(true);
+            },
+            false
+          );
+          gl.domElement.addEventListener(
+            "webglcontextrestored",
+            () => {
+              setHasContextLost(false);
             },
             false
           );

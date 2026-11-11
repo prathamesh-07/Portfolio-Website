@@ -15,12 +15,19 @@ import {
   git,
   figma,
   docker,
+  python,
+  nextjs,
+  aws,
+  wireshark,
   meta,
   starbucks,
   shopify,
   carrent,
   jobit,
   tripguide,
+  emailSecurityImg,
+  cloudMigrateImg,
+  atmsImg,
 } from "../assets";
 
 export const navLinks = [
@@ -71,52 +78,56 @@ const services = [
 
 const technologies = [
   {
-    name: "JavaScript",
-    icon: javascript,
+    name: "Python",
+    icon: python,
   },
   {
     name: "TypeScript",
     icon: typescript,
   },
   {
+    name: "JavaScript",
+    icon: javascript,
+  },
+  {
     name: "React JS",
     icon: reactjs,
   },
   {
-    name: "Tailwind CSS",
-    icon: tailwind,
+    name: "Next.js",
+    icon: nextjs,
   },
   {
     name: "Node JS",
     icon: nodejs,
   },
   {
+    name: "Tailwind CSS",
+    icon: tailwind,
+  },
+  {
     name: "MongoDB",
     icon: mongodb,
   },
   {
-    name: "Redux",
-    icon: redux,
+    name: "Docker",
+    icon: docker,
   },
   {
-    name: "HTML 5",
-    icon: html,
+    name: "AWS",
+    icon: aws,
   },
   {
-    name: "CSS 3",
-    icon: css,
-  },
-  {
-    name: "git",
+    name: "Git",
     icon: git,
   },
   {
-    name: "figma",
-    icon: figma,
+    name: "Wireshark",
+    icon: wireshark,
   },
   {
-    name: "docker",
-    icon: docker,
+    name: "Figma",
+    icon: figma,
   },
 ];
 
@@ -221,7 +232,7 @@ const projects = [
         color: "pink-text-gradient",
       },
     ],
-    image: jobit,
+    image: emailSecurityImg,
     source_code_link: "https://github.com/prathamesh-07",
   },
   {
@@ -244,7 +255,7 @@ const projects = [
         color: "pink-text-gradient",
       },
     ],
-    image: carrent,
+    image: cloudMigrateImg,
     source_code_link: "https://github.com/prathamesh-07",
   },
   {
@@ -267,7 +278,7 @@ const projects = [
         color: "pink-text-gradient",
       },
     ],
-    image: tripguide,
+    image: atmsImg,
     source_code_link: "https://github.com/prathamesh-07",
   },
 ];

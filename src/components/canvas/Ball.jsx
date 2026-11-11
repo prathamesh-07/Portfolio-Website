@@ -55,6 +55,11 @@ const BallCanvas = ({ icon }) => {
           },
           false
         );
+        gl.domElement.addEventListener(
+          "webglcontextrestored",
+          () => {},
+          false
+        );
       }}
     >
       <Suspense fallback={<CanvasLoader />}>
@@ -67,4 +72,5 @@ const BallCanvas = ({ icon }) => {
   );
 };
 
+export { Ball };
 export default BallCanvas;

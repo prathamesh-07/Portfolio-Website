@@ -48,7 +48,7 @@ const About = () => {
 
       <motion.p
         variants={fadeIn("", "", 0.1, 1)}
-        className='mt-4 text-secondary text-[17px] max-w-3xl leading-[30px]'
+        className='mt-4 text-secondary text-[17px] w-full leading-[32px]'
       >
         I am a Computer Science graduate (Class of 2026) specializing in Cyber Security and Forensics from MIT-WPU, Pune, and a full-stack developer with hands-on experience building and deploying production web applications end-to-end. My technical focus bridges secure web architectures (React, Next.js, Node.js, AWS) with hands-on penetration testing, vulnerability assessment (Wireshark, Nessus, Burp Suite), and 2 published IEEE research papers on AI-generated audio threats.
       </motion.p>

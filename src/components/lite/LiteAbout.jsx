@@ -23,7 +23,7 @@ const LiteAbout = () => {
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, amount: 0.1 }}
         transition={{ duration: shouldReduce ? 0 : 0.45, delay: shouldReduce ? 0 : 0.1, ease: [0.22, 1, 0.36, 1] }}
-        className="mt-4 text-[#94a3b8] text-base sm:text-lg max-w-3xl leading-relaxed"
+        className="mt-4 text-[#94a3b8] text-base sm:text-lg w-full leading-relaxed"
       >
         I am a Computer Science graduate (Class of 2026) specializing in Cyber Security and Forensics from MIT-WPU, Pune, and a full-stack developer with hands-on experience building and deploying production web applications end-to-end. My technical focus bridges secure web architectures (React, Next.js, Node.js, AWS) with hands-on penetration testing, vulnerability assessment (Wireshark, Nessus, Burp Suite), and 2 published IEEE research papers on AI-generated audio threats.
       </motion.p>

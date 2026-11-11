@@ -192,20 +192,20 @@ const Navbar = () => {
       >
         <nav
           aria-label="Primary"
-          className="w-full h-full px-5 sm:px-8 lg:px-12 xl:px-16 2xl:px-20 flex items-center justify-between"
+          className="w-full h-full px-6 sm:px-10 lg:px-16 xl:px-20 flex items-center justify-between"
         >
           {/* ── Left: Identity Lockup ── */}
           <Link
             to="/"
-            className="flex items-center gap-2.5 sm:gap-3 group focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-indigo)] rounded-lg p-1 -ml-1 transition-transform"
+            className="flex items-center gap-3 sm:gap-3.5 group focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-indigo)] rounded-lg p-1 -ml-1 transition-transform"
             aria-label="Prathamesh Chiddarwar, home"
             onClick={handleLogoClick}
           >
-            <div className="w-[28px] h-[28px] sm:w-[38px] sm:h-[38px] lg:w-[44px] lg:h-[44px] flex items-center justify-center flex-shrink-0 transition-transform group-hover:scale-105">
-              <Logo variant="icon" tone="color" height={44} decorative priority />
+            <div className="w-[30px] h-[30px] sm:w-[38px] sm:h-[38px] lg:w-[42px] lg:h-[42px] flex items-center justify-center flex-shrink-0 transition-transform group-hover:scale-105">
+              <Logo variant="icon" tone="color" height={42} decorative priority />
             </div>
 
-            <div className="flex items-center gap-2 sm:gap-2.5 min-w-0">
+            <div className="flex items-center gap-2.5 sm:gap-3 min-w-0">
               <span
                 className="font-bold text-[15px] sm:text-[18px] lg:text-[20px] tracking-tight transition-colors whitespace-nowrap"
                 style={{ color: "var(--text-main)" }}
@@ -215,7 +215,7 @@ const Navbar = () => {
 
               {/* Dev · Sec Badge (Hidden below 480px per brief) */}
               <span
-                className="hidden min-[480px]:inline-flex items-center text-[10px] font-bold tracking-wider uppercase px-2 py-0.5 rounded-md border flex-shrink-0"
+                className="hidden min-[480px]:inline-flex items-center text-[10px] font-bold tracking-wider uppercase px-2.5 py-0.5 rounded-md border flex-shrink-0"
                 style={{
                   backgroundColor: "var(--bg-surface)",
                   color: "var(--text-muted)",
@@ -228,14 +228,14 @@ const Navbar = () => {
           </Link>
 
           {/* ── Center / Right: Desktop Navigation Links (>= 1024px) ── */}
-          <div className="hidden lg:flex items-center gap-8">
-            <ul className="flex items-center gap-1 sm:gap-2 list-none" role="list">
+          <div className="hidden lg:flex items-center gap-10 xl:gap-12">
+            <ul className="flex items-center gap-2 sm:gap-3 list-none" role="list">
               {desktopNavLinks.map((nav) => (
                 <li key={nav.title} className="relative">
                   <NavLink
                     to={nav.path}
                     className={({ isActive }) =>
-                      `relative inline-flex items-center px-3.5 py-1.5 text-[14px] font-medium transition-colors duration-200 rounded-md focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-indigo)] ${
+                      `relative inline-flex items-center px-4 py-2 text-[14px] font-medium transition-colors duration-200 rounded-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-indigo)] ${
                         isActive
                           ? "text-[var(--text-main)] font-semibold"
                           : "text-[var(--text-muted)] hover:text-[var(--text-main)]"
@@ -273,7 +273,7 @@ const Navbar = () => {
             <a
               href={RESUME_PATH}
               download={RESUME_NAME}
-              className="inline-flex items-center justify-center min-h-[44px] px-5 text-[14px] font-semibold text-white rounded-xl shadow-md transition-all hover:scale-[1.02] active:scale-[0.98] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-indigo)]"
+              className="inline-flex items-center justify-center min-h-[42px] px-6 text-[14px] font-semibold text-white rounded-xl shadow-md transition-all hover:scale-[1.02] active:scale-[0.98] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-indigo)]"
               style={{
                 backgroundColor: "var(--color-indigo)",
                 boxShadow: "0 4px 14px 0 rgba(99, 102, 241, 0.28)",

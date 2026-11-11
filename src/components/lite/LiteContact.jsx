@@ -170,8 +170,19 @@ const LiteContact = () => {
             )}
 
             {status === "error" && (
-              <div role="alert" className="p-4 rounded-xl bg-red-950/40 border border-red-500/40 text-red-300 text-sm">
-                {errorMessage}
+              <div role="alert" className="p-4 rounded-xl bg-red-950/40 border border-red-500/40 text-red-300 text-sm space-y-3">
+                <p>{errorMessage}</p>
+                <a
+                  href={`mailto:prathameshchiddarwar42@gmail.com?subject=${encodeURIComponent(
+                    `Portfolio Inquiry from ${form.name || "Visitor"}`
+                  )}&body=${encodeURIComponent(
+                    `${form.message}\n\n---\nFrom: ${form.name} (${form.email})`
+                  )}`}
+                  className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-red-500/20 hover:bg-red-500/30 text-white font-medium text-xs border border-red-400/40 transition-colors"
+                >
+                  <span>Send via Direct Email App</span>
+                  <span aria-hidden="true">&rarr;</span>
+                </a>
               </div>
             )}
 

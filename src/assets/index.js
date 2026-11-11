@@ -20,6 +20,10 @@ import redux from "./tech/redux.png";
 import tailwind from "./tech/tailwind.png";
 import typescript from "./tech/typescript.png";
 import threejs from "./tech/threejs.svg";
+import python from "./tech/python.png";
+import nextjs from "./tech/nextjs.png";
+import aws from "./tech/aws.png";
+import wireshark from "./tech/wireshark.png";
 
 import meta from "./company/meta.png";
 import shopify from "./company/shopify.png";
@@ -29,6 +33,10 @@ import tesla from "./company/tesla.png";
 import carrent from "./carrent.png";
 import jobit from "./jobit.png";
 import tripguide from "./tripguide.png";
+
+import emailSecurityImg from "./projects/email-security.svg";
+import cloudMigrateImg from "./projects/cloud-migrate.svg";
+import atmsImg from "./projects/atms.svg";
 
 export {
   logo,
@@ -52,6 +60,10 @@ export {
   tailwind,
   typescript,
   threejs,
+  python,
+  nextjs,
+  aws,
+  wireshark,
   meta,
   shopify,
   starbucks,
@@ -59,4 +71,7 @@ export {
   carrent,
   jobit,
   tripguide,
+  emailSecurityImg,
+  cloudMigrateImg,
+  atmsImg,
 };

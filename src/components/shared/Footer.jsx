@@ -203,7 +203,7 @@ const Footer = () => {
 
           {/* Center / Right: White Logo Icon */}
           <div className="flex items-center gap-4">
-            <Logo variant="icon" tone="white" height={22} decorative />
+            <Logo variant="icon" tone="white" height={24} decorative />
           </div>
         </div>
 

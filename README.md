@@ -12,10 +12,10 @@
 </p>
 
 <p>
-  <a href="https://prathamesh-07.github.io/">Live Site</a> &bull;
-  <a href="https://prathamesh-07.github.io/about">About</a> &bull;
-  <a href="https://prathamesh-07.github.io/projects">Projects &amp; Research</a> &bull;
-  <a href="https://prathamesh-07.github.io/contact">Contact</a>
+  <a href="https://prathameshchiddarwar.vercel.app/">Live Site</a> &bull;
+  <a href="https://prathameshchiddarwar.vercel.app/about">About</a> &bull;
+  <a href="https://prathameshchiddarwar.vercel.app/projects">Projects &amp; Research</a> &bull;
+  <a href="https://prathameshchiddarwar.vercel.app/contact">Contact</a>
 </p>
 
 <p>
@@ -24,7 +24,7 @@
   <img src="https://img.shields.io/badge/TailwindCSS-3.2.6-6366F1?style=flat-square&logo=tailwindcss&logoColor=white" alt="Tailwind CSS 3.2.6" />
   <img src="https://img.shields.io/badge/Three.js-0.149.0-050816?style=flat-square&logo=threedotjs&logoColor=white" alt="Three.js 0.149.0" />
   <img src="https://img.shields.io/badge/Node-%3E%3D18.0.0-050816?style=flat-square&logo=node.js&logoColor=white" alt="Node >= 18.0.0" />
-  <img src="https://img.shields.io/badge/Deployment-GitHub_Pages_%2F_Vercel-6366F1?style=flat-square&logo=github&logoColor=white" alt="Deployment" />
+  <img src="https://img.shields.io/badge/Deployment-Vercel-000000?style=flat-square&logo=vercel&logoColor=white" alt="Deployment" />
   <img src="https://img.shields.io/badge/Status-Live-10B981?style=flat-square" alt="Status Live" />
 </p>
 
@@ -48,7 +48,7 @@
 - [Environment Variables](#environment-variables)
 - [Available Scripts](#available-scripts)
 - [Brand Assets & Screenshots Pipeline](#brand-assets--screenshots-pipeline)
-- [Deployment Guide](#deployment-guide)
+- [Deployment Guide (Vercel)](#deployment-guide-vercel)
 - [Performance & Quality](#performance--quality)
 - [Roadmap](#roadmap)
 - [License & Content Rights](#license--content-rights)
@@ -72,7 +72,7 @@ The codebase prioritizes zero layout shift, strict type and asset boundaries, ac
 
 | Area | Implemented Capabilities in Codebase |
 | :--- | :--- |
-| **Web Development** | &bull; Client-side Single Page Application (SPA) with React 18 and React Router v6.<br />&bull; 12-column responsive Bento Grid architecture across mobile, tablet, and desktop viewports.<br />&bull; Hardware-accelerated 3D graphics via Three.js, React Three Fiber, and Drei with automatic devicePixelRatio clamping.<br />&bull; Single reusable `<Logo />` component enforcing minimum legible sizes, density srcset (1x/2x/3x), and light/dark theme swapping.<br />&bull; Session-scoped loader (`sessionStorage`) with `prefers-reduced-motion` detection and a hard 1.2s timeout. |
+| **Web Development** | &bull; Client-side Single Page Application (SPA) with React 18 and React Router v6.<br />&bull; 12-column responsive Bento Grid architecture across mobile, tablet, and desktop viewports.<br />&bull; Hardware-accelerated 3D graphics via Three.js, React Three Fiber, and Drei with automatic devicePixelRatio clamping and a unified single-canvas View pool (eliminating multi-context browser limits and context-loss crashes).<br />&bull; Single reusable `<Logo />` component enforcing minimum legible sizes, density srcset (1x/2x/3x), and light/dark theme swapping.<br />&bull; Session-scoped loader (`sessionStorage`) with `prefers-reduced-motion` detection and a hard 1.2s timeout. |
 | **Cybersecurity & Hardening** | &bull; Client-side form sanitization and RFC-compliant email regex validation.<br />&bull; Honeypot spam trap (`honeypot_field`) with `tabIndex={-1}` and `aria-hidden` to intercept bot submissions without intrusive user challenges.<br />&bull; Strict `rel="noopener noreferrer"` and `target="_blank"` on every outbound link to prevent tab-nabbing and reverse-window manipulation.<br />&bull; Zero private secrets or privileged tokens stored in client bundles (EmailJS client public key only).<br />&bull; Privacy-hardened image pipeline stripping EXIF and GPS geolocation metadata from all photographic assets during optimization. |
 | **Performance & Accessibility** | &bull; Modern image formats (`.webp`, `.avif`) with explicit `width` and `height` dimensions to eliminate Cumulative Layout Shift (CLS = 0).<br />&bull; Semantic HTML5 landmark tags (`<main>`, `<nav>`, `<footer>`, `<article>`, `<section>`, `<aside>`) with skip-to-content links.<br />&bull; Static Open Graph, Twitter Cards, and schema.org `Person` JSON-LD structured data.<br />&bull; Code-split vendor bundles via Rollup manual chunks separating React, Three.js, and Framer Motion. |
 
@@ -117,11 +117,10 @@ The portfolio implements 4 core user-facing views plus a dedicated error recover
 | | React Parallax Tilt | `^1.7.352` | Card tilt interactions |
 | **Styling** | Tailwind CSS | `^3.2.6` | Utility-first CSS framework |
 | | PostCSS / Autoprefixer | `^8.4.21` / `^10.4.13` | CSS preprocessing and vendor prefixing |
-| **Form & Email** | @emailjs/browser | `^3.12.1` | Client-side email dispatching via verified template |
+| **Form & Email** | @emailjs/browser | `^3.12.1` | Client-side email dispatching with direct mail client fallback |
 | **Build & Tooling** | Vite | `^4.1.0` | Next-generation frontend build tooling and dev server |
 | | Sharp | `^0.35.5` | High-performance reproducible asset processing |
 | | Puppeteer Core | `^25.16.0` | Automated screenshot capture and validation harness |
-| | gh-pages | `^6.1.1` | GitHub Pages deployment utility |
 
 </details>
 
@@ -239,7 +238,6 @@ The application requires three public identifiers for the EmailJS contact integr
 | `npm run dev` | Starts the Vite local development server with Hot Module Replacement (HMR). |
 | `npm run build` | Compiles and optimizes assets into the `dist/` directory using Rollup chunk splitting. |
 | `npm run preview` | Spins up a local static web server to test the production build in `dist/`. |
-| `npm run deploy` | Deploys the `dist/` directory directly to GitHub Pages via `gh-pages`. |
 | `npm run brand` | Generates all derivative WebP/PNG logos, multi-size favicons, and portraits from `brand-source/`. |
 | `npm run screenshots` | Automates headless browser capture of all pages and creates rounded, bordered README graphics. |
 
@@ -250,34 +248,46 @@ The application requires three public identifiers for the EmailJS contact integr
 All visual brand assets are generated deterministically from originals stored in `brand-source/`:
 
 - **Logo System:** Monogram icon, transparent open-ring mark, horizontal lockup, stacked lockup, single-color white, and single-color black versions.
-- **Portraits:** 4:5 editorial portrait, 1:1 square crop, and circular avatar derivatives exported at 480px, 800px, 1200px, and 1600px with AVIF, WebP, and JPG fallbacks.
+- **Portraits:** 4:5 editorial portrait, 1:1 square crop, and circular avatar derivatives exported at 480px, 800px, 1200px, and 1600px with AVIF, WebP, and JPG fallbacks (supported on both desktop sticky sidebar and mobile cards).
 - **Zero Layout Shift:** Every asset is exported with known aspect ratios, explicit dimensions, and low-quality blur placeholders (LQIP).
 
 Refer to [`docs/BRAND.md`](docs/BRAND.md) for complete palette codes, clear-space rules, and placement guidelines.
 
 ---
 
-## Deployment Guide
+## Deployment Guide (Vercel)
 
-### Option A: GitHub Pages (Current Configuration)
+The site is configured for production hosting on [Vercel](https://vercel.com):
 
-1. Ensure the `base` property in `vite.config.js` is set to `"/"` (or your repository subpath).
-2. Run the deployment script:
-   ```bash
-   npm run deploy
-   ```
-3. In GitHub Repository Settings, navigate to **Pages** and verify the deployment branch is set to `gh-pages` / `/ (root)`.
-4. Client-side routing is preserved across direct link reloads via `public/404.html` and the SPA redirect script in `index.html`.
-
-### Option B: Vercel Deployment
-
-1. Import the repository into your Vercel Dashboard.
-2. Select the **Vite** Framework Preset.
-3. Configure settings:
+1. **Import the repository** into your Vercel Dashboard.
+2. **Framework Preset:** Select `Vite`.
+3. **Build and Output Settings:**
    - **Build Command:** `npm run build`
    - **Output Directory:** `dist`
-4. Add the three environment variables under **Project Settings > Environment Variables** (`VITE_APP_EMAILJS_SERVICE_ID`, `VITE_APP_EMAILJS_TEMPLATE_ID`, and `VITE_APP_EMAILJS_PUBLIC_KEY`).
-5. Set environment scope to `Production`, `Preview`, and `Development`.
+   - **Install Command:** `npm install`
+4. **Environment Variables:**
+   Under **Project Settings > Environment Variables**, add:
+   - `VITE_APP_EMAILJS_SERVICE_ID`
+   - `VITE_APP_EMAILJS_TEMPLATE_ID`
+   - `VITE_APP_EMAILJS_PUBLIC_KEY`
+5. **SPA Routing Configuration:**
+   Client-side routing (`/about`, `/projects`, `/contact`) is handled seamlessly via [`vercel.json`](vercel.json):
+   ```json
+   {
+     "framework": "vite",
+     "rewrites": [
+       { "source": "/(.*)", "destination": "/index.html" }
+     ],
+     "headers": [
+       {
+         "source": "/assets/(.*)",
+         "headers": [
+           { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }
+         ]
+       }
+     ]
+   }
+   ```
 
 ---
 

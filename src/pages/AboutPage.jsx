@@ -304,6 +304,59 @@ const AboutPage = () => {
             {/* ─── RIGHT: Scrolling chapters ─── */}
             <div className="pt-8 lg:pt-0 space-y-0">
 
+              {/* ─── Mobile / Tablet Portrait Card (visible only below lg: 1024px) ─── */}
+              <div className="lg:hidden mb-10 pb-8 border-b border-[var(--border-subtle)]">
+                <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6">
+                  <div
+                    className="w-44 sm:w-48 aspect-[4/5] rounded-2xl overflow-hidden shrink-0 shadow-[0_8px_32px_-8px_rgba(136,92,245,0.35)]"
+                    style={{ border: `1px solid ${T.border}` }}
+                  >
+                    <picture>
+                      <source
+                        type="image/avif"
+                        srcSet={`${portraitAvif480} 480w, ${portraitAvif800} 800w, ${portraitAvif1200} 1200w`}
+                        sizes="(max-width: 640px) 176px, 192px"
+                      />
+                      <source
+                        type="image/webp"
+                        srcSet={`${portraitWebp480} 480w, ${portraitWebp800} 800w, ${portraitWebp1200} 1200w`}
+                        sizes="(max-width: 640px) 176px, 192px"
+                      />
+                      <img
+                        src={portraitJpg800}
+                        srcSet={`${portraitJpg480} 480w, ${portraitJpg800} 800w`}
+                        sizes="(max-width: 640px) 176px, 192px"
+                        alt="Prathamesh Chiddarwar"
+                        width={192}
+                        height={240}
+                        loading="eager"
+                        decoding="async"
+                        className="w-full h-full object-cover"
+                        style={{ objectPosition: "50% 20%" }}
+                      />
+                    </picture>
+                  </div>
+
+                  <div className="flex flex-col items-center sm:items-start text-center sm:text-left justify-center pt-1 sm:pt-2">
+                    <p className="text-xl font-bold leading-tight" style={{ color: T.main }}>
+                      Prathamesh Chiddarwar
+                    </p>
+                    <p className="text-sm mt-1 font-medium" style={{ color: T.indigo }}>
+                      Full-Stack Developer · Cyber Security Researcher
+                    </p>
+                    <p className="text-xs mt-2" style={{ color: T.muted }}>
+                      MIT World Peace University · Class of 2026
+                    </p>
+                    <div className="flex items-center gap-2 mt-4">
+                      <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/30">
+                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                        Available for Opportunities
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
               {/* ── 01 WHO I AM ── */}
               <Chapter id="who" num="01" heading="Who I Am" chapterRef={chapterRefs.who}>
                 <div className="space-y-4 text-[15px] leading-relaxed" style={{ color: T.muted }}>
@@ -579,7 +632,7 @@ const AboutPage = () => {
 
                 {/* Skill chips */}
                 <div className="flex flex-wrap gap-2">
-                  <AnimatePresence mode="wait">
+                  <AnimatePresence mode="popLayout">
                     {visibleSkills.map((skill, i) => (
                       <motion.span
                         key={`${skillsTrack}-${skill}`}

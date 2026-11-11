@@ -96,14 +96,12 @@ const Works = () => {
         <h2 className={`${styles.sectionHeadText}`}>Projects.</h2>
       </motion.div>
 
-      <div className='w-full flex'>
-        <motion.p
-          variants={fadeIn("", "", 0.1, 1)}
-          className='mt-3 text-secondary text-[17px] max-w-3xl leading-[30px]'
-        >
-          Following projects showcase real-world applications across both full-stack web development and security engineering. Each project demonstrates end-to-end implementation with verified integrity checks, ML-based detection, and enterprise-grade role-based access control.
-        </motion.p>
-      </div>
+      <motion.p
+        variants={fadeIn("", "", 0.1, 1)}
+        className='mt-4 text-secondary text-[17px] w-full leading-[32px]'
+      >
+        Following projects showcase real-world applications across both full-stack web development and security engineering. Each project demonstrates end-to-end implementation with verified integrity checks, ML-based detection, and enterprise-grade role-based access control.
+      </motion.p>
 
       <div className='mt-16 flex flex-wrap gap-7 justify-center'>
         {projects.map((project, index) => (

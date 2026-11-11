@@ -16,9 +16,9 @@ import {
 } from "../components/shared/Icons";
 
 /* ─── Project Photos & Graphics ─────────────────────────────────────────── */
-import carrent from "../assets/carrent.png";
-import jobit from "../assets/jobit.png";
-import tripguide from "../assets/tripguide.png";
+import emailSecurityImg from "../assets/projects/email-security.svg";
+import cloudMigrateImg from "../assets/projects/cloud-migrate.svg";
+import atmsImg from "../assets/projects/atms.svg";
 import delpatImg from "../assets/projects/delpat.svg";
 import aiResumeImg from "../assets/projects/ai-resume.svg";
 import investInsightImg from "../assets/projects/investinsight.svg";
@@ -119,7 +119,7 @@ const projectItems = [
     track: "cybersecurity",
     trackLabel: "Cybersecurity",
     isResearch: false,
-    image: jobit,
+    image: emailSecurityImg,
     tags: ["Python", "Flask", "Scikit-learn"],
     summary: "Flask web app that classifies phishing emails via TF-IDF + Logistic Regression and DNS-level SPF/DKIM/DMARC authentication checks.",
     problem:
@@ -139,7 +139,7 @@ const projectItems = [
     track: "both",
     trackLabel: "Web · Security",
     isResearch: false,
-    image: carrent,
+    image: cloudMigrateImg,
     tags: ["Next.js", "Python", "AWS S3 / GCP"],
     summary: "Multi-cloud orchestration platform transferring files from AWS S3 to Google Cloud Storage with MD5 and SHA-256 hash verification.",
     problem:
@@ -159,7 +159,7 @@ const projectItems = [
     track: "both",
     trackLabel: "Web · Security",
     isResearch: false,
-    image: tripguide,
+    image: atmsImg,
     tags: ["React", "MongoDB", "RBAC / JWT"],
     summary: "Full-stack asset tracking system with server-side RBAC, immutable audit logs, and hardware/software lifecycle management.",
     problem:

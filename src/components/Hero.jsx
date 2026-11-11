@@ -13,7 +13,7 @@ const Hero = () => {
     <section className="relative w-full h-screen mx-auto overflow-hidden z-0">
       <div
         key={heroKey}
-        className="absolute inset-0 top-[110px] sm:top-[120px] max-w-7xl mx-auto px-6 sm:px-16 flex flex-row items-start gap-5 z-10 pointer-events-none"
+        className="absolute inset-0 top-[135px] sm:top-[150px] lg:top-[160px] max-w-7xl mx-auto px-6 sm:px-16 flex flex-row items-start gap-5 z-10 pointer-events-none"
       >
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -25,7 +25,7 @@ const Hero = () => {
           <div className="w-1 sm:h-80 h-40 accent-gradient" />
         </motion.div>
 
-        <div className="flex flex-col gap-4 max-w-3xl pointer-events-auto">
+        <div className="flex flex-col gap-4 w-full max-w-5xl pointer-events-auto">
           <motion.h1
             initial={{ opacity: 0, y: 20 }}
             animate={isHeroVisible ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
@@ -38,10 +38,9 @@ const Hero = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={isHeroVisible ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
             transition={{ duration: 0.5, delay: isHeroVisible ? 0.4 : 0 }}
-            className="text-[#dfd9ff] font-medium lg:text-[24px] sm:text-[20px] xs:text-[18px] text-[15px] lg:leading-[36px] tracking-wide max-w-2xl"
+            className="text-[#dfd9ff] font-medium lg:text-[24px] sm:text-[20px] xs:text-[18px] text-[15px] lg:leading-[38px] tracking-wide w-full"
           >
             Full-Stack Developer & Cyber Security Graduate (Class of 2026). I build production web applications and research AI-driven security threats.
-            <br className="sm:block hidden" />
           </motion.p>
         </div>
       </div>

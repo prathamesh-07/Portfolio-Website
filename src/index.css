@@ -38,8 +38,8 @@ html {
   --track-sec: #885cf5;
 
   /* Header dimensions & Z-index scale */
-  --header-h: 72px;
-  --header-h-scrolled: 60px;
+  --header-h: 80px;
+  --header-h-scrolled: 72px;
   --z-header: 50;
   --z-mobile-menu: 60;
   --z-modal: 70;
