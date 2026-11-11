@@ -13,6 +13,16 @@
   color-scheme: dark;
 }
 
+html {
+  scroll-padding-top: var(--header-h);
+  scrollbar-gutter: stable;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-indigo);
+  outline-offset: 2px;
+}
+
 :root {
   --bg-primary: #050816;
   --bg-surface: #0b1030;
@@ -26,6 +36,14 @@
   --text-muted: #94a3b8;
   --track-web: #6366f1;
   --track-sec: #885cf5;
+
+  /* Header dimensions & Z-index scale */
+  --header-h: 72px;
+  --header-h-scrolled: 60px;
+  --z-header: 50;
+  --z-mobile-menu: 60;
+  --z-modal: 70;
+  --z-loader: 100;
 
   /* Backwards compatibility aliases */
   --primary: #050816;

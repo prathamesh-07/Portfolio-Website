@@ -3,6 +3,7 @@ import { useSearchParams } from "react-router-dom";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import Navbar from "../components/shared/Navbar";
 import Footer from "../components/shared/Footer";
+import { acquireScrollLock, releaseScrollLock } from "../utils/scrollLock";
 import {
   IconGithub,
   IconExternalLink,
@@ -404,8 +405,8 @@ const ProjectDrawer = ({ project, onClose, triggerRef }) => {
   }, [onClose]);
 
   useEffect(() => {
-    document.body.style.overflow = "hidden";
-    return () => { document.body.style.overflow = ""; };
+    acquireScrollLock();
+    return () => { releaseScrollLock(); };
   }, []);
 
   useEffect(() => () => triggerRef?.current?.focus(), [triggerRef]);
@@ -415,8 +416,8 @@ const ProjectDrawer = ({ project, onClose, triggerRef }) => {
 
   return (
     <div
-      className="fixed inset-0 z-50 flex"
-      style={{ background: "rgba(5,8,22,0.72)", backdropFilter: "blur(4px)" }}
+      className="fixed inset-0 flex"
+      style={{ background: "rgba(5,8,22,0.72)", backdropFilter: "blur(4px)", zIndex: "var(--z-modal)" }}
       onClick={onClose}
     >
       {/* Desktop right drawer */}
