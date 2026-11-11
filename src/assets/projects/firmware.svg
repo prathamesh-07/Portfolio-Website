@@ -1,0 +1,73 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450" width="100%" height="100%">
+  <defs>
+    <linearGradient id="bgFirmware" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0b0a1d"/>
+      <stop offset="100%" stop-color="#18112c"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="450" fill="url(#bgFirmware)"/>
+
+  <!-- Subtle Grid -->
+  <g stroke="#261b3d" stroke-width="1" opacity="0.6">
+    <line x1="0" y1="50" x2="800" y2="50"/>
+    <line x1="0" y1="150" x2="800" y2="150"/>
+    <line x1="0" y1="250" x2="800" y2="250"/>
+    <line x1="0" y1="350" x2="800" y2="350"/>
+    <line x1="100" y1="0" x2="100" y2="450"/>
+    <line x1="300" y1="0" x2="300" y2="450"/>
+    <line x1="500" y1="0" x2="500" y2="450"/>
+    <line x1="700" y1="0" x2="700" y2="450"/>
+  </g>
+
+  <!-- Window Container -->
+  <rect x="60" y="35" width="680" height="380" rx="14" fill="#0c091f" stroke="#322254" stroke-width="1.5"/>
+  
+  <!-- Window Header -->
+  <rect x="60" y="35" width="680" height="38" rx="14" fill="#150f31"/>
+  <rect x="60" y="59" width="680" height="14" fill="#150f31"/>
+  <circle cx="85" cy="54" r="5" fill="#ef4444"/>
+  <circle cx="102" cy="54" r="5" fill="#eab308"/>
+  <circle cx="119" cy="54" r="5" fill="#22c55e"/>
+  <text x="400" y="58" fill="#a78bfa" font-family="-apple-system, sans-serif" font-size="12" font-weight="600" text-anchor="middle">Firmware HawkEye · IoT Binary Security Audit &amp; Vulnerability Scanner</text>
+
+  <!-- Left: Hex Stream / Binary Inspection -->
+  <rect x="80" y="88" width="300" height="305" rx="8" fill="#080614" stroke="#251a3d" stroke-width="1"/>
+  <text x="95" y="115" fill="#c084fc" font-family="monospace" font-size="11" font-weight="700">BINARY DISASSEMBLY STREAM</text>
+  
+  <g font-family="monospace" font-size="10" fill="#64748b">
+    <text x="95" y="145"><tspan fill="#818cf8">000010a0:</tspan> 48 83 ec 28 e8 00 00  sub $0x28,%rsp</text>
+    <text x="95" y="168"><tspan fill="#818cf8">000010b0:</tspan> 48 8d 0d f9 1e 00 00  lea 0x1ef9(%rip)</text>
+    <text x="95" y="191"><tspan fill="#ef4444">000010c0:</tspan> <tspan fill="#f87171">72 73 61 5f 70 72 69</tspan>  <tspan fill="#ef4444">[!] rsa_priv.key</tspan></text>
+    <text x="95" y="214"><tspan fill="#818cf8">000010d0:</tspan> 48 89 c7 e8 4a fe ff  mov %rax,%rdi</text>
+    <text x="95" y="237"><tspan fill="#eab308">000010e0:</tspan> <tspan fill="#facc15">74 65 6c 6e 65 74 64</tspan>  <tspan fill="#eab308">[!] telnetd daemon</tspan></text>
+    <text x="95" y="260"><tspan fill="#818cf8">000010f0:</tspan> 31 c0 48 83 c4 28 c3  xor %eax,%eax</text>
+    <text x="95" y="283"><tspan fill="#818cf8">00001100:</tspan> 55 48 89 e5 48 83 ec  push %rbp</text>
+    <text x="95" y="306"><tspan fill="#ef4444">00001110:</tspan> <tspan fill="#f87171">61 64 6d 69 6e 3a 31</tspan>  <tspan fill="#ef4444">[!] admin:1234 (hardcoded)</tspan></text>
+  </g>
+
+  <!-- Scanner Status in left panel -->
+  <rect x="95" y="340" width="270" height="36" rx="6" fill="#19112e" stroke="#885cf5" stroke-width="1"/>
+  <text x="110" y="362" fill="#e9d5ff" font-family="monospace" font-size="11" font-weight="700">✓ Ingestion complete (2.4 MB)</text>
+
+  <!-- Right: Audit & Finding Cards -->
+  <rect x="400" y="88" width="320" height="305" rx="8" fill="#110d29" stroke="#251a3d" stroke-width="1"/>
+  <text x="420" y="115" fill="#f8fafc" font-family="sans-serif" font-size="12" font-weight="700">Audit Findings &amp; Risk Metrics</text>
+
+  <!-- Card 1: Critical -->
+  <rect x="420" y="132" width="280" height="68" rx="6" fill="#200d1a" stroke="#ef4444" stroke-width="1"/>
+  <text x="435" y="153" fill="#f87171" font-family="sans-serif" font-size="10" font-weight="800">CRITICAL · EXPOSED PRIVATE KEY</text>
+  <text x="435" y="172" fill="#fca5a5" font-family="sans-serif" font-size="11">Hardcoded RSA certificate located in /etc/ssl</text>
+  <text x="435" y="188" fill="#94a3b8" font-family="monospace" font-size="9">Remediation: Store in hardware TPM / secure enclave</text>
+
+  <!-- Card 2: High -->
+  <rect x="420" y="210" width="280" height="68" rx="6" fill="#22170d" stroke="#f59e0b" stroke-width="1"/>
+  <text x="435" y="231" fill="#fcd34d" font-family="sans-serif" font-size="10" font-weight="800">HIGH · INSECURE SERVICE ACTIVE</text>
+  <text x="435" y="250" fill="#fde68a" font-family="sans-serif" font-size="11">Unencrypted Telnet daemon bound on port 23</text>
+  <text x="435" y="266" fill="#94a3b8" font-family="monospace" font-size="9">Remediation: Disable telnetd, mandate SSH v2</text>
+
+  <!-- Card 3: Summary stats -->
+  <rect x="420" y="290" width="280" height="85" rx="6" fill="#080614" stroke="#2a1f43" stroke-width="1"/>
+  <text x="435" y="312" fill="#94a3b8" font-family="sans-serif" font-size="10">OVERALL RISK SCORE</text>
+  <text x="435" y="336" fill="#ef4444" font-family="monospace" font-size="20" font-weight="800">8.4 / 10 <tspan font-size="11" fill="#fca5a5">(High Risk)</tspan></text>
+  <text x="435" y="358" fill="#818cf8" font-family="monospace" font-size="10">Export report: audit-report-v1.json</text>
+</svg>

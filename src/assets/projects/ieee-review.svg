@@ -1,0 +1,94 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450" width="100%" height="100%">
+  <defs>
+    <linearGradient id="bgIeeeRev" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0e0a24"/>
+      <stop offset="100%" stop-color="#181136"/>
+    </linearGradient>
+    <linearGradient id="specGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#6366f1"/>
+      <stop offset="50%" stop-color="#885cf5"/>
+      <stop offset="100%" stop-color="#ec4899"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="450" fill="url(#bgIeeeRev)"/>
+
+  <!-- Subtle Grid -->
+  <g stroke="#261c47" stroke-width="1" opacity="0.6">
+    <line x1="0" y1="50" x2="800" y2="50"/>
+    <line x1="0" y1="150" x2="800" y2="150"/>
+    <line x1="0" y1="250" x2="800" y2="250"/>
+    <line x1="0" y1="350" x2="800" y2="350"/>
+    <line x1="100" y1="0" x2="100" y2="450"/>
+    <line x1="300" y1="0" x2="300" y2="450"/>
+    <line x1="500" y1="0" x2="500" y2="450"/>
+    <line x1="700" y1="0" x2="700" y2="450"/>
+  </g>
+
+  <!-- Container -->
+  <rect x="60" y="35" width="680" height="380" rx="14" fill="#09061a" stroke="#37265e" stroke-width="1.5"/>
+
+  <!-- Header Bar -->
+  <rect x="60" y="35" width="680" height="38" rx="14" fill="#150e30"/>
+  <rect x="60" y="59" width="680" height="14" fill="#150e30"/>
+  <circle cx="85" cy="54" r="5" fill="#ef4444"/>
+  <circle cx="102" cy="54" r="5" fill="#eab308"/>
+  <circle cx="119" cy="54" r="5" fill="#22c55e"/>
+  <text x="400" y="58" fill="#c4b5fd" font-family="-apple-system, sans-serif" font-size="12" font-weight="700" text-anchor="middle">IEEE Xplore · ICTBIG 2025 · Research Publication</text>
+
+  <!-- Paper Title & DOI Tag -->
+  <rect x="85" y="90" width="130" height="24" rx="12" fill="#885cf5" opacity="0.2"/>
+  <text x="150" y="106" fill="#c4b5fd" font-family="sans-serif" font-size="10" font-weight="700" text-anchor="middle">PEER REVIEWED SURVEY</text>
+  <text x="635" y="106" fill="#a78bfa" font-family="monospace" font-size="11" text-anchor="middle">DOI: 10.1109/ICTBIG68706.2025.11323737</text>
+
+  <text x="85" y="142" fill="#ffffff" font-family="sans-serif" font-size="16" font-weight="800">A Comprehensive Review of Deepfake Audio Detection Techniques</text>
+  <text x="85" y="162" fill="#94a3b8" font-family="sans-serif" font-size="12">Taxonomy, benchmark forensics (ASVspoof, In-the-Wild) &amp; multimodal defense architectures</text>
+
+  <!-- Spectrogram Heatmap Visualization -->
+  <rect x="85" y="180" width="630" height="120" rx="8" fill="#0c0721" stroke="#2c1d4d" stroke-width="1"/>
+  
+  <!-- Frequency Bars / Spectrogram slices -->
+  <g opacity="0.85">
+    <rect x="100" y="240" width="14" height="45" rx="3" fill="#6366f1"/>
+    <rect x="120" y="210" width="14" height="75" rx="3" fill="#885cf5"/>
+    <rect x="140" y="195" width="14" height="90" rx="3" fill="#ec4899"/>
+    <rect x="160" y="225" width="14" height="60" rx="3" fill="#885cf5"/>
+    <rect x="180" y="250" width="14" height="35" rx="3" fill="#6366f1"/>
+
+    <rect x="210" y="235" width="14" height="50" rx="3" fill="#6366f1"/>
+    <rect x="230" y="200" width="14" height="85" rx="3" fill="#885cf5"/>
+    <rect x="250" y="190" width="14" height="95" rx="3" fill="#ec4899"/>
+    <rect x="270" y="215" width="14" height="70" rx="3" fill="#ec4899"/>
+    <rect x="290" y="245" width="14" height="40" rx="3" fill="#6366f1"/>
+
+    <rect x="320" y="220" width="14" height="65" rx="3" fill="#885cf5"/>
+    <rect x="340" y="192" width="14" height="93" rx="3" fill="#ec4899"/>
+    <rect x="360" y="205" width="14" height="80" rx="3" fill="#885cf5"/>
+    <rect x="380" y="230" width="14" height="55" rx="3" fill="#6366f1"/>
+
+    <!-- Anomaly Box -->
+    <rect x="420" y="190" width="170" height="95" rx="6" fill="#ec4899" opacity="0.12" stroke="#ec4899" stroke-width="1.5" stroke-dasharray="4,3"/>
+    <rect x="430" y="205" width="14" height="70" rx="3" fill="#ec4899"/>
+    <rect x="450" y="198" width="14" height="77" rx="3" fill="#f43f5e"/>
+    <rect x="470" y="202" width="14" height="73" rx="3" fill="#f43f5e"/>
+    <rect x="490" y="215" width="14" height="60" rx="3" fill="#ec4899"/>
+    <text x="505" y="280" fill="#f43f5e" font-family="monospace" font-size="9" font-weight="700">Synthetic Phase Anomaly</text>
+
+    <rect x="610" y="235" width="14" height="50" rx="3" fill="#885cf5"/>
+    <rect x="630" y="205" width="14" height="80" rx="3" fill="#ec4899"/>
+    <rect x="650" y="225" width="14" height="60" rx="3" fill="#885cf5"/>
+    <rect x="670" y="250" width="14" height="35" rx="3" fill="#6366f1"/>
+  </g>
+
+  <!-- Bottom 3 Pillars -->
+  <rect x="85" y="318" width="195" height="78" rx="6" fill="#110d29" stroke="#2c1d4d" stroke-width="1"/>
+  <text x="100" y="342" fill="#c4b5fd" font-family="sans-serif" font-size="11" font-weight="700">01. Synthesis Models</text>
+  <text x="100" y="362" fill="#94a3b8" font-family="sans-serif" font-size="10">Diffusion vocoders, VAEs &amp; zero-shot cloning</text>
+
+  <rect x="300" y="318" width="195" height="78" rx="6" fill="#110d29" stroke="#2c1d4d" stroke-width="1"/>
+  <text x="315" y="342" fill="#c4b5fd" font-family="sans-serif" font-size="11" font-weight="700">02. Benchmark Datasets</text>
+  <text x="315" y="362" fill="#94a3b8" font-family="sans-serif" font-size="10">ASVspoof 2019/2021 &amp; In-the-Wild evaluations</text>
+
+  <rect x="520" y="318" width="195" height="78" rx="6" fill="#110d29" stroke="#2c1d4d" stroke-width="1"/>
+  <text x="535" y="342" fill="#c4b5fd" font-family="sans-serif" font-size="11" font-weight="700">03. Forensic Defenses</text>
+  <text x="535" y="362" fill="#94a3b8" font-family="sans-serif" font-size="10">Bimodal video-audio &amp; adversarial resilience</text>
+</svg>

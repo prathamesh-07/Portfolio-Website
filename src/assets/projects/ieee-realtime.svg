@@ -1,0 +1,78 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450" width="100%" height="100%">
+  <defs>
+    <linearGradient id="bgIeeeReal" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0b0e24"/>
+      <stop offset="100%" stop-color="#14193d"/>
+    </linearGradient>
+    <linearGradient id="waveGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#38bdf8"/>
+      <stop offset="50%" stop-color="#818cf8"/>
+      <stop offset="100%" stop-color="#c084fc"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="450" fill="url(#bgIeeeReal)"/>
+
+  <!-- Subtle Grid -->
+  <g stroke="#1d2547" stroke-width="1" opacity="0.6">
+    <line x1="0" y1="50" x2="800" y2="50"/>
+    <line x1="0" y1="150" x2="800" y2="150"/>
+    <line x1="0" y1="250" x2="800" y2="250"/>
+    <line x1="0" y1="350" x2="800" y2="350"/>
+    <line x1="100" y1="0" x2="100" y2="450"/>
+    <line x1="300" y1="0" x2="300" y2="450"/>
+    <line x1="500" y1="0" x2="500" y2="450"/>
+    <line x1="700" y1="0" x2="700" y2="450"/>
+  </g>
+
+  <!-- Container -->
+  <rect x="60" y="35" width="680" height="380" rx="14" fill="#090d21" stroke="#25325c" stroke-width="1.5"/>
+
+  <!-- Header Bar -->
+  <rect x="60" y="35" width="680" height="38" rx="14" fill="#11183b"/>
+  <rect x="60" y="59" width="680" height="14" fill="#11183b"/>
+  <circle cx="85" cy="54" r="5" fill="#ef4444"/>
+  <circle cx="102" cy="54" r="5" fill="#eab308"/>
+  <circle cx="119" cy="54" r="5" fill="#22c55e"/>
+  <text x="400" y="58" fill="#a5b4fc" font-family="-apple-system, sans-serif" font-size="12" font-weight="700" text-anchor="middle">IEEE Xplore · ICTBIG 2024 · Real-Time Deepfake Audio Detection</text>
+
+  <!-- Paper Title & DOI Tag -->
+  <rect x="85" y="90" width="130" height="24" rx="12" fill="#6366f1" opacity="0.2"/>
+  <text x="150" y="106" fill="#a5b4fc" font-family="sans-serif" font-size="10" font-weight="700" text-anchor="middle">RESEARCH PAPER</text>
+  <text x="635" y="106" fill="#818cf8" font-family="monospace" font-size="11" text-anchor="middle">DOI: 10.1109/ICTBIG64922.2024.10911062</text>
+
+  <text x="85" y="142" fill="#ffffff" font-family="sans-serif" font-size="16" font-weight="800">Real-Time Detection of AI-Generated Deepfake Audio: A Novel Approach</text>
+  <text x="85" y="162" fill="#94a3b8" font-family="sans-serif" font-size="12">CNN signal-processing pipeline using Short-Time Fourier Transform (STFT) and MFCC spectral features</text>
+
+  <!-- Signal Waveform & Spectrogram Box -->
+  <rect x="85" y="180" width="390" height="130" rx="8" fill="#0c122e" stroke="#212c54" stroke-width="1"/>
+  <text x="100" y="202" fill="#38bdf8" font-family="monospace" font-size="10" font-weight="700">RAW AUDIO STFT SPECTROGRAM INPUT</text>
+
+  <!-- Waveform drawing -->
+  <path d="M 100 250 Q 120 220, 140 250 T 180 250 T 220 210 T 260 280 T 300 230 T 340 265 T 380 240 T 420 255 T 455 250" fill="none" stroke="url(#waveGrad)" stroke-width="2.5"/>
+  <path d="M 100 250 Q 115 270, 130 250 T 170 250 T 210 275 T 250 230 T 290 260 T 330 235 T 370 255 T 410 245 T 455 250" fill="none" stroke="#6366f1" stroke-width="1.5" opacity="0.6"/>
+
+  <text x="100" y="295" fill="#64748b" font-family="monospace" font-size="9">MFCC (13 coeffs) · Spectral centroid · Low inference latency (&lt;24ms)</text>
+
+  <!-- Real-Time Scoring Gauge Box -->
+  <rect x="495" y="180" width="220" height="130" rx="8" fill="#0c122e" stroke="#212c54" stroke-width="1"/>
+  <text x="510" y="202" fill="#c084fc" font-family="monospace" font-size="10" font-weight="700">CNN INFERENCE GAUGE</text>
+
+  <!-- Radial gauge arc mock -->
+  <circle cx="605" cy="245" r="32" fill="none" stroke="#1f294d" stroke-width="8"/>
+  <path d="M 577 245 A 32 32 0 1 1 633 245" fill="none" stroke="#10b981" stroke-width="8" stroke-linecap="round"/>
+  <text x="605" y="250" fill="#ffffff" font-family="monospace" font-size="13" font-weight="800" text-anchor="middle">98.4%</text>
+  <text x="605" y="295" fill="#10b981" font-family="sans-serif" font-size="10" font-weight="700" text-anchor="middle">Authentic / Synthetic Split</text>
+
+  <!-- Bottom 3 Pipeline steps -->
+  <rect x="85" y="325" width="195" height="72" rx="6" fill="#0f1638" stroke="#212c54" stroke-width="1"/>
+  <text x="100" y="348" fill="#a5b4fc" font-family="sans-serif" font-size="11" font-weight="700">1. STFT Spectrograms</text>
+  <text x="100" y="368" fill="#94a3b8" font-family="sans-serif" font-size="10">2D spectral dynamic matrices</text>
+
+  <rect x="300" y="325" width="195" height="72" rx="6" fill="#0f1638" stroke="#212c54" stroke-width="1"/>
+  <text x="315" y="348" fill="#a5b4fc" font-family="sans-serif" font-size="11" font-weight="700">2. CNN Architecture</text>
+  <text x="315" y="368" fill="#94a3b8" font-family="sans-serif" font-size="10">Acoustic artifact extraction</text>
+
+  <rect x="520" y="325" width="195" height="72" rx="6" fill="#0f1638" stroke="#212c54" stroke-width="1"/>
+  <text x="535" y="348" fill="#a5b4fc" font-family="sans-serif" font-size="11" font-weight="700">3. Real-Time Scoring</text>
+  <text x="535" y="368" fill="#94a3b8" font-family="sans-serif" font-size="10">Softmax confidence metric</text>
+</svg>

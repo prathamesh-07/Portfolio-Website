@@ -14,7 +14,18 @@ import {
   IconCloud,
 } from "../components/shared/Icons";
 
-/* ─── Design tokens ─────────────────────────────────────────────────────── */
+/* ─── Project Photos & Graphics ─────────────────────────────────────────── */
+import carrent from "../assets/carrent.png";
+import jobit from "../assets/jobit.png";
+import tripguide from "../assets/tripguide.png";
+import delpatImg from "../assets/projects/delpat.svg";
+import aiResumeImg from "../assets/projects/ai-resume.svg";
+import investInsightImg from "../assets/projects/investinsight.svg";
+import firmwareImg from "../assets/projects/firmware.svg";
+import ieeeReviewImg from "../assets/projects/ieee-review.svg";
+import ieeeRealtimeImg from "../assets/projects/ieee-realtime.svg";
+
+/* ─── Design tokens (CSS vars only) ─────────────────────────────────────── */
 const T = {
   bg:      "var(--bg-primary)",
   surface: "var(--bg-surface-raised)",
@@ -31,11 +42,12 @@ const TrackPill = ({ track, label }) => {
   return (
     <span
       style={{
-        backgroundColor: isWeb ? "rgba(99,102,241,0.12)" : "rgba(136,92,245,0.12)",
+        backgroundColor: isWeb ? "rgba(99,102,241,0.18)" : "rgba(136,92,245,0.18)",
         color: isWeb ? "#a5b4fc" : "#c4b5fd",
-        border: `1px solid ${isWeb ? "rgba(99,102,241,0.3)" : "rgba(136,92,245,0.3)"}`,
+        border: `1px solid ${isWeb ? "rgba(99,102,241,0.4)" : "rgba(136,92,245,0.4)"}`,
+        backdropFilter: "blur(6px)",
       }}
-      className="inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-widest px-2.5 py-0.5 rounded-full whitespace-nowrap"
+      className="inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-widest px-2.5 py-0.5 rounded-full whitespace-nowrap shadow-sm"
     >
       <span
         style={{ background: isWeb ? T.indigo : T.violet }}
@@ -43,39 +55,6 @@ const TrackPill = ({ track, label }) => {
       />
       {label}
     </span>
-  );
-};
-
-/* ─── SVG project thumbnail ──────────────────────────────────────────────── */
-const ProjectThumb = ({ thumb }) => {
-  const { bg, accent, icon: Icon, label } = thumb;
-  return (
-    <div
-      className="relative flex-shrink-0 rounded-xl overflow-hidden flex items-center justify-center"
-      style={{
-        width: 72,
-        height: 56,
-        background: bg,
-        border: `1px solid ${T.border}`,
-      }}
-    >
-      {/* grid lines */}
-      <svg
-        className="absolute inset-0 w-full h-full opacity-20"
-        viewBox="0 0 72 56"
-        preserveAspectRatio="none"
-        aria-hidden="true"
-      >
-        <line x1="24" y1="0" x2="24" y2="56" stroke={accent} strokeWidth="0.5" />
-        <line x1="48" y1="0" x2="48" y2="56" stroke={accent} strokeWidth="0.5" />
-        <line x1="0" y1="18" x2="72" y2="18" stroke={accent} strokeWidth="0.5" />
-        <line x1="0" y1="38" x2="72" y2="38" stroke={accent} strokeWidth="0.5" />
-      </svg>
-      {/* icon */}
-      <span style={{ color: accent, position: "relative", zIndex: 1 }}>
-        <Icon size={22} />
-      </span>
-    </div>
   );
 };
 
@@ -90,6 +69,7 @@ const projectItems = [
     track: "cybersecurity",
     trackLabel: "Cybersecurity Research",
     isResearch: true,
+    image: ieeeReviewImg,
     tags: ["Deepfake Forensics", "Survey", "Voice Synthesis"],
     summary: "Published peer-reviewed survey synthesizing audio deepfake architectures, acoustic anomaly indicators, and forensic benchmark evaluations.",
     problem:
@@ -114,6 +94,7 @@ const projectItems = [
     track: "cybersecurity",
     trackLabel: "Cybersecurity Research",
     isResearch: true,
+    image: ieeeRealtimeImg,
     tags: ["Signal Processing", "CNN", "STFT / MFCC"],
     summary: "CNN signal-processing pipeline using STFT and MFCC feature analysis to classify authentic vs synthetic speech in real time.",
     problem:
@@ -137,6 +118,7 @@ const projectItems = [
     track: "cybersecurity",
     trackLabel: "Cybersecurity",
     isResearch: false,
+    image: jobit,
     tags: ["Python", "Flask", "Scikit-learn"],
     summary: "Flask web app that classifies phishing emails via TF-IDF + Logistic Regression and DNS-level SPF/DKIM/DMARC authentication checks.",
     problem:
@@ -156,6 +138,7 @@ const projectItems = [
     track: "both",
     trackLabel: "Web · Security",
     isResearch: false,
+    image: carrent,
     tags: ["Next.js", "Python", "AWS S3 / GCP"],
     summary: "Multi-cloud orchestration platform transferring files from AWS S3 to Google Cloud Storage with MD5 and SHA-256 hash verification.",
     problem:
@@ -175,6 +158,7 @@ const projectItems = [
     track: "both",
     trackLabel: "Web · Security",
     isResearch: false,
+    image: tripguide,
     tags: ["React", "MongoDB", "RBAC / JWT"],
     summary: "Full-stack asset tracking system with server-side RBAC, immutable audit logs, and hardware/software lifecycle management.",
     problem:
@@ -194,6 +178,7 @@ const projectItems = [
     track: "web",
     trackLabel: "Web Development",
     isResearch: false,
+    image: delpatImg,
     tags: ["React", "Next.js", "AWS EC2"],
     summary: "Engineered production web apps including a CMS with JWT auth, a WordPress-to-React migration, and a shared component library.",
     problem:
@@ -213,6 +198,7 @@ const projectItems = [
     track: "web",
     trackLabel: "Web Development",
     isResearch: false,
+    image: aiResumeImg,
     tags: ["Next.js 14", "TypeScript", "OpenAI GPT-4"],
     summary: "Full-stack resume builder on Next.js 14 App Router generating tailored summaries via OpenAI API with real-time preview and PDF download.",
     problem:
@@ -232,6 +218,7 @@ const projectItems = [
     track: "web",
     trackLabel: "Web Development",
     isResearch: false,
+    image: investInsightImg,
     tags: ["Python", "TensorFlow / Keras", "Streamlit"],
     summary: "Financial analytics platform with live yFinance data, RSI/Moving Average indicators, and dual forecasting via LSTM and Facebook Prophet.",
     problem:
@@ -251,6 +238,7 @@ const projectItems = [
     track: "cybersecurity",
     trackLabel: "Cybersecurity",
     isResearch: false,
+    image: firmwareImg,
     tags: ["TypeScript", "React 18", "Radix UI"],
     summary: "React 18 platform that ingests binary firmware files, detects security misconfigurations and exposed keys, exports JSON audit reports.",
     problem:
@@ -264,7 +252,7 @@ const projectItems = [
   },
 ];
 
-/* ─── Drawer content ─────────────────────────────────────────────────────── */
+/* ─── Drawer section helper ──────────────────────────────────────────────── */
 const Section = ({ label, children }) => (
   <div>
     <p className="text-[10px] font-bold uppercase tracking-widest mb-2" style={{ color: T.indigo }}>
@@ -274,12 +262,14 @@ const Section = ({ label, children }) => (
   </div>
 );
 
+/* ─── Drawer content ─────────────────────────────────────────────────────── */
 const DrawerContent = ({ project, onClose, closeRef }) => (
-  <div className="p-6 sm:p-8 flex flex-col gap-6 h-full">
+  <div className="p-6 sm:p-8 flex flex-col gap-5 h-full">
+    {/* Drawer Header Top */}
     <div className="flex items-start justify-between gap-4">
       <div className="flex-1 min-w-0">
         <TrackPill track={project.track} label={project.trackLabel} />
-        <h2 id="drawer-title" className="text-xl sm:text-2xl font-black mt-3 leading-tight" style={{ color: T.main }}>
+        <h2 id="drawer-title" className="text-xl sm:text-2xl font-black mt-2 leading-tight" style={{ color: T.main }}>
           {project.title}
         </h2>
         <p className="text-xs mt-1" style={{ color: T.muted }}>{project.subtitle}</p>
@@ -299,7 +289,20 @@ const DrawerContent = ({ project, onClose, closeRef }) => (
       </button>
     </div>
 
-    <div className="flex flex-col gap-5 flex-1 text-sm" style={{ color: T.muted }}>
+    {/* Project Photo / Graphic Banner */}
+    {project.image && (
+      <div className="w-full h-48 sm:h-56 rounded-xl overflow-hidden border flex-shrink-0" style={{ borderColor: T.border, background: "#050816" }}>
+        <img
+          src={project.image}
+          alt={project.title}
+          className="w-full h-full object-cover object-top"
+          loading="lazy"
+        />
+      </div>
+    )}
+
+    {/* Details Body */}
+    <div className="flex flex-col gap-5 flex-1 text-sm overflow-y-auto" style={{ color: T.muted }}>
       <Section label="Problem">
         <p className="leading-relaxed">{project.problem}</p>
       </Section>
@@ -323,6 +326,7 @@ const DrawerContent = ({ project, onClose, closeRef }) => (
         </div>
       </Section>
 
+      {/* Links Footer */}
       <div className="mt-auto pt-4 flex flex-wrap gap-3" style={{ borderTop: `1px solid ${T.border}` }}>
         {project.links.paper && (
           <a
@@ -449,7 +453,7 @@ const ProjectDrawer = ({ project, onClose, triggerRef }) => {
   );
 };
 
-/* ─── Project card (grid tile with thumbnail) ────────────────────────────── */
+/* ─── Project card (with real photo/image) ───────────────────────────────── */
 const ProjectCard = ({ project, index, onClick, triggerRef }) => {
   const shouldReduce = useReducedMotion();
   const isWeb = project.track === "web";
@@ -460,7 +464,7 @@ const ProjectCard = ({ project, index, onClick, triggerRef }) => {
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: shouldReduce ? 0 : 6, transition: { duration: 0.15 } }}
       transition={{ duration: 0.38, delay: index * 0.05, ease: [0.22, 1, 0.36, 1] }}
-      className="group flex flex-col cursor-pointer rounded-xl overflow-hidden focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--border-focus)]"
+      className="group flex flex-col cursor-pointer rounded-xl overflow-hidden focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--border-focus)] transition-all hover:border-[var(--color-indigo)]"
       style={{ background: T.surface, border: `1px solid ${T.border}` }}
       onClick={() => onClick(project)}
       role="button"
@@ -469,50 +473,45 @@ const ProjectCard = ({ project, index, onClick, triggerRef }) => {
       aria-label={`Open details for ${project.title}`}
       onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); onClick(project); } }}
     >
-      {/* Thumbnail strip */}
-      <div
-        className="relative flex items-center justify-center overflow-hidden"
-        style={{ height: 100, background: project.thumb.bg }}
-      >
-        {/* subtle grid */}
-        <svg className="absolute inset-0 w-full h-full opacity-15" aria-hidden="true" preserveAspectRatio="none">
-          <defs>
-            <pattern id={`grid-${project.id}`} width="20" height="20" patternUnits="userSpaceOnUse">
-              <path d="M 20 0 L 0 0 0 20" fill="none" stroke={project.thumb.accent} strokeWidth="0.5" />
-            </pattern>
-          </defs>
-          <rect width="100%" height="100%" fill={`url(#grid-${project.id})`} />
-        </svg>
+      {/* Project Photo / Graphic Banner */}
+      <div className="relative w-full h-44 sm:h-48 overflow-hidden bg-[#070b20]">
+        {project.image ? (
+          <img
+            src={project.image}
+            alt={project.title}
+            className="w-full h-full object-cover object-top transition-transform duration-500 group-hover:scale-105"
+            loading="lazy"
+          />
+        ) : (
+          <div className="w-full h-full flex items-center justify-center" style={{ background: project.thumb.bg }}>
+            <project.thumb.icon size={32} style={{ color: project.thumb.accent }} />
+          </div>
+        )}
 
-        {/* track colored glow blob */}
+        {/* Subtle dark gradient overlay from bottom */}
         <div
-          className="absolute w-20 h-20 rounded-full blur-2xl opacity-30"
-          style={{ background: project.thumb.accent }}
+          className="absolute inset-0 pointer-events-none bg-gradient-to-t from-[var(--bg-surface-raised)] via-black/20 to-black/30"
+          aria-hidden="true"
         />
 
-        {/* icon */}
-        <span style={{ color: project.thumb.accent, position: "relative", zIndex: 1 }}>
-          <project.thumb.icon size={28} />
-        </span>
-
-        {/* number badge */}
+        {/* Number badge top-left */}
         <span
-          className="absolute top-2 left-3 text-[11px] font-mono font-bold"
-          style={{ color: project.thumb.accent, opacity: 0.7 }}
+          className="absolute top-3 left-3 text-[11px] font-mono font-bold px-2 py-0.5 rounded-md backdrop-blur-md"
+          style={{ background: "rgba(5,8,22,0.7)", color: "#e2e8f0", border: `1px solid ${T.border}` }}
         >
           {project.num}
         </span>
 
-        {/* track pill top-right */}
-        <div className="absolute top-2 right-3">
+        {/* Track pill top-right */}
+        <div className="absolute top-3 right-3">
           <TrackPill track={project.track} label={project.trackLabel} />
         </div>
       </div>
 
       {/* Content */}
-      <div className="flex flex-col flex-1 p-4 gap-2">
+      <div className="flex flex-col flex-1 p-4 sm:p-5 gap-2">
         <h3
-          className="text-sm font-bold leading-snug transition-colors"
+          className="text-base font-bold leading-snug group-hover:text-[var(--color-indigo)] transition-colors"
           style={{ color: T.main }}
         >
           {project.title}
@@ -533,8 +532,8 @@ const ProjectCard = ({ project, index, onClick, triggerRef }) => {
         </div>
 
         {/* Footer row */}
-        <div className="flex items-center justify-between mt-2 pt-2" style={{ borderTop: `1px solid ${T.border}` }}>
-          <span className="text-[10px] font-semibold uppercase tracking-wider" style={{ color: isWeb ? "#a5b4fc" : "#c4b5fd" }}>
+        <div className="flex items-center justify-between mt-3 pt-3" style={{ borderTop: `1px solid ${T.border}` }}>
+          <span className="text-[11px] font-semibold tracking-wider" style={{ color: isWeb ? "#a5b4fc" : "#c4b5fd" }}>
             View details
           </span>
           <motion.span
@@ -543,7 +542,7 @@ const ProjectCard = ({ project, index, onClick, triggerRef }) => {
             transition={{ duration: 0.14 }}
             aria-hidden="true"
           >
-            <IconArrowRight size={13} />
+            <IconArrowRight size={14} />
           </motion.span>
         </div>
       </div>
@@ -560,7 +559,7 @@ const ResearchRow = ({ project, onClick, triggerRef }) => {
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-      className="group flex items-start gap-4 py-5 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--border-focus)] rounded"
+      className="group flex flex-col sm:flex-row items-start sm:items-center gap-4 py-5 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--border-focus)] rounded"
       style={{ borderBottom: `1px solid ${T.border}` }}
       onClick={() => onClick(project)}
       role="button"
@@ -569,16 +568,26 @@ const ResearchRow = ({ project, onClick, triggerRef }) => {
       aria-label={`Open details for ${project.title}`}
       onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); onClick(project); } }}
     >
-      <span className="flex-shrink-0 p-2 rounded-lg mt-0.5" style={{ background: "rgba(136,92,245,0.1)", color: T.violet }}>
-        <IconBook size={16} />
-      </span>
+      {/* Research Paper Preview Graphic */}
+      {project.image && (
+        <div className="w-full sm:w-32 h-20 rounded-lg overflow-hidden flex-shrink-0 border bg-[#050816]" style={{ borderColor: T.border }}>
+          <img
+            src={project.image}
+            alt={project.title}
+            className="w-full h-full object-cover object-top transition-transform duration-300 group-hover:scale-105"
+            loading="lazy"
+          />
+        </div>
+      )}
 
       <div className="flex-1 min-w-0">
         <div className="flex flex-wrap items-center gap-2 mb-1.5">
           <TrackPill track={project.track} label={project.trackLabel} />
           <span className="text-[11px] font-mono" style={{ color: T.muted }}>{project.venue}</span>
         </div>
-        <p className="text-sm font-bold leading-snug mb-1" style={{ color: T.main }}>{project.title}</p>
+        <p className="text-sm font-bold leading-snug mb-1 group-hover:text-[var(--color-violet)] transition-colors" style={{ color: T.main }}>
+          {project.title}
+        </p>
         <p className="text-xs leading-relaxed line-clamp-2" style={{ color: T.muted }}>{project.summary}</p>
         {project.links.doiUrl && (
           <a
@@ -595,7 +604,7 @@ const ResearchRow = ({ project, onClick, triggerRef }) => {
       </div>
 
       <motion.span
-        className="flex-shrink-0 self-center"
+        className="hidden sm:inline-block flex-shrink-0 self-center"
         style={{ color: T.muted }}
         whileHover={shouldReduce ? {} : { x: 3 }}
         transition={{ duration: 0.14 }}
@@ -647,7 +656,7 @@ const ProjectsPage = () => {
 
   return (
     <div className="relative min-h-screen flex flex-col pt-20" style={{ background: T.bg, color: T.main }}>
-      {/* Same dot-grid as About page — consistent across inner pages */}
+      {/* Same dot-grid background as About page — fully cohesive across site */}
       <div className="bg-dot-grid fixed inset-0 pointer-events-none" aria-hidden="true" />
 
       <Navbar />
@@ -741,7 +750,7 @@ const ProjectsPage = () => {
           )}
         </AnimatePresence>
 
-        {/* ── Project cards grid ── */}
+        {/* ── Project cards grid with Photos ── */}
         <section aria-labelledby="projects-heading">
           {workItems.length > 0 && (
             <div className="flex items-center gap-3 mb-6 pb-3" style={{ borderBottom: `1px solid ${T.border}` }}>
@@ -756,7 +765,7 @@ const ProjectsPage = () => {
 
           <AnimatePresence mode="popLayout">
             {workItems.length > 0 ? (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                 {workItems.map((p, i) => (
                   <ProjectCard
                     key={p.id}
