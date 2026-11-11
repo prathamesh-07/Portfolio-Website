@@ -4,3 +4,4 @@
  * Set to ["/"] to restrict fresh-load loader strictly to the homepage.
  */
 export const LOADER_ROUTES = "all";
+

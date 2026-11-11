@@ -1,7 +1,7 @@
-import React, { createContext, useContext, useState, useEffect, useRef, useCallback } from "react";
+import React, { createContext, useContext, useState, useEffect, useCallback, useRef } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { acquireScrollLock, releaseScrollLock } from "../utils/scrollLock";
-import { LOADER_ROUTES } from "./../constants/loaderConfig";
+import { LOADER_ROUTES } from "../constants/loaderConfig";
 
 const LoaderContext = createContext({
   isLoading: false,
@@ -16,25 +16,32 @@ export const useLoader = () => useContext(LoaderContext);
 export const LoaderProvider = ({ children }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [loadingReason, setLoadingReason] = useState(null);
-  const [appReady, setAppReady] = useState(false);
+  const [appReady, setAppReady] = useState(true); // Initialized to true for failsafe rendering
   const [heroKey, setHeroKey] = useState(0);
   const [replayProgress, setReplayProgress] = useState(0.15);
   const [isReplayExiting, setIsReplayExiting] = useState(false);
 
   const location = useLocation();
   const navigate = useNavigate();
-  const initialHandledRef = useRef(false);
 
-  // 1. Initial Load Handler (Coordinates with inlined #app-loader in index.html)
+  // 1. Initial Document Load Handler (Coordinates with inlined #app-loader in index.html)
   useEffect(() => {
-    if (initialHandledRef.current) return;
-    initialHandledRef.current = true;
-
     if (typeof document === "undefined") return;
 
     const loaderEl = document.getElementById("app-loader");
     const progressBar = document.getElementById("loader-progress-bar");
     const rootEl = document.getElementById("root");
+
+    // Clean up any lingering inert / aria-hidden attributes immediately
+    const clearRootInert = () => {
+      if (rootEl) {
+        rootEl.removeAttribute("aria-hidden");
+        rootEl.removeAttribute("inert");
+        if ("inert" in rootEl) {
+          rootEl.inert = false;
+        }
+      }
+    };
 
     const isSkipped =
       !loaderEl ||
@@ -42,75 +49,74 @@ export const LoaderProvider = ({ children }) => {
 
     if (isSkipped) {
       if (loaderEl) loaderEl.remove();
+      clearRootInert();
       setAppReady(true);
       document.documentElement.classList.add("app-ready");
       return;
     }
 
-    // Loader is active for initial paint
+    // Loader is actively displaying
     setIsLoading(true);
     setLoadingReason("initial");
     setAppReady(false);
     acquireScrollLock();
 
-    if (rootEl) {
-      rootEl.setAttribute("aria-hidden", "true");
-      if ("inert" in rootEl) rootEl.inert = true;
-    }
-
+    let isFinished = false;
     const startTime = performance.now();
-    let currentProgress = 0.15;
-    let isExited = false;
 
-    const setProgress = (val) => {
-      if (val > currentProgress) {
-        currentProgress = val;
-        if (progressBar) {
-          progressBar.style.transform = `scaleX(${val})`;
-        }
+    const cleanupAndExit = () => {
+      if (isFinished) return;
+      isFinished = true;
+
+      // 1. Instantly unfreeze the document and root
+      clearRootInert();
+      releaseScrollLock();
+
+      // 2. Trigger hero animations to start as loader begins to lift
+      setAppReady(true);
+      document.documentElement.classList.add("app-ready");
+
+      // 3. Begin CSS exit transition (opacity 0, translateY -12px)
+      if (loaderEl) {
+        loaderEl.classList.add("loader-exiting");
       }
+
+      // 4. Remove loader from DOM after transition
+      setTimeout(() => {
+        if (loaderEl && loaderEl.parentNode) {
+          loaderEl.remove();
+        }
+        setIsLoading(false);
+        setLoadingReason(null);
+      }, 420);
     };
 
     const finishInitial = () => {
-      if (isExited) return;
-      isExited = true;
+      if (isFinished) return;
 
-      setProgress(1.0);
+      if (progressBar) {
+        progressBar.style.transform = "scaleX(1)";
+      }
 
       const elapsed = performance.now() - startTime;
       const minDuration = 350;
       const remainingDelay = Math.max(0, minDuration - elapsed);
 
-      setTimeout(() => {
-        // Begin 400ms exit transition
-        loaderEl.classList.add("loader-exiting");
-
-        // Signal app entrance animations to trigger immediately as loader lifts
-        setAppReady(true);
-        document.documentElement.classList.add("app-ready");
-
-        if (rootEl) {
-          rootEl.removeAttribute("aria-hidden");
-          if ("inert" in rootEl) rootEl.inert = false;
-        }
-        releaseScrollLock();
-
-        setTimeout(() => {
-          if (loaderEl && loaderEl.parentNode) {
-            loaderEl.remove();
-          }
-          setIsLoading(false);
-          setLoadingReason(null);
-        }, 420);
-      }, remainingDelay);
+      setTimeout(cleanupAndExit, remainingDelay);
     };
 
-    // Real readiness signals
-    setProgress(0.6);
+    // Readiness signals
+    if (progressBar) {
+      progressBar.style.transform = "scaleX(0.6)";
+    }
 
     if (document.fonts && document.fonts.ready) {
       document.fonts.ready
-        .then(() => setProgress(0.85))
+        .then(() => {
+          if (!isFinished && progressBar) {
+            progressBar.style.transform = "scaleX(0.85)";
+          }
+        })
         .catch(() => {});
     }
 
@@ -120,11 +126,17 @@ export const LoaderProvider = ({ children }) => {
       window.addEventListener("load", finishInitial, { once: true });
     }
 
+    // Hard cap failsafe at 1200ms
     const hardCapTimer = setTimeout(finishInitial, 1200);
 
     return () => {
       clearTimeout(hardCapTimer);
       window.removeEventListener("load", finishInitial);
+      // If unmounted before finish (e.g. StrictMode cycle or navigation),
+      // ensure page is NEVER left frozen or locked!
+      if (!isFinished) {
+        cleanupAndExit();
+      }
     };
   }, []);
 
@@ -158,13 +170,8 @@ export const LoaderProvider = ({ children }) => {
       setIsReplayExiting(false);
       setReplayProgress(0.2);
 
-      // Lock scroll and root accessibility
+      // Lock scroll while overlay covers viewport
       acquireScrollLock();
-      const rootEl = document.getElementById("root");
-      if (rootEl) {
-        rootEl.setAttribute("aria-hidden", "true");
-        if ("inert" in rootEl) rootEl.inert = true;
-      }
 
       // Increment heroKey so only hero text entrance animation restarts on home
       setHeroKey((prev) => prev + 1);
@@ -192,10 +199,6 @@ export const LoaderProvider = ({ children }) => {
           setAppReady(true);
           document.documentElement.classList.add("app-ready");
 
-          if (rootEl) {
-            rootEl.removeAttribute("aria-hidden");
-            if ("inert" in rootEl) rootEl.inert = false;
-          }
           releaseScrollLock();
 
           // Move focus to page's h1
@@ -216,16 +219,7 @@ export const LoaderProvider = ({ children }) => {
       };
 
       const hardCapTimer = setTimeout(finishReplay, 1200);
-
-      // Finish after guaranteed short sequence (min 600ms)
       const finishTimer = setTimeout(finishReplay, 550);
-
-      return () => {
-        clearTimeout(p1);
-        clearTimeout(p2);
-        clearTimeout(finishTimer);
-        clearTimeout(hardCapTimer);
-      };
     },
     [isLoading, location.pathname, navigate]
   );
@@ -246,4 +240,5 @@ export const LoaderProvider = ({ children }) => {
     </LoaderContext.Provider>
   );
 };
+
 export default LoaderContext;
