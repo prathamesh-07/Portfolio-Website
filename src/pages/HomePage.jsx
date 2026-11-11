@@ -1,43 +1,25 @@
-import React, { useEffect } from "react";
-import {
-  About,
-  Contact,
-  Experience,
-  Feedbacks,
-  Hero,
-  Navbar,
-  Tech,
-  Works,
-  StarsCanvas,
-  Footer,
-  Loader,
-} from "../components";
+import React, { Suspense, lazy } from "react";
+import useHomeVariant from "../hooks/useHomeVariant";
+import LiteHomePage from "./LiteHomePage";
+import ErrorBoundary from "../components/shared/ErrorBoundary";
+
+// Lazy-load the full 3D Desktop variant exclusively for desktop devices with fine pointers & WebGL2
+const DesktopHomePage = lazy(() => import("./DesktopHomePage"));
 
 const HomePage = () => {
-  useEffect(() => {
-    document.title = "Prathamesh Chiddarwar | Full-Stack Developer & Cyber Security Graduate";
-  }, []);
+  const { is3D } = useHomeVariant();
 
-  return (
-    <div className='relative z-0 bg-primary'>
-      <Loader />
-      <Navbar />
-      <div className='bg-hero-pattern bg-cover bg-no-repeat bg-center'>
-        <Hero />
-      </div>
-      <About />
-      <Experience />
-      <Tech />
-      <Works />
-      <Feedbacks />
-      <div className='relative z-0'>
-        <Contact />
-        <StarsCanvas />
-      </div>
-      <Footer />
-    </div>
-  );
+  if (is3D) {
+    return (
+      <ErrorBoundary fallback={<LiteHomePage />}>
+        <Suspense fallback={<LiteHomePage />}>
+          <DesktopHomePage />
+        </Suspense>
+      </ErrorBoundary>
+    );
+  }
+
+  return <LiteHomePage />;
 };
 
 export default HomePage;
-

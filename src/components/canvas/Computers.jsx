@@ -123,6 +123,31 @@ const ComputersCanvas = () => {
   const [shouldRender, setShouldRender] = useState(false);
   const [isPortrait, setIsPortrait] = useState(false);
   const [hasContextLost, setHasContextLost] = useState(false);
+  const [isTabVisible, setIsTabVisible] = useState(true);
+  const rendererRef = React.useRef(null);
+
+  // Pause rendering when tab is hidden to save GPU/battery
+  useEffect(() => {
+    const handleVisibility = () => {
+      setIsTabVisible(document.visibilityState !== "hidden");
+    };
+    document.addEventListener("visibilitychange", handleVisibility);
+    return () => document.removeEventListener("visibilitychange", handleVisibility);
+  }, []);
+
+  // Dispose WebGL resources on unmount
+  useEffect(() => {
+    return () => {
+      if (rendererRef.current) {
+        try {
+          rendererRef.current.dispose();
+          rendererRef.current.forceContextLoss?.();
+        } catch (e) {
+          // Ignore disposal errors
+        }
+      }
+    };
+  }, []);
 
   useEffect(() => {
     const updateLayout = () => {
@@ -147,7 +172,7 @@ const ComputersCanvas = () => {
     };
   }, []);
 
-  if (!shouldRender || hasContextLost) {
+  if (!shouldRender || hasContextLost || !isTabVisible) {
     return null;
   }
 
@@ -160,12 +185,13 @@ const ComputersCanvas = () => {
         camera={{ position: [20, 3, 5], fov: isPortrait ? 35 : 25 }}
         style={{ touchAction: "pan-y" }}
         gl={{ 
-          preserveDrawingBuffer: false,
+          preserveDrawingBuffer: typeof window !== "undefined" && window.location.search.includes("capture=true"),
           antialias: true,
           alpha: true,
           powerPreference: "default"
         }}
         onCreated={({ gl }) => {
+          rendererRef.current = gl;
           gl.setClearColor(0x000000, 0);
           gl.domElement.style.touchAction = "pan-y";
           gl.domElement.addEventListener(
