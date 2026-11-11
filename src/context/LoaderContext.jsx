@@ -188,7 +188,13 @@ export const LoaderProvider = ({ children }) => {
       const p1 = setTimeout(() => setReplayProgress(0.6), 180);
       const p2 = setTimeout(() => setReplayProgress(0.9), 380);
 
+      let isReplayFinished = false;
+
       const finishReplay = () => {
+        if (isReplayFinished) return;
+        isReplayFinished = true;
+        clearTimeout(p1);
+        clearTimeout(p2);
         setReplayProgress(1.0);
         const elapsed = performance.now() - startTime;
         const minDuration = 600; // Guaranteed 600ms visible time for logo replay

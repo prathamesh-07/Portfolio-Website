@@ -6,7 +6,8 @@ import ErrorBoundary from "./shared/ErrorBoundary";
 import { useLoader } from "../context/LoaderContext";
 
 const Hero = () => {
-  const { appReady, heroKey } = useLoader();
+  const { appReady, heroKey, isLoading } = useLoader();
+  const isHeroVisible = appReady || !isLoading;
 
   return (
     <section className="relative w-full h-screen mx-auto overflow-hidden">
@@ -16,7 +17,7 @@ const Hero = () => {
       >
         <motion.div
           initial={{ opacity: 0, y: 20 }}
-          animate={appReady ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+          animate={isHeroVisible ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
           transition={{ duration: 0.5 }}
           className="flex flex-col justify-center items-center mt-5"
         >
@@ -27,16 +28,16 @@ const Hero = () => {
         <div className="flex flex-col gap-4 max-w-3xl pointer-events-auto">
           <motion.h1
             initial={{ opacity: 0, y: 20 }}
-            animate={appReady ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-            transition={{ duration: 0.5, delay: appReady ? 0.2 : 0 }}
+            animate={isHeroVisible ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+            transition={{ duration: 0.5, delay: isHeroVisible ? 0.2 : 0 }}
             className="font-black text-white lg:text-[76px] sm:text-[58px] xs:text-[46px] text-[36px] lg:leading-[94px] mt-2 tracking-tight"
           >
             Hi, I'm <span className="gradient-text">Prathamesh</span>
           </motion.h1>
           <motion.p
             initial={{ opacity: 0, y: 20 }}
-            animate={appReady ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-            transition={{ duration: 0.5, delay: appReady ? 0.4 : 0 }}
+            animate={isHeroVisible ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+            transition={{ duration: 0.5, delay: isHeroVisible ? 0.4 : 0 }}
             className="text-[#dfd9ff] font-medium lg:text-[24px] sm:text-[20px] xs:text-[18px] text-[15px] lg:leading-[36px] tracking-wide max-w-2xl"
           >
             Full-Stack Developer & Cyber Security Graduate (Class of 2026). I build production web applications and research AI-driven security threats.

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import { Link, NavLink, useLocation } from "react-router-dom";
-import { motion, AnimatePresence, useScroll, useSpring, useReducedMotion } from "framer-motion";
+import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 
 import Logo from "./Logo";
 import { navLinks } from "../../constants";
@@ -14,7 +14,6 @@ const RESUME_NAME = "Prathamesh_Chiddarwar_Resume.pdf";
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isHeaderHidden, setIsHeaderHidden] = useState(false);
 
   const location = useLocation();
   const shouldReduceMotion = useReducedMotion();
@@ -23,15 +22,9 @@ const Navbar = () => {
   const menuButtonRef = useRef(null);
   const drawerRef = useRef(null);
   const sentinelRef = useRef(null);
-  const lastScrollYRef = useRef(0);
 
-  // Scroll Progress Bar (Universal spring progress line)
-  const { scrollYProgress } = useScroll();
-  const scaleX = useSpring(scrollYProgress, {
-    stiffness: 100,
-    damping: 30,
-    restDelta: 0.001,
-  });
+  // Filter out Home from desktop header navigation per user request
+  const desktopNavLinks = navLinks.filter((nav) => nav.path !== "/");
 
   // 1. IntersectionObserver Sentinel for scroll detection (> 8px)
   useEffect(() => {
@@ -49,36 +42,7 @@ const Navbar = () => {
     return () => observer.disconnect();
   }, []);
 
-  // 2. Mobile Hide on Scroll Down / Show on Scroll Up (<= 767px)
-  useEffect(() => {
-    if (shouldReduceMotion) return;
-
-    const handleScrollDirection = () => {
-      // Never hide while menu is open or on desktop
-      if (isMenuOpen || window.innerWidth > 767) {
-        setIsHeaderHidden(false);
-        return;
-      }
-
-      const currentScrollY = window.scrollY;
-      const prevScrollY = lastScrollYRef.current;
-
-      if (currentScrollY > 100 && currentScrollY > prevScrollY + 8) {
-        // Scrolling down past threshold -> hide
-        setIsHeaderHidden(true);
-      } else if (currentScrollY < prevScrollY - 8 || currentScrollY < 50) {
-        // Scrolling up or near top -> show
-        setIsHeaderHidden(false);
-      }
-
-      lastScrollYRef.current = currentScrollY;
-    };
-
-    window.addEventListener("scroll", handleScrollDirection, { passive: true });
-    return () => window.removeEventListener("scroll", handleScrollDirection);
-  }, [isMenuOpen, shouldReduceMotion]);
-
-  // 3. Auto-close menu on route change
+  // 2. Auto-close menu on route change
   useEffect(() => {
     setIsMenuOpen(false);
   }, [location.pathname]);
@@ -195,9 +159,7 @@ const Navbar = () => {
       />
 
       <header
-        className={`fixed top-0 left-0 right-0 transition-all duration-200 ${
-          isHeaderHidden ? "-translate-y-full" : "translate-y-0"
-        }`}
+        className="fixed top-0 left-0 right-0 transition-all duration-200 translate-y-0"
         style={{
           zIndex: "var(--z-header)",
           height: isScrolled ? "var(--header-h-scrolled)" : "var(--header-h)",
@@ -216,31 +178,30 @@ const Navbar = () => {
       >
         <nav
           aria-label="Primary"
-          className="w-full h-full max-w-[1200px] mx-auto px-5 sm:px-8 flex items-center justify-between"
+          className="w-full h-full max-w-[1850px] mx-auto px-5 sm:px-8 lg:px-12 xl:px-16 2xl:px-20 flex items-center justify-between"
         >
           {/* ── Left: Identity Lockup ── */}
           <Link
             to="/"
-            className="flex items-center gap-3 group focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-indigo)] rounded-lg p-1 -ml-1 transition-transform"
+            className="flex items-center gap-2.5 sm:gap-3 group focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-indigo)] rounded-lg p-1 -ml-1 transition-transform"
             aria-label="Prathamesh Chiddarwar, home"
             onClick={handleLogoClick}
           >
-            <div className="w-[36px] sm:w-[38px] h-[36px] sm:h-[38px] flex items-center justify-center flex-shrink-0 transition-transform group-hover:scale-105">
-              <Logo variant="icon" tone="color" height={38} decorative priority />
+            <div className="w-[28px] h-[28px] sm:w-[38px] sm:h-[38px] lg:w-[44px] lg:h-[44px] flex items-center justify-center flex-shrink-0 transition-transform group-hover:scale-105">
+              <Logo variant="icon" tone="color" height={44} decorative priority />
             </div>
 
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 sm:gap-2.5 min-w-0">
               <span
-                className="font-bold text-[16px] sm:text-[17px] tracking-tight transition-colors"
+                className="font-bold text-[15px] sm:text-[18px] lg:text-[20px] tracking-tight transition-colors whitespace-nowrap"
                 style={{ color: "var(--text-main)" }}
               >
-                <span className="hidden sm:inline">Prathamesh Chiddarwar</span>
-                <span className="sm:hidden">Prathamesh</span>
+                Prathamesh Chiddarwar
               </span>
 
               {/* Dev · Sec Badge (Hidden below 480px per brief) */}
               <span
-                className="hidden min-[480px]:inline-flex items-center text-[10px] font-bold tracking-wider uppercase px-2 py-0.5 rounded-md border"
+                className="hidden min-[480px]:inline-flex items-center text-[10px] font-bold tracking-wider uppercase px-2 py-0.5 rounded-md border flex-shrink-0"
                 style={{
                   backgroundColor: "var(--bg-surface)",
                   color: "var(--text-muted)",
@@ -255,11 +216,10 @@ const Navbar = () => {
           {/* ── Center / Right: Desktop Navigation Links (>= 1024px) ── */}
           <div className="hidden lg:flex items-center gap-8">
             <ul className="flex items-center gap-1 sm:gap-2 list-none" role="list">
-              {navLinks.map((nav) => (
+              {desktopNavLinks.map((nav) => (
                 <li key={nav.title} className="relative">
                   <NavLink
                     to={nav.path}
-                    end={nav.path === "/"}
                     className={({ isActive }) =>
                       `relative inline-flex items-center px-3.5 py-1.5 text-[14px] font-medium transition-colors duration-200 rounded-md focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-indigo)] ${
                         isActive
@@ -352,17 +312,6 @@ const Navbar = () => {
             </button>
           </div>
         </nav>
-
-        {/* 2px Scroll Progress Line pinned along header bottom */}
-        <motion.div
-          className="absolute bottom-0 left-0 right-0 h-[2px] origin-left"
-          style={{
-            scaleX,
-            background:
-              "linear-gradient(90deg, var(--color-indigo), var(--color-violet))",
-          }}
-          aria-hidden="true"
-        />
       </header>
 
       {/* ── Mobile Navigation Drawer (< 1024px) ── */}

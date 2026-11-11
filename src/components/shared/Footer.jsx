@@ -12,7 +12,6 @@ const RESUME_NAME = "Prathamesh_Chiddarwar_Resume.pdf";
 
 const Footer = () => {
   const [copied, setCopied] = useState(false);
-  const shouldReduceMotion = useReducedMotion();
   const currentYear = new Date().getFullYear();
 
   const handleCopyEmail = async (e) => {
@@ -25,26 +24,6 @@ const Footer = () => {
     } catch {
       // Fallback
     }
-  };
-
-  const scrollToTop = () => {
-    window.scrollTo({
-      top: 0,
-      behavior: shouldReduceMotion ? "auto" : "smooth",
-    });
-
-    // Move keyboard focus to top of page
-    setTimeout(() => {
-      const topTarget =
-        document.querySelector("#main-content") ||
-        document.querySelector("h1") ||
-        document.querySelector(".skip-link");
-
-      if (topTarget) {
-        topTarget.setAttribute("tabindex", "-1");
-        topTarget.focus({ preventScroll: true });
-      }
-    }, shouldReduceMotion ? 0 : 300);
   };
 
   return (
@@ -225,22 +204,6 @@ const Footer = () => {
           {/* Center / Right: White Logo Icon */}
           <div className="flex items-center gap-4">
             <Logo variant="icon" tone="white" height={22} decorative />
-
-            {/* Back to top button */}
-            <button
-              type="button"
-              onClick={scrollToTop}
-              className="inline-flex items-center gap-1.5 min-h-[44px] px-3.5 py-1.5 rounded-lg border transition-all hover:bg-white/5 active:scale-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-indigo)]"
-              style={{
-                backgroundColor: "rgba(255, 255, 255, 0.03)",
-                borderColor: "var(--border-subtle)",
-                color: "var(--text-main)",
-              }}
-              aria-label="Back to top of page"
-            >
-              <span>Back to top</span>
-              <span aria-hidden="true">↑</span>
-            </button>
           </div>
         </div>
 

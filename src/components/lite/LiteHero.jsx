@@ -17,7 +17,8 @@ import pcPng960  from "../../assets/hero/hero-pc-960.png";
 const LiteHero = () => {
   const shouldReduce = useReducedMotion();
   const [hasScrolled, setHasScrolled] = useState(false);
-  const { appReady, heroKey } = useLoader();
+  const { appReady, heroKey, isLoading } = useLoader();
+  const isHeroVisible = appReady || !isLoading;
 
   useEffect(() => {
     const handleScroll = () => {
@@ -49,7 +50,7 @@ const LiteHero = () => {
           {/* Vertical Indigo Line & Dot Motif */}
           <motion.div
             initial={{ scaleY: 0, opacity: 0 }}
-            animate={appReady ? { scaleY: 1, opacity: 1 } : { scaleY: 0, opacity: 0 }}
+            animate={isHeroVisible ? { scaleY: 1, opacity: 1 } : { scaleY: 0, opacity: 0 }}
             transition={{ duration: shouldReduce ? 0 : 0.45, ease }}
             className="flex flex-col justify-center items-center mt-2.5 origin-top shrink-0"
             aria-hidden="true"
@@ -62,8 +63,8 @@ const LiteHero = () => {
           <div className="flex flex-col gap-4">
             <motion.h1
               initial={{ opacity: 0, y: shouldReduce ? 0 : 16 }}
-              animate={appReady ? { opacity: 1, y: 0 } : { opacity: 0, y: shouldReduce ? 0 : 16 }}
-              transition={{ duration: dur, delay: shouldReduce || !appReady ? 0 : 0.15, ease }}
+              animate={isHeroVisible ? { opacity: 1, y: 0 } : { opacity: 0, y: shouldReduce ? 0 : 16 }}
+              transition={{ duration: dur, delay: shouldReduce || !isHeroVisible ? 0 : 0.15, ease }}
               className="font-black text-white tracking-tight leading-[1.12]"
               style={{ fontSize: "clamp(2rem, 7.5vw, 4.25rem)" }}
             >

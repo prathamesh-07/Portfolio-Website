@@ -9,11 +9,13 @@ import NotFoundPage from "./pages/NotFoundPage";
 import ErrorBoundary from "./components/shared/ErrorBoundary";
 import { LoaderProvider } from "./context/LoaderContext";
 import Loader from "./components/shared/Loader";
+import ScrollToTopButton from "./components/shared/ScrollToTopButton";
 
 const App = () => {
   return (
     <LoaderProvider>
       <Loader />
+      <ScrollToTopButton />
       <ErrorBoundary>
         <Routes>
           {/* 4 Core Pages */}
